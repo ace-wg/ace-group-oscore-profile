@@ -1594,12 +1594,15 @@ Further formats may be available in the future, and would be acceptable to use a
 <p id="section-3.1-5">To this end, the Client MUST use as PoP input the byte representation of an information that uniquely represents the secure communication association between the Client and the AS. It is RECOMMENDED that the Client uses the following as PoP input.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.1-6.1">
-            <p id="section-3.1-6.1.1">If the Client and the AS communicate over (D)TLS, the PoP input is an exporter value computed as defined in <span><a href="https://rfc-editor.org/rfc/rfc8446#section-7.5" class="relref">Section 7.5</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>. In particular, the exporter label MUST be 'EXPORTER-ACE-PoP-Input-Client-AS' defined in <a href="#iana-tls-exporter-label" class="auto internal xref">Section 10.5</a> of this document, together with an empty 'context_value', and 32 bytes as 'key_length'.<a href="#section-3.1-6.1.1" class="pilcrow">¶</a></p>
+            <p id="section-3.1-6.1.1">If the Client and the AS communicate over TLS 1.2 <span>[<a href="#RFC5246" class="cite xref">RFC5246</a>]</span> or DTLS 1.2 <span>[<a href="#RFC6347" class="cite xref">RFC6347</a>]</span>, the PoP input is an exporter value computed as defined in <span><a href="https://rfc-editor.org/rfc/rfc5705#section-4" class="relref">Section 4</a> of [<a href="#RFC5705" class="cite xref">RFC5705</a>]</span>. In particular, the exporter label MUST be "EXPORTER-ACE-PoP-Input-Client-AS" defined in <a href="#iana-tls-exporter-label" class="auto internal xref">Section 10.5</a> of this document, together with an empty 'context value' (i.e., a 'context value' of zero-length), and 32 as length value in bytes.<a href="#section-3.1-6.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.1-6.2">
-            <p id="section-3.1-6.2.1">If the Client and the AS communicate over OSCORE <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, the PoP input is the output PRK of an HKDF-Extract step <span>[<a href="#RFC5869" class="cite xref">RFC5869</a>]</span>, i.e., PRK = HMAC-Hash(salt, IKM). In particular, 'salt' takes (x1 | x2), where x1 is the ID Context of the OSCORE Security Context between the Client and the AS, x2 is the Sender ID of the Client in that Security Context, and | denotes byte string concatenation. Also, 'IKM' is the OSCORE Master Secret of the OSCORE Security Context between the Client and the AS.<a href="#section-3.1-6.2.1" class="pilcrow">¶</a></p>
-<p id="section-3.1-6.2.2">
-The HKDF MUST be one of the HMAC-based HKDF <span>[<a href="#RFC5869" class="cite xref">RFC5869</a>]</span> algorithms defined for COSE <span>[<a href="#RFC9053" class="cite xref">RFC9053</a>]</span>. The Client and AS may agree on the HKDF algorithm to use during the Client's registration at the AS. HKDF SHA-256 is mandatory to implement.<a href="#section-3.1-6.2.2" class="pilcrow">¶</a></p>
+            <p id="section-3.1-6.2.1">If the Client and the AS communicate over TLS 1.3 <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> or DTLS 1.3 <span>[<a href="#RFC9147" class="cite xref">RFC9147</a>]</span>, the PoP input is an exporter value computed as defined in <span><a href="https://rfc-editor.org/rfc/rfc8446#section-7.5" class="relref">Section 7.5</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>. In particular, the exporter label MUST be "EXPORTER-ACE-PoP-Input-Client-AS" defined in <a href="#iana-tls-exporter-label" class="auto internal xref">Section 10.5</a> of this document, together with an empty 'context_value' (i.e., a 'context_value' of zero-length), and 32 as 'key_length' in bytes.<a href="#section-3.1-6.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.1-6.3">
+            <p id="section-3.1-6.3.1">If the Client and the AS communicate over OSCORE <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, the PoP input is the output PRK of an HKDF-Extract step <span>[<a href="#RFC5869" class="cite xref">RFC5869</a>]</span>, i.e., PRK = HMAC-Hash(salt, IKM). In particular, 'salt' takes (x1 | x2), where x1 is the ID Context of the OSCORE Security Context between the Client and the AS, x2 is the Sender ID of the Client in that Security Context, and | denotes byte string concatenation. Also, 'IKM' is the OSCORE Master Secret of the OSCORE Security Context between the Client and the AS.<a href="#section-3.1-6.3.1" class="pilcrow">¶</a></p>
+<p id="section-3.1-6.3.2">
+The HKDF MUST be one of the HMAC-based HKDF <span>[<a href="#RFC5869" class="cite xref">RFC5869</a>]</span> algorithms defined for COSE <span>[<a href="#RFC9053" class="cite xref">RFC9053</a>]</span>. The Client and AS may agree on the HKDF algorithm to use during the Client's registration at the AS. HKDF SHA-256 is mandatory to implement.<a href="#section-3.1-6.3.2" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-3.1-7">Then, the Client computes the PoP evidence as follows.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
@@ -2414,6 +2417,10 @@ If this is not the case, the RS MUST request the Client's authentication credent
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC5246">[RFC5246]</dt>
+        <dd>
+<span class="refAuthor">Dierks, T.</span> and <span class="refAuthor">E. Rescorla</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.2"</span>, <span class="seriesInfo">RFC 5246</span>, <span class="seriesInfo">DOI 10.17487/RFC5246</span>, <time datetime="2008-08" class="refDate">August 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5246">https://www.rfc-editor.org/rfc/rfc5246</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC5705">[RFC5705]</dt>
         <dd>
 <span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"Keying Material Exporters for Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 5705</span>, <span class="seriesInfo">DOI 10.17487/RFC5705</span>, <time datetime="2010-03" class="refDate">March 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5705">https://www.rfc-editor.org/rfc/rfc5705</a>&gt;</span>. </dd>
@@ -2421,6 +2428,10 @@ If this is not the case, the RS MUST request the Client's authentication credent
 <dt id="RFC5869">[RFC5869]</dt>
         <dd>
 <span class="refAuthor">Krawczyk, H.</span> and <span class="refAuthor">P. Eronen</span>, <span class="refTitle">"HMAC-based Extract-and-Expand Key Derivation Function (HKDF)"</span>, <span class="seriesInfo">RFC 5869</span>, <span class="seriesInfo">DOI 10.17487/RFC5869</span>, <time datetime="2010-05" class="refDate">May 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5869">https://www.rfc-editor.org/rfc/rfc5869</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6347">[RFC6347]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span> and <span class="refAuthor">N. Modadugu</span>, <span class="refTitle">"Datagram Transport Layer Security Version 1.2"</span>, <span class="seriesInfo">RFC 6347</span>, <span class="seriesInfo">DOI 10.17487/RFC6347</span>, <time datetime="2012-01" class="refDate">January 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6347">https://www.rfc-editor.org/rfc/rfc6347</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC6749">[RFC6749]</dt>
         <dd>
@@ -2589,10 +2600,13 @@ If this is not the case, the RS MUST request the Client's authentication credent
             <p id="appendix-B.1-1.1.1">Deleting an Access Token does not delete the Group OSCORE Security Context.<a href="#appendix-B.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-B.1-1.2">
-            <p id="appendix-B.1-1.2.1">Renamed the TLS Exporter Label for computing the PoP input.<a href="#appendix-B.1-1.2.1" class="pilcrow">¶</a></p>
+            <p id="appendix-B.1-1.2.1">Distinct computation of the PoP input when C and the AS use (D)TLS 1.2 or 1.3.<a href="#appendix-B.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-B.1-1.3">
-            <p id="appendix-B.1-1.3.1">Editorial fixes and improvements.<a href="#appendix-B.1-1.3.1" class="pilcrow">¶</a></p>
+            <p id="appendix-B.1-1.3.1">Renamed the TLS Exporter Label for computing the PoP input.<a href="#appendix-B.1-1.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-B.1-1.4">
+            <p id="appendix-B.1-1.4.1">Editorial fixes and improvements.<a href="#appendix-B.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
