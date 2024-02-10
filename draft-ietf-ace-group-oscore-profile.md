@@ -57,8 +57,10 @@ normative:
   I-D.ietf-core-oscore-groupcomm:
   I-D.ietf-ace-key-groupcomm-oscore:
   RFC2119:
+  RFC5246:
   RFC5705:
   RFC5869:
+  RFC6347:
   RFC6749:
   RFC7252:
   RFC7748:
@@ -326,7 +328,9 @@ In addition, the Client computes its proof-of-possession (PoP) evidence, in orde
 
 To this end, the Client MUST use as PoP input the byte representation of an information that uniquely represents the secure communication association between the Client and the AS. It is RECOMMENDED that the Client uses the following as PoP input.
 
-* If the Client and the AS communicate over (D)TLS, the PoP input is an exporter value computed as defined in {{Section 7.5 of RFC8446}}. In particular, the exporter label MUST be 'EXPORTER-ACE-PoP-Input-Client-AS' defined in {{iana-tls-exporter-label}} of this document, together with an empty 'context_value', and 32 bytes as 'key_length'.
+* If the Client and the AS communicate over TLS 1.2 {{RFC5246}} or DTLS 1.2 {{RFC6347}}, the PoP input is an exporter value computed as defined in {{Section 4 of RFC5705}}. In particular, the exporter label MUST be "EXPORTER-ACE-PoP-Input-Client-AS" defined in {{iana-tls-exporter-label}} of this document, together with an empty 'context value' (i.e., a 'context value' of zero-length), and 32 as length value in bytes.
+
+* If the Client and the AS communicate over TLS 1.3 {{RFC8446}} or DTLS 1.3 {{RFC9147}}, the PoP input is an exporter value computed as defined in {{Section 7.5 of RFC8446}}. In particular, the exporter label MUST be "EXPORTER-ACE-PoP-Input-Client-AS" defined in {{iana-tls-exporter-label}} of this document, together with an empty 'context_value' (i.e., a 'context_value' of zero-length), and 32 as 'key_length' in bytes.
 
 * If the Client and the AS communicate over OSCORE {{RFC8613}}, the PoP input is the output PRK of an HKDF-Extract step {{RFC5869}}, i.e., PRK = HMAC-Hash(salt, IKM). In particular, 'salt' takes (x1 \| x2), where x1 is the ID Context of the OSCORE Security Context between the Client and the AS, x2 is the Sender ID of the Client in that Security Context, and \| denotes byte string concatenation. Also, 'IKM' is the OSCORE Master Secret of the OSCORE Security Context between the Client and the AS.
 
@@ -885,6 +889,8 @@ This appendix lists the specifications of this profile based on the requirements
 ## Version -00 to -01 ## {#sec-00-01}
 
 * Deleting an Access Token does not delete the Group OSCORE Security Context.
+
+* Distinct computation of the PoP input when C and the AS use (D)TLS 1.2 or 1.3.
 
 * Renamed the TLS Exporter Label for computing the PoP input.
 
