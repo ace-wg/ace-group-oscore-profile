@@ -604,10 +604,9 @@ Table of Contents
 
    *  If the Client and the AS communicate over (D)TLS, the PoP input is
       an exporter value computed as defined in Section 7.5 of [RFC8446].
-      In particular, the exporter label MUST be 'EXPORTER-ACE-Sign-
-      Challenge-Client-AS' defined in Section 10.5 of this document,
-      together with an empty 'context_value', and 32 bytes as
-      'key_length'.
+      In particular, the exporter label MUST be 'EXPORTER-ACE-PoP-Input-
+      Client-AS' defined in Section 10.5 of this document, together with
+      an empty 'context_value', and 32 bytes as 'key_length'.
 
    *  If the Client and the AS communicate over OSCORE [RFC8613], the
       PoP input is the output PRK of an HKDF-Extract step [RFC5869],
@@ -1507,7 +1506,7 @@ Table of Contents
    registry group, following the procedure specified in Section 6 of
    [RFC5705] and updated in Section 12 of [RFC8447].
 
-   *  Value: EXPORTER-ACE-Sign-Challenge-Client-AS
+   *  Value: EXPORTER-ACE-PoP-Input-Client-AS
 
    *  DTLS-OK: Y
 
@@ -1757,6 +1756,8 @@ B.1.  Version -00 to -01
 
    *  Deleting an Access Token does not delete the Group OSCORE Security
       Context.
+
+   *  Renamed the TLS Exporter Label for computing the PoP input.
 
    *  Editorial fixes and improvements.
 
