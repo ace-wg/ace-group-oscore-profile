@@ -1113,6 +1113,10 @@ Table of Contents
    securely communicate using Group OSCORE, without deriving any
    additional keying material or security association.
 
+   If the Client or the RS deletes an Access Token (e.g., when the
+   Access Token has expired or has been revoked), it MUST NOT delete the
+   related Group OSCORE Security Context.
+
 4.3.1.  Client Side
 
    After having received the 2.01 (Created) response from the RS,
@@ -1750,6 +1754,9 @@ Appendix B.  Document Updates
    This section is to be removed before publishing as an RFC.
 
 B.1.  Version -00 to -01
+
+   *  Deleting an Access Token does not delete the Group OSCORE Security
+      Context.
 
    *  Editorial fixes and improvements.
 

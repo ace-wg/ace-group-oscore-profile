@@ -1987,6 +1987,7 @@ If this is not the case, the RS MUST request the Client's authentication credent
 <a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-client-rs-secure-communicat" class="section-name selfRef">Client-RS Secure Communication</a>
         </h3>
 <p id="section-4.3-1">When previously joining the OSCORE group, both the Client and the RS have already established the related Group OSCORE Security Context to communicate as group members. Therefore, they can simply start to securely communicate using Group OSCORE, without deriving any additional keying material or security association.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">If the Client or the RS deletes an Access Token (e.g., when the Access Token has expired or has been revoked), it MUST NOT delete the related Group OSCORE Security Context.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
 <div id="client-side">
 <section id="section-4.3.1">
           <h4 id="name-client-side">
@@ -2585,7 +2586,10 @@ If this is not the case, the RS MUST request the Client's authentication credent
         </h3>
 <ul class="normal">
 <li class="normal" id="appendix-B.1-1.1">
-            <p id="appendix-B.1-1.1.1">Editorial fixes and improvements.<a href="#appendix-B.1-1.1.1" class="pilcrow">¶</a></p>
+            <p id="appendix-B.1-1.1.1">Deleting an Access Token does not delete the Group OSCORE Security Context.<a href="#appendix-B.1-1.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-B.1-1.2">
+            <p id="appendix-B.1-1.2.1">Editorial fixes and improvements.<a href="#appendix-B.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
