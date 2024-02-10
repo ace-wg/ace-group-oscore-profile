@@ -96,12 +96,12 @@ normative:
 
 informative:
   I-D.tiloca-core-oscore-discovery:
-  I-D.ietf-ace-mqtt-tls-profile:
   I-D.ietf-cose-cbor-encoded-cert:
-  RFC7925:
+  RFC5280:
   RFC8446:
   RFC9147:
   RFC9202:
+  RFC9431:
   NIST-800-207:
     author:
       -
@@ -151,7 +151,7 @@ As a step in this direction, one can be tempted to introduce a different securit
 
 Instead, a fine-grained yet flexible access control model can be enforced within the same group, by using the Authentication and Authorization for Constrained Environments (ACE) framework {{RFC9200}}. That is, a Client has to first obtain authorization credentials in the form of an Access Token, and post it to the Resource Server(s) in the group before accessing the intended resources.
 
-The ACE framework delegates to separate profile documents how to secure communications between the Client and the Resource Servers. However each of the current profiles of ACE defined in {{RFC9202}}{{RFC9203}}{{I-D.ietf-ace-mqtt-tls-profile}} relies on a security protocol that cannot be used to protect one-to-many group messages, for example sent over IP multicast.
+The ACE framework delegates to separate profile documents how to secure communications between the Client and the Resource Servers. However each of the current profiles of ACE defined in {{RFC9202}}{{RFC9203}}{{RFC9431}} relies on a security protocol that cannot be used to protect one-to-many group messages, for example sent over IP multicast.
 
 This document specifies the "coap_group_oscore" profile of the ACE framework, where a Client uses the Constrained Application Protocol (CoAP) {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}} to communicate with one or multiple Resource Servers that are members of an application group and share a common set of resources. This profile uses Group Object Security for Constrained RESTful Environments (Group OSCORE) {{I-D.ietf-core-oscore-groupcomm}} as the security protocol to protect messages exchanged between the Client and the Resource Servers. Hence, it requires that both the Client and the Resource Servers have previously joined the same OSCORE group.
 
@@ -171,7 +171,7 @@ Readers are expected to be familiar with the terms and concepts related to CBOR 
 
 * Group Manager, as the entity responsible for a set of groups where communications among members are secured with Group OSCORE.
 
-* Authentication credential, as the set of information associated with an entity, including that entity's public key and parameters associated with the public key. Examples of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) {{RFC8392}}, X.509 certificates {{RFC7925}} and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}.
+* Authentication credential, as the set of information associated with an entity, including that entity's public key and parameters associated with the public key. Examples of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) {{RFC8392}}, X.509 certificates {{RFC5280}} and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}.
 
    Members of an OSCORE group have an associated authentication credential in the format used in the group. As per {{Section 2.4 of I-D.ietf-core-oscore-groupcomm}}, an authentication credential provides the public key as well as the comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).
 
@@ -311,7 +311,7 @@ The POST request is formatted as the analogous Client-to-AS request in the OSCOR
 
 * 'req_cnf', defined in {{Section 3.1 of RFC9201}}. This parameter follows the syntax from {{Section 3.1 of RFC8747}}, and its inner confirmation value specifies the authentication credential that the Client uses in the OSCORE group. The public key included in the authentication credential will be used as the pop-key bound to the Access Token.
 
-   At the time of writing this specification, acceptable formats of authentication credentials in Group OSCORE are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) {{RFC8392}}, X.509 certificates {{RFC7925}}, and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}.
+   At the time of writing this specification, acceptable formats of authentication credentials in Group OSCORE are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) {{RFC8392}}, X.509 certificates {{RFC5280}}, and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}.
 
    Further formats may be available in the future, and would be acceptable to use as long as they comply with the criteria compiled in {{Section 2.3 of I-D.ietf-core-oscore-groupcomm}}. In particular, an authentication credential has to explicitly include the public key as well as the comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).
 
