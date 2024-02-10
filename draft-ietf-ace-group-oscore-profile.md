@@ -328,15 +328,81 @@ In addition, the Client computes its proof-of-possession (PoP) evidence, in orde
 
 To this end, the Client MUST use as PoP input the byte representation of an information that uniquely represents the secure communication association between the Client and the AS. It is RECOMMENDED that the Client uses the following as PoP input.
 
-* If the Client and the AS communicate over TLS 1.2 {{RFC5246}} or DTLS 1.2 {{RFC6347}}, the PoP input is an exporter value computed as defined in {{Section 4 of RFC5705}}. In particular, the exporter label MUST be "EXPORTER-ACE-PoP-Input-Client-AS" defined in {{iana-tls-exporter-label}} of this document, together with an empty 'context value' (i.e., a 'context value' of zero-length), and 32 as length value in bytes.
+* If the Client and the AS communicate over TLS 1.2 {{RFC5246}} or DTLS 1.2 {{RFC6347}}, the PoP input is an exporter value computed as defined in {{Section 4 of RFC5705}}, using the following inputs:
 
-* If the Client and the AS communicate over TLS 1.3 {{RFC8446}} or DTLS 1.3 {{RFC9147}}, the PoP input is an exporter value computed as defined in {{Section 7.5 of RFC8446}}. In particular, the exporter label MUST be "EXPORTER-ACE-PoP-Input-Client-AS" defined in {{iana-tls-exporter-label}} of this document, together with an empty 'context_value' (i.e., a 'context_value' of zero-length), and 32 as 'key_length' in bytes.
+   - The exporter label "EXPORTER-ACE-PoP-Input-Client-AS", defined in {{iana-tls-exporter-label}} of this document.
 
-* If the Client and the AS communicate over OSCORE {{RFC8613}}, the PoP input is the output PRK of an HKDF-Extract step {{RFC5869}}, i.e., PRK = HMAC-Hash(salt, IKM). In particular, 'salt' takes (x1 \| x2), where x1 is the ID Context of the OSCORE Security Context between the Client and the AS, x2 is the Sender ID of the Client in that Security Context, and \| denotes byte string concatenation. Also, 'IKM' is the OSCORE Master Secret of the OSCORE Security Context between the Client and the AS.
+   - The empty 'context value', i.e., a 'context value' of zero-length.
 
-   The HKDF MUST be one of the HMAC-based HKDF {{RFC5869}} algorithms defined for COSE {{RFC9053}}. The Client and AS may agree on the HKDF algorithm to use during the Client's registration at the AS. HKDF SHA-256 is mandatory to implement.
+   - 32 as length value in bytes.
 
-Then, the Client computes the PoP evidence as follows.
+* If the Client and the AS communicate over TLS 1.3 {{RFC8446}} or DTLS 1.3 {{RFC9147}}, the PoP input is an exporter value computed as defined in {{Section 7.5 of RFC8446}}, using the following inputs:
+
+   - The exporter label "EXPORTER-ACE-PoP-Input-Client-AS", defined in {{iana-tls-exporter-label}} of this document.
+
+   - The empty 'context_value', i.e., a 'context_value' of zero-length.
+
+   - 32 as 'key_length' in bytes.
+
+* If the Client and the AS communicate over OSCORE {{RFC8613}}, the PoP input is the output PRK of an HKDF-Extract step {{RFC5869}}, i.e., PRK = HMAC-Hash(salt, IKM).
+
+   In particular, given the OSCORE Security Context CTX shared between the Client and the AS, then the following applies.
+
+  - 'salt' takes (x1 \| x2), where \| denotes byte string concatenation, while x1 and x2 are defined as follows.
+
+    - x1 is the binary serialization of a CBOR data item. If CTX does not specify an OSCORE ID Context, the CBOR data item is the CBOR simple value "null" (0xf6). Otherwise, the CBOR data item is a CBOR byte string, with value the OSCORE ID Context specified in CTX.
+
+    - x2 is the binary serialization of a CBOR byte string. The value of the CBOR byte string is the OSCORE Sender ID of the Client, which the Client stores in its Sender Context of CTX and the AS stores in its Recipient Context of CTX.
+
+  - 'IKM' is the OSCORE Master Secret specified in CTX.
+
+  - The used HKDF is the HKDF Algorithm specified in CTX.
+
+  The following shows an example of input to the HMAC-Hash() function.
+
+  On the Client side, the OSCORE Security Context shared with the AS includes:
+
+  ~~~~~~~~~~~
+  o ID Context: 0x37cbf3210017a2d3 (8 bytes)
+
+  o Sender ID: 0x01 (1 byte)
+
+  o Master Secret: 0x0102030405060708090a0b0c0d0e0f10 (16 bytes)
+  ~~~~~~~~~~~
+
+  Then, the following holds.
+
+  ~~~~~~~~~~~
+  x1 (Raw value) (8 bytes)
+  0x37cbf3210017a2d3
+  ~~~~~~~~~~~
+
+  ~~~~~~~~~~~
+  x1 (CBOR Data Item) (9 bytes)
+  0x4837cbf3210017a2d3
+  ~~~~~~~~~~~
+
+  ~~~~~~~~~~~
+  x2 (Raw value) (1 bytes)
+  0x01
+  ~~~~~~~~~~~
+
+  ~~~~~~~~~~~
+  x2 (CBOR Data Item) (2 bytes)
+  0x4101
+  ~~~~~~~~~~~
+
+  ~~~~~~~~~~~
+  salt (11 bytes)
+  0x4837cbf3210017a2d34101
+  ~~~~~~~~~~~
+
+  ~~~~~~~~~~~
+  IKM (16 bytes)
+  0x0102030405060708090a0b0c0d0e0f10
+  ~~~~~~~~~~~
+
+After that, the Client computes the PoP evidence as follows.
 
 - If the OSCORE group is not a pairwise-only group, the PoP evidence MUST be a signature. The Client computes the signature by using the same private key and signature algorithm it uses for signing messages in the OSCORE group. The Client's private key is the one associated with the Client's authentication credential used in the OSCORE group and specified in the 'req_cnf' parameter above.
 
@@ -891,6 +957,8 @@ This appendix lists the specifications of this profile based on the requirements
 * Deleting an Access Token does not delete the Group OSCORE Security Context.
 
 * Distinct computation of the PoP input when C and the AS use (D)TLS 1.2 or 1.3.
+
+* Revised computation of the PoP input when C and the AS use OSCORE.
 
 * Renamed the TLS Exporter Label for computing the PoP input.
 
