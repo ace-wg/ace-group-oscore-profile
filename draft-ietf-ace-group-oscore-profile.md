@@ -701,7 +701,7 @@ Finally, the RS MUST send a 2.01 (Created) response to the Client, as defined in
 
 When previously joining the OSCORE group, both the Client and the RS have already established the related Group OSCORE Security Context to communicate as group members. Therefore, they can simply start to securely communicate using Group OSCORE, without deriving any additional keying material or security association.
 
-If the Client or the RS deletes an Access Token (e.g., when the Access Token has expired or has been revoked), it MUST NOT delete the related Group OSCORE Security Context.
+If the Client or the RS delete an Access Token (e.g., when the Access Token has expired or has been revoked), it MUST NOT delete the related Group OSCORE Security Context.
 
 ### Client Side
 
