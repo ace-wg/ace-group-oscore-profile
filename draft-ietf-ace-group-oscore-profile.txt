@@ -1193,8 +1193,8 @@ Table of Contents
    securely communicate using Group OSCORE, without deriving any
    additional keying material or security association.
 
-   If the Client or the RS deletes an Access Token (e.g., when the
-   Access Token has expired or has been revoked), it MUST NOT delete the
+   If the Client or the RS delete an Access Token (e.g., when the Access
+   Token has expired or has been revoked), it MUST NOT delete the
    related Group OSCORE Security Context.
 
 4.3.1.  Client Side
