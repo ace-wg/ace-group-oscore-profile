@@ -627,6 +627,8 @@ Finally, the RS MUST send a 2.01 (Created) response to the Client, as defined in
 
 When previously joining the OSCORE group, both the Client and the RS have already established the related Group OSCORE Security Context to communicate as group members. Therefore, they can simply start to securely communicate using Group OSCORE, without deriving any additional keying material or security association.
 
+If the Client or the RS deletes an Access Token (e.g., when the Access Token has expired or has been revoked), it MUST NOT delete the related Group OSCORE Security Context.
+
 ### Client Side
 
 After having received the 2.01 (Created) response from the RS, following the POST request to the /authz-info endpoint, the Client starts the communication with the RS, by sending a request protected with Group OSCORE using the Group OSCORE Security Context {{I-D.ietf-core-oscore-groupcomm}}.
@@ -881,6 +883,8 @@ This appendix lists the specifications of this profile based on the requirements
 {:removeinrfc}
 
 ## Version -00 to -01 ## {#sec-00-01}
+
+* Deleting an Access Token does not delete the Group OSCORE Security Context.
 
 * Editorial fixes and improvements.
 
