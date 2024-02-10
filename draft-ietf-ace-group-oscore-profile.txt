@@ -5,9 +5,9 @@
 ACE Working Group                                              M. Tiloca
 Internet-Draft                                                R. Höglund
 Intended status: Standards Track                                 RISE AB
-Expires: 24 June 2024                                       F. Palombini
+Expires: 13 August 2024                                     F. Palombini
                                                              Ericsson AB
-                                                        22 December 2023
+                                                        10 February 2024
 
 
  The Group Object Security for Constrained RESTful Environments (Group
@@ -61,11 +61,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 June 2024.
+   This Internet-Draft will expire on 13 August 2024.
 
 Copyright Notice
 
-   Copyright (c) 2023 IETF Trust and the persons identified as the
+   Copyright (c) 2024 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -218,9 +218,9 @@ Table of Contents
    The ACE framework delegates to separate profile documents how to
    secure communications between the Client and the Resource Servers.
    However each of the current profiles of ACE defined in
-   [RFC9202][RFC9203][I-D.ietf-ace-mqtt-tls-profile] relies on a
-   security protocol that cannot be used to protect one-to-many group
-   messages, for example sent over IP multicast.
+   [RFC9202][RFC9203][RFC9431] relies on a security protocol that cannot
+   be used to protect one-to-many group messages, for example sent over
+   IP multicast.
 
    This document specifies the "coap_group_oscore" profile of the ACE
    framework, where a Client uses the Constrained Application Protocol
@@ -284,7 +284,7 @@ Table of Contents
       with an entity, including that entity's public key and parameters
       associated with the public key.  Examples of authentication
       credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs)
-      [RFC8392], X.509 certificates [RFC7925] and C509 certificates
+      [RFC8392], X.509 certificates [RFC5280] and C509 certificates
       [I-D.ietf-cose-cbor-encoded-cert].
 
       Members of an OSCORE group have an associated authentication
@@ -560,7 +560,7 @@ Table of Contents
       At the time of writing this specification, acceptable formats of
       authentication credentials in Group OSCORE are CBOR Web Tokens
       (CWTs) and CWT Claims Sets (CCSs) [RFC8392], X.509 certificates
-      [RFC7925], and C509 certificates
+      [RFC5280], and C509 certificates
       [I-D.ietf-cose-cbor-encoded-cert].
 
       Further formats may be available in the future, and would be
@@ -1618,15 +1618,6 @@ Table of Contents
 
 11.2.  Informative References
 
-   [I-D.ietf-ace-mqtt-tls-profile]
-              Sengul, C. and A. Kirby, "Message Queuing Telemetry
-              Transport (MQTT) and Transport Layer Security (TLS)
-              Profile of Authentication and Authorization for
-              Constrained Environments (ACE) Framework", Work in
-              Progress, Internet-Draft, draft-ietf-ace-mqtt-tls-profile-
-              17, 23 March 2022, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-ace-mqtt-tls-profile-17>.
-
    [I-D.ietf-cose-cbor-encoded-cert]
               Mattsson, J. P., Selander, G., Raza, S., Höglund, J., and
               M. Furuhed, "CBOR Encoded X.509 Certificates (C509
@@ -1650,11 +1641,11 @@ Table of Contents
               <https://nvlpubs.nist.gov/nistpubs/SpecialPublications/
               NIST.SP.800-207.pdf>.
 
-   [RFC7925]  Tschofenig, H., Ed. and T. Fossati, "Transport Layer
-              Security (TLS) / Datagram Transport Layer Security (DTLS)
-              Profiles for the Internet of Things", RFC 7925,
-              DOI 10.17487/RFC7925, July 2016,
-              <https://www.rfc-editor.org/rfc/rfc7925>.
+   [RFC5280]  Cooper, D., Santesson, S., Farrell, S., Boeyen, S.,
+              Housley, R., and W. Polk, "Internet X.509 Public Key
+              Infrastructure Certificate and Certificate Revocation List
+              (CRL) Profile", RFC 5280, DOI 10.17487/RFC5280, May 2008,
+              <https://www.rfc-editor.org/rfc/rfc5280>.
 
    [RFC8446]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
@@ -1671,6 +1662,13 @@ Table of Contents
               Constrained Environments (ACE)", RFC 9202,
               DOI 10.17487/RFC9202, August 2022,
               <https://www.rfc-editor.org/rfc/rfc9202>.
+
+   [RFC9431]  Sengul, C. and A. Kirby, "Message Queuing Telemetry
+              Transport (MQTT) and Transport Layer Security (TLS)
+              Profile of Authentication and Authorization for
+              Constrained Environments (ACE) Framework", RFC 9431,
+              DOI 10.17487/RFC9431, July 2023,
+              <https://www.rfc-editor.org/rfc/rfc9431>.
 
 Appendix A.  Profile Requirements
 
