@@ -414,11 +414,9 @@ After that, the Client computes the PoP evidence as follows.
 
     * salt takes as value the empty byte string.
 
-    * IKM is computed as a cofactor Diffie-Hellman shared secret (see Section 5.7.1.2 of {{NIST-800-56A}}), using an ECDH algorithm pre-agreed between Client and AS. The Client uses its own Diffie-Hellman private key and the Diffie-Hellman public key of the AS. For X25519 and X448, the procedure is described in {{Section 5 of RFC7748}}.
+    * IKM is computed as a cofactor Diffie-Hellman shared secret (see Section 5.7.1.2 of {{NIST-800-56A}}), using the ECDH algorithm that is used as Pairwise Key Agreement Algorithm in the OSCORE group. The Client uses its own Diffie-Hellman private key and the Diffie-Hellman public key of the AS. For X25519 and X448, the procedure is described in {{Section 5 of RFC7748}}.
 
        The Client's private key is the one associated with the Client's authentication credential used in the OSCORE group and specified in the 'req_cnf' parameter above. The Client may obtain the Diffie-Hellman public key of the AS during its registration process at the AS.
-
-       The Client and AS may agree on the ECDH algorithm to use during the Client's registration at the AS. The ECDH-SS + HKDF-256 algorithm specified in {{Section 6.3.1 of RFC9053}} is mandatory to implement.
 
     * info takes as value the PoP input.
 
@@ -507,11 +505,17 @@ After having verified the POST request to the /token endpoint and that the Clien
 
 * As public key of the Client, the AS uses the one included in the authentication credential specified in the 'req_cnf' parameter of the Access Token Request.
 
+   This requires the AS to support the format of the authentication credential specified in the 'req_cnf' parameter, i.e., the format of authentication credential that is used in the OSCORE group where the Client uses that authentication credential. Practically, this is not an issue, since an RS supporting this profile is expected to be registered only at an AS that supports the formats of authentication credential that the RS supports.
+
 * If the Access Token Request includes the 'client_cred_verify' parameter, this specifies the PoP evidence as a signature. Then, the AS verifies the signature by using the public key of the Client.
+
+   This requires the AS to support the signature algorithm and curve (when applicable) that are used in the OSCORE group where the Client uses the authentication credential specified in the 'req_cnf' parameter of the Access Token Request. Practically, this is not an issue, since an RS supporting this profile is expected to be registered only at an AS that supports the signature algorithms and curves (when applicable) that the RS supports.
 
 * If the Access Token Request includes the 'client_cred_verify_mac' parameter, this specifies the PoP evidence as a Message Authentication Code (MAC).
 
    Then, the AS recomputes the MAC through the same process taken by the Client when preparing the value of the 'client_cred_verify_mac' parameter for the Access Token (see {{sec-c-as-token-endpoint}}), with the difference that the AS uses its own Diffie-Hellman private key and the Diffie-Hellman public key of the Client. The verification succeeds if and only if the recomputed MAC is equal to the MAC conveyed as PoP evidence in the Access Token Request.
+
+   This requires the AS to support the ECDH algorithm that is used as Pairwise Key Agreement Algorithm in the OSCORE group where the Client uses the authentication credential specified in the 'req_cnf' parameter of the Access Token Request. Practically, this is not an issue, since an RS supporting this profile is expected to be registered only at an AS that supports the ECDH algorithms that the RS supports.
 
 If both the 'client_cred_verify' and 'client_cred_verify_mac' parameters are present, or if the verification of the PoP evidence fails, the AS considers the Client request invalid.
 
@@ -959,6 +963,10 @@ This appendix lists the specifications of this profile based on the requirements
 * Distinct computation of the PoP input when C and the AS use (D)TLS 1.2 or 1.3.
 
 * Revised computation of the PoP input when C and the AS use OSCORE.
+
+* Revised computation of the PoP evidence when the OSCORE group is a pairwise-only group.
+
+* Clarified requirements on the AS for verifying the PoP evidence.
 
 * Renamed the TLS Exporter Label for computing the PoP input.
 
