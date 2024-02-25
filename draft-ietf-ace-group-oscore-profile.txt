@@ -5,9 +5,9 @@
 ACE Working Group                                              M. Tiloca
 Internet-Draft                                                R. Höglund
 Intended status: Standards Track                                 RISE AB
-Expires: 13 August 2024                                     F. Palombini
+Expires: 28 August 2024                                     F. Palombini
                                                              Ericsson AB
-                                                        10 February 2024
+                                                        25 February 2024
 
 
  The Group Object Security for Constrained RESTful Environments (Group
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 August 2024.
+   This Internet-Draft will expire on 28 August 2024.
 
 Copyright Notice
 
@@ -638,9 +638,9 @@ Table of Contents
 
          o  x1 is the binary serialization of a CBOR data item.  If CTX
             does not specify an OSCORE ID Context, the CBOR data item is
-            the CBOR simple value "null" (0xf6).  Otherwise, the CBOR
-            data item is a CBOR byte string, with value the OSCORE ID
-            Context specified in CTX.
+            the CBOR simple value null (0xf6).  Otherwise, the CBOR data
+            item is a CBOR byte string, with value the OSCORE ID Context
+            specified in CTX.
 
          o  x2 is the binary serialization of a CBOR byte string.  The
             value of the CBOR byte string is the OSCORE Sender ID of the
