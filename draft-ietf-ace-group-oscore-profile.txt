@@ -5,9 +5,9 @@
 ACE Working Group                                              M. Tiloca
 Internet-Draft                                                R. Höglund
 Intended status: Standards Track                                 RISE AB
-Expires: 28 August 2024                                     F. Palombini
+Expires: 29 August 2024                                     F. Palombini
                                                              Ericsson AB
-                                                        25 February 2024
+                                                        26 February 2024
 
 
  The Group Object Security for Constrained RESTful Environments (Group
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 August 2024.
+   This Internet-Draft will expire on 29 August 2024.
 
 Copyright Notice
 
