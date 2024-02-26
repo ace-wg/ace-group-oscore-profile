@@ -350,7 +350,7 @@ To this end, the Client MUST use as PoP input the byte representation of an info
 
   - 'salt' takes (x1 \| x2), where \| denotes byte string concatenation, while x1 and x2 are defined as follows.
 
-    - x1 is the binary serialization of a CBOR data item. If CTX does not specify an OSCORE ID Context, the CBOR data item is the CBOR simple value null (0xf6). Otherwise, the CBOR data item is a CBOR byte string, with value the OSCORE ID Context specified in CTX.
+    - x1 is the binary serialization of a CBOR data item. If CTX does not specify an OSCORE ID Context, the CBOR data item is the CBOR simple value `null` (0xf6). Otherwise, the CBOR data item is a CBOR byte string, with value the OSCORE ID Context specified in CTX.
 
     - x2 is the binary serialization of a CBOR byte string. The value of the CBOR byte string is the OSCORE Sender ID of the Client, which the Client stores in its Sender Context of CTX and the AS stores in its Recipient Context of CTX.
 
