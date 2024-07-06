@@ -109,7 +109,7 @@ Table of Contents
    8.  Security Considerations
    9.  Privacy Considerations
    10. IANA Considerations
-     10.1.  ACE Profile Registry
+     10.1.  ACE Profiles Registry
      10.2.  OAuth Parameters Registry
      10.3.  OAuth Parameters CBOR Mappings Registry
      10.4.  CBOR Web Token (CWT) Claims Registry
@@ -1447,9 +1447,9 @@ Table of Contents
    Note to RFC Editor: Please replace "[RFC-XXXX]" with the RFC number
    of this document and delete this paragraph.
 
-10.1.  ACE Profile Registry
+10.1.  ACE Profiles Registry
 
-   IANA is asked to add the following entry to the "ACE Profile"
+   IANA is asked to add the following entry to the "ACE Profiles"
    registry within the "Authentication and Authorization for Constrained
    Environments (ACE)" registry group, following the procedure specified
    in Section 8.8 of [RFC9200].
@@ -1477,36 +1477,39 @@ Table of Contents
 
    *  Parameter Usage Location: token request
 
-   *  Change Controller: IESG
+   *  Change Controller: IETF
 
-   *  Specification Document(s): Section 3.1.1 of [RFC-XXXX]
+   *  Reference: Section 3.1.1 of [RFC-XXXX]
+
 
 
    *  Name: "salt_input"
 
    *  Parameter Usage Location: token request
 
-   *  Change Controller: IESG
+   *  Change Controller: IETF
 
-   *  Specification Document(s): Section 3.1.2 of [RFC-XXXX]
+   *  Reference: Section 3.1.2 of [RFC-XXXX]
+
 
 
    *  Name: "client_cred_verify"
 
    *  Parameter Usage Location: token request
 
-   *  Change Controller: IESG
+   *  Change Controller: IETF
 
-   *  Specification Document(s): Section 3.1.3 of [RFC-XXXX]
+   *  Reference: Section 3.1.3 of [RFC-XXXX]
+
 
 
    *  Name: "client_cred_verify_mac"
 
    *  Parameter Usage Location: token request
 
-   *  Change Controller: IESG
+   *  Change Controller: IETF
 
-   *  Specification Document(s): Section 3.1.4 of [RFC-XXXX]
+   *  Reference: Section 3.1.4 of [RFC-XXXX]
 
 10.3.  OAuth Parameters CBOR Mappings Registry
 
@@ -1524,6 +1527,7 @@ Table of Contents
    *  Reference: Section 3.1.1 of [RFC-XXXX]
 
 
+
    *  Name: "salt_input"
 
    *  CBOR Key: TBD
@@ -1533,6 +1537,7 @@ Table of Contents
    *  Reference: Section 3.1.2 of [RFC-XXXX]
 
 
+
    *  Name: "client_cred_verify"
 
    *  CBOR Key: TBD
@@ -1540,6 +1545,7 @@ Table of Contents
    *  Value Type: bstr
 
    *  Reference: Section 3.1.3 of [RFC-XXXX]
+
 
 
    *  Name: "client_cred_verify_mac"
@@ -1564,11 +1570,12 @@ Table of Contents
 
    *  Claim Key: TBD
 
-   *  Claim Value Type(s): bstr
+   *  Claim Value Type: bstr
 
-   *  Change Controller: IESG
+   *  Change Controller: IETF
 
-   *  Specification Document(s): Section 3.2.1 of [RFC-XXXX]
+   *  Reference: Section 3.2.1 of [RFC-XXXX]
+
 
 
    *  Claim Name: "contextId_input"
@@ -1579,11 +1586,11 @@ Table of Contents
 
    *  Claim Key: TBD
 
-   *  Claim Value Type(s): bstr
+   *  Claim Value Type: bstr
 
-   *  Change Controller: IESG
+   *  Change Controller: IETF
 
-   *  Specification Document(s): Section 3.2.2 of [RFC-XXXX]
+   *  Reference: Section 3.2.2 of [RFC-XXXX]
 
 10.5.  TLS Exporter Label Registry
 
@@ -1847,6 +1854,8 @@ Appendix B.  Document Updates
    This section is to be removed before publishing as an RFC.
 
 B.1.  Version -01 to -02
+
+   *  Fixes in the IANA considerations.
 
    *  Editorial fixes and improvements.
 
