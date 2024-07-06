@@ -516,7 +516,7 @@ The AS MUST include the following information as metadata of the issued Access T
 
 * The salt input specified in the 'salt_input' parameter of the Access Token Request. If the Access Token is a CWT, the content of the 'salt_input' parameter MUST be specified in the 'salt_input' claim of the Access Token, defined in {{salt_input_claim}} of this document.
 
-* The Context ID input specified in the 'context_id' parameter of the Access Token Request. If the Access Token is a CWT, the content of the 'context_id' parameter MUST be specified in the 'contextId_input' claim of the Access Token, defined in {{contextId_input_claim}} of this document.
+* The Context ID input specified in the 'context_id' parameter of the Access Token Request. If the Access Token is a CWT, the content of the 'context_id' parameter MUST be specified in the 'context_id' claim of the Access Token, defined in {{context_id_claim}} of this document.
 
 * The authentication credential that the client uses in the OSCORE group and specified in the 'req_cnf' parameter of the Access Token Request.
 
@@ -560,7 +560,7 @@ Payload:
       }
     }
   "salt_input" : h'00',
-  "contextId_input" : h'abcd0000'
+  "context_id" : h'abcd0000'
 }
 ~~~~~~~~~~~
 {: #fig-example-AS-to-C-CWT title="Example CWT Claims Set with OSCORE Parameters."}
@@ -622,9 +622,9 @@ The 'salt_input' claim provides a value that the Client requesting the Access To
 
 This parameter specifies the value of the salt input, encoded as a CBOR byte string.
 
-### Context ID Input Claim ### {#contextId_input_claim}
+### Context ID Input Claim ### {#context_id_claim}
 
-The 'contextId_input' claim provides a value that the Client requesting the Access Token wishes to use with the RS, as a hint for a security context.
+The 'context_id' claim provides a value that the Client requesting the Access Token wishes to use with the RS, as a hint for a security context.
 
 This parameter specifies the value of the Context ID input, encoded as a CBOR byte string.
 
@@ -652,9 +652,9 @@ The Client uploads the Access Token to the /authz-info endpoint of the RS, as de
 
 The RS MUST verify the validity of the Access Token as defined in {{Section 5.10.1 of RFC9200}}, with the following additions.
 
-* The RS MUST check that the claims 'salt_input', 'contextId_input', and 'cnf' are included in the Access Token.
+* The RS MUST check that the claims 'salt_input', 'context_id', and 'cnf' are included in the Access Token.
 
-* The RS considers: the content of the 'contextId_input' claim as the GID of the OSCORE group; the content of the 'salt_input' claim as the Sender ID that the Client has in the group; and the inner confirmation value of the 'cnf' claim as the authentication credential that the Client uses in the group.
+* The RS considers: the content of the 'context_id' claim as the GID of the OSCORE group; the content of the 'salt_input' claim as the Sender ID that the Client has in the group; and the inner confirmation value of the 'cnf' claim as the authentication credential that the Client uses in the group.
 
    The RS MUST check whether it already stores the authentication credential specified in the inner confirmation value of the 'cnf' claim as associated with the pair (GID, Sender ID) above.
 
@@ -755,9 +755,9 @@ The new parameters defined in this document MUST be mapped to CBOR types as spec
 
 The new claims defined in this document MUST be mapped to CBOR types as specified in {{table-cbor-mappings-claims}}, using the given integer abbreviation for the map key.
 
-| Claim name      | CBOR Key | Value Type |
-| salt_input      | TBD      | bstr       |
-| contextId_input | TBD      | bstr       |
+| Claim name | CBOR Key | Value Type |
+| salt_input | TBD      | bstr       |
+| context_id | TBD      | bstr       |
 {: #table-cbor-mappings-claims title="CBOR Mappings for New Claims." align="center"}
 
 # Security Considerations # {#sec-security-considerations}
@@ -879,13 +879,13 @@ IANA is asked to add the following entries to the "CBOR Web Token (CWT) Claims" 
 
 <br>
 
-* Claim Name: "contextId_input"
-* Claim Description: Client context id input
+* Claim Name: "context_id"
+* Claim Description: Client provided Context ID
 * JWT Claim Name: "N/A"
 * Claim Key: TBD
 * Claim Value Type: bstr
 * Change Controller: IETF
-* Reference: {{contextId_input_claim}} of {{&SELF}}
+* Reference: {{context_id_claim}} of {{&SELF}}
 
 ## TLS Exporter Label Registry ## {#iana-tls-exporter-label}
 
@@ -930,6 +930,8 @@ This appendix lists the specifications of this profile based on the requirements
 {:removeinrfc}
 
 ## Version -01 to -02 ## {#sec-01-02}
+
+* Renamed the claim 'contextId_input' to 'context_id'.
 
 * Fixes in the IANA considerations.
 
