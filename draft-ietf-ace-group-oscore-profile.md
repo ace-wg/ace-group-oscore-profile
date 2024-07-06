@@ -356,11 +356,11 @@ To this end, the Client MUST use as PoP input the byte representation of an info
   On the Client side, the OSCORE Security Context shared with the AS includes:
 
   ~~~~~~~~~~~
-  o ID Context: 0x37cbf3210017a2d3 (8 bytes)
+  ID Context: 0x37cbf3210017a2d3 (8 bytes)
 
-  o Sender ID: 0x01 (1 byte)
+  Sender ID: 0x01 (1 byte)
 
-  o Master Secret: 0x0102030405060708090a0b0c0d0e0f10 (16 bytes)
+  Master Secret: 0x0102030405060708090a0b0c0d0e0f10 (16 bytes)
   ~~~~~~~~~~~
 
   Then, the following holds.
@@ -368,29 +368,19 @@ To this end, the Client MUST use as PoP input the byte representation of an info
   ~~~~~~~~~~~
   x1 (Raw value) (8 bytes)
   0x37cbf3210017a2d3
-  ~~~~~~~~~~~
 
-  ~~~~~~~~~~~
   x1 (CBOR Data Item) (9 bytes)
   0x4837cbf3210017a2d3
-  ~~~~~~~~~~~
 
-  ~~~~~~~~~~~
   x2 (Raw value) (1 bytes)
   0x01
-  ~~~~~~~~~~~
 
-  ~~~~~~~~~~~
   x2 (CBOR Data Item) (2 bytes)
   0x4101
-  ~~~~~~~~~~~
 
-  ~~~~~~~~~~~
   salt (11 bytes)
   0x4837cbf3210017a2d34101
-  ~~~~~~~~~~~
 
-  ~~~~~~~~~~~
   IKM (16 bytes)
   0x0102030405060708090a0b0c0d0e0f10
   ~~~~~~~~~~~
