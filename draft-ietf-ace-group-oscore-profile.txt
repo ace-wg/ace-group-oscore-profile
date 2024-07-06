@@ -104,21 +104,21 @@ Table of Contents
        4.3.2.  Resource Server Side
      4.4.  Update of Access Rights
      4.5.  Access Rights Verification
-     4.6.  Change of Client's Authentication Credential in the Group
-   5.  Secure Communication with the AS
-   6.  Discarding the Security Context
-   7.  CBOR Mappings
-   8.  Security Considerations
-   9.  Privacy Considerations
-   10. IANA Considerations
-     10.1.  ACE Profiles Registry
-     10.2.  OAuth Parameters Registry
-     10.3.  OAuth Parameters CBOR Mappings Registry
-     10.4.  CBOR Web Token (CWT) Claims Registry
-     10.5.  TLS Exporter Label Registry
-   11. References
-     11.1.  Normative References
-     11.2.  Informative References
+   5.  Change of Client's Authentication Credential in the Group
+   6.  Secure Communication with the AS
+   7.  Discarding the Security Context
+   8.  CBOR Mappings
+   9.  Security Considerations
+   10. Privacy Considerations
+   11. IANA Considerations
+     11.1.  ACE Profiles Registry
+     11.2.  OAuth Parameters Registry
+     11.3.  OAuth Parameters CBOR Mappings Registry
+     11.4.  CBOR Web Token (CWT) Claims Registry
+     11.5.  TLS Exporter Label Registry
+   12. References
+     12.1.  Normative References
+     12.2.  Informative References
    Appendix A.  Profile Requirements
    Appendix B.  CDDL Model
    Appendix C.  Document Updates
@@ -625,7 +625,7 @@ Table of Contents
       defined in Section 4 of [RFC5705], using the following inputs:
 
       -  The exporter label "EXPORTER-ACE-PoP-Input-Client-AS", defined
-         in Section 10.5 of this document.
+         in Section 11.5 of this document.
 
       -  The empty 'context value', i.e., a 'context value' of zero-
          length.
@@ -637,7 +637,7 @@ Table of Contents
       defined in Section 7.5 of [RFC8446], using the following inputs:
 
       -  The exporter label "EXPORTER-ACE-PoP-Input-Client-AS", defined
-         in Section 10.5 of this document.
+         in Section 11.5 of this document.
 
       -  The empty 'context_value', i.e., a 'context_value' of zero-
          length.
@@ -1272,7 +1272,7 @@ Table of Contents
       the current 'SaltInput' value in the triple (GID, SaltInput,
       AuthCred).
 
-   As defined in Section 4.6, a possible change of the Client's
+   As defined in Section 5, a possible change of the Client's
    authentication credential requires the Client to upload to the RS a
    new Access Token bound to the new authentication credential.
 
@@ -1314,7 +1314,7 @@ Table of Contents
    When processing an incoming request protected with Group OSCORE, the
    RS MUST consider as valid Client's authentication credential only the
    one associated with the stored Access Token.  As defined in
-   Section 4.6, a possible change of the Client's authentication
+   Section 5, a possible change of the Client's authentication
    credential requires the Client to upload to the RS a new Access Token
    bound to the new authentication credential.
 
@@ -1362,7 +1362,7 @@ Table of Contents
    is not authorized, the RS MUST reject the request and MUST reply to
    the Client with a 4.05 (Method Not Allowed) error response.
 
-4.6.  Change of Client's Authentication Credential in the Group
+5.  Change of Client's Authentication Credential in the Group
 
    During its membership in the OSCORE group, the Client might change
    the authentication credential that it uses in the group.  When this
@@ -1401,10 +1401,11 @@ Table of Contents
 
    *  The RS also deletes the old Access Token, i.e., the one whose
       associated triple (GID, SaltInput, AuthCred) has the same GID and
-      SaltInput values as in the triple including the new authentication
-      credential of the Client and associated with the new Access Token.
+      SaltInput values as in the triple that is associated with the new
+      Access Token and that includes the new authentication credential
+      of the Client.
 
-5.  Secure Communication with the AS
+6.  Secure Communication with the AS
 
    As specified in the ACE framework (see Sections 5.8 and 5.9 of
    [RFC9200]), the requesting entity (Client and/or RS) and the AS
@@ -1422,7 +1423,7 @@ Table of Contents
    of [RFC9200], and through the /introspection endpoint as specified in
    Section 5.9 of [RFC9200].
 
-6.  Discarding the Security Context
+7.  Discarding the Security Context
 
    As members of an OSCORE group, the Client and the RS may
    independently leave the group or be forced to, e.g., if compromised
@@ -1436,7 +1437,7 @@ Table of Contents
    [I-D.ietf-ace-key-groupcomm-oscore].  In such a case, the Client
    SHOULD request a new Access Token to be uploaded to the RS.
 
-7.  CBOR Mappings
+8.  CBOR Mappings
 
    The new parameters defined in this document MUST be mapped to CBOR
    types as specified in Table 1, using the given integer abbreviation
@@ -1470,7 +1471,7 @@ Table of Contents
 
                   Table 2: CBOR Mappings for New Claims.
 
-8.  Security Considerations
+9.  Security Considerations
 
    This document specifies a profile for the Authentication and
    Authorization for Constrained Environments (ACE) framework [RFC9200].
@@ -1518,7 +1519,7 @@ Table of Contents
    two peers exchanging the message.  The pairwise mode can be used to
    protect only messages intended for a single recipient.
 
-9.  Privacy Considerations
+10.  Privacy Considerations
 
    This document specifies a profile for the Authentication and
    Authorization for Constrained Environments (ACE) framework [RFC9200].
@@ -1546,14 +1547,14 @@ Table of Contents
    OSCORE, some information might still leak, due to the observable
    size, source address, and destination address of exchanged messages.
 
-10.  IANA Considerations
+11.  IANA Considerations
 
    This document has the following actions for IANA.
 
    Note to RFC Editor: Please replace "[RFC-XXXX]" with the RFC number
    of this document and delete this paragraph.
 
-10.1.  ACE Profiles Registry
+11.1.  ACE Profiles Registry
 
    IANA is asked to add the following entry to the "ACE Profiles"
    registry within the "Authentication and Authorization for Constrained
@@ -1573,7 +1574,7 @@ Table of Contents
 
    *  Reference: [RFC-XXXX]
 
-10.2.  OAuth Parameters Registry
+11.2.  OAuth Parameters Registry
 
    IANA is asked to add the following entries to the "OAuth Parameters"
    registry, following the procedure specified in Section 11.2 of
@@ -1617,7 +1618,7 @@ Table of Contents
 
    *  Reference: Section 3.1.4 of [RFC-XXXX]
 
-10.3.  OAuth Parameters CBOR Mappings Registry
+11.3.  OAuth Parameters CBOR Mappings Registry
 
    IANA is asked to add the following entries to the "OAuth Parameters
    CBOR Mappings" registry within the "Authentication and Authorization
@@ -1662,7 +1663,7 @@ Table of Contents
 
    *  Reference: Section 3.1.4 of [RFC-XXXX]
 
-10.4.  CBOR Web Token (CWT) Claims Registry
+11.4.  CBOR Web Token (CWT) Claims Registry
 
    IANA is asked to add the following entries to the "CBOR Web Token
    (CWT) Claims" registry, following the procedure specified in
@@ -1698,7 +1699,7 @@ Table of Contents
 
    *  Reference: Section 3.2.3 of [RFC-XXXX]
 
-10.5.  TLS Exporter Label Registry
+11.5.  TLS Exporter Label Registry
 
    IANA is asked to add the following entry to the "TLS Exporter Label"
    registry within the "Transport Layer Security (TLS) Parameters"
@@ -1713,9 +1714,9 @@ Table of Contents
 
    *  Reference: Section 3.1 of [RFC-XXXX]
 
-11.  References
+12.  References
 
-11.1.  Normative References
+12.1.  Normative References
 
    [I-D.ietf-ace-key-groupcomm-oscore]
               Tiloca, M., Park, J., and F. Palombini, "Key Management
@@ -1843,7 +1844,7 @@ Table of Contents
               DOI 10.17487/RFC9203, August 2022,
               <https://www.rfc-editor.org/rfc/rfc9203>.
 
-11.2.  Informative References
+12.2.  Informative References
 
    [I-D.ietf-ace-edhoc-oscore-profile]
               Selander, G., Mattsson, J. P., Tiloca, M., and R. Höglund,
