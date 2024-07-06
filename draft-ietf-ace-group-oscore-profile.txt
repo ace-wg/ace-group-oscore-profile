@@ -119,7 +119,8 @@ Table of Contents
      11.2.  Informative References
    Appendix A.  Profile Requirements
    Appendix B.  Document Updates
-     B.1.  Version -00 to -01
+     B.1.  Version -01 to -02
+     B.2.  Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -1841,7 +1842,11 @@ Appendix B.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-B.1.  Version -00 to -01
+B.1.  Version -01 to -02
+
+   *  Editorial fixes and improvements.
+
+B.2.  Version -00 to -01
 
    *  Deleting an Access Token does not delete the Group OSCORE Security
       Context.
