@@ -771,7 +771,7 @@ If the RS has an Access Token for the Client but no actions are authorized on th
 
 If the RS has an Access Token for the Client but the requested action is not authorized, the RS MUST reject the request and MUST reply to the Client with a 4.05 (Method Not Allowed) error response.
 
-## Change of Client's Authentication Credential in the Group ## {#sec-client-public-key-change}
+# Change of Client's Authentication Credential in the Group ## {#sec-client-public-key-change}
 
 During its membership in the OSCORE group, the Client might change the authentication credential that it uses in the group. When this happens, the Client uploads the new authentication credential to the Group Manager, as defined in {{Section 9.4 of I-D.ietf-ace-key-groupcomm-oscore}}.
 
@@ -791,7 +791,7 @@ After that, and in order to continue communicating with the RS, the Client MUST 
 
 When receiving the new Access Token, the RS performs the same steps defined in {{sec-rs-c-created}}, with the following addition in case the new Access Token is successfully verified and stored:
 
-* The RS also deletes the old Access Token, i.e., the one whose associated triple (GID, SaltInput, AuthCred) has the same GID and SaltInput values as in the triple including the new authentication credential of the Client and associated with the new Access Token.
+* The RS also deletes the old Access Token, i.e., the one whose associated triple (GID, SaltInput, AuthCred) has the same GID and SaltInput values as in the triple that is associated with the new Access Token and that includes the new authentication credential of the Client.
 
 # Secure Communication with the AS # {#sec-comm-as}
 
