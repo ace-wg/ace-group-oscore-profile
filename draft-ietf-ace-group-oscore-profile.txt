@@ -1860,7 +1860,7 @@ Appendix A.  Profile Requirements
       OSCORE).
 
    *  Specify the communication and security protocol for interactions
-      between client and AS: HTTP/CoAP (+ TLS/DTLS/OSCORE).
+      between the client and AS: HTTP/CoAP (+ TLS/DTLS/OSCORE).
 
    *  Specify if/how the authz-info endpoint is protected, including how
       error responses are protected: Not protected.
