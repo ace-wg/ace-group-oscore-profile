@@ -1266,21 +1266,24 @@ svg :is([fill="white"], [fill^="#fff"]) {
             <p id="section-toc.1-1.12.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-profile-requirements" class="internal xref">Profile Requirements</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
-            <p id="section-toc.1-1.13.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-document-updates" class="internal xref">Document Updates</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1">
-                <p id="section-toc.1-1.13.2.1.1"><a href="#appendix-B.1" class="auto internal xref">B.1</a>.  <a href="#name-version-01-to-02" class="internal xref">Version -01 to -02</a></p>
+            <p id="section-toc.1-1.13.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-cddl-model" class="internal xref">CDDL Model</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.2">
-                <p id="section-toc.1-1.13.2.2.1"><a href="#appendix-B.2" class="auto internal xref">B.2</a>.  <a href="#name-version-00-to-01" class="internal xref">Version -00 to -01</a></p>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
+            <p id="section-toc.1-1.14.1"><a href="#appendix-C" class="auto internal xref">Appendix C</a>.  <a href="#name-document-updates" class="internal xref">Document Updates</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14.2.1">
+                <p id="section-toc.1-1.14.2.1.1"><a href="#appendix-C.1" class="auto internal xref">C.1</a>.  <a href="#name-version-01-to-02" class="internal xref">Version -01 to -02</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14.2.2">
+                <p id="section-toc.1-1.14.2.2.1"><a href="#appendix-C.2" class="auto internal xref">C.2</a>.  <a href="#name-version-00-to-01" class="internal xref">Version -00 to -01</a></p>
 </li>
             </ul>
 </li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
-            <p id="section-toc.1-1.14.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
-</li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
-            <p id="section-toc.1-1.15.1"><a href="#appendix-D" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.15.1"><a href="#appendix-D" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16">
+            <p id="section-toc.1-1.16.1"><a href="#appendix-E" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1335,7 +1338,9 @@ Members of an OSCORE group have an associated authentication credential in the f
             <p id="section-1.1-7.1.1">Pairwise-only group: an OSCORE group that uses only the pairwise mode of Group OSCORE (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-21#section-9" class="relref">Section 9</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-1.1-7.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-1.1-8">Examples throughout this document are expressed in CBOR diagnostic notation, without the tag and value abbreviations.<a href="#section-1.1-8" class="pilcrow">¶</a></p>
+<p id="section-1.1-8">Examples throughout this document are expressed in CBOR diagnostic notation as defined in <span><a href="https://rfc-editor.org/rfc/rfc8949#section-8" class="relref">Section 8</a> of [<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> and <span><a href="https://rfc-editor.org/rfc/rfc8610#appendix-G" class="relref">Appendix G</a> of [<a href="#RFC8610" class="cite xref">RFC8610</a>]</span>. Diagnostic notation comments are often used to provide a textual representation of the numeric parameter names and values.<a href="#section-1.1-8" class="pilcrow">¶</a></p>
+<p id="section-1.1-9">In the CBOR diagnostic notation used in this document, constructs of the form e'SOME_NAME' are replaced by the value assigned to SOME_NAME in the CDDL model shown in <a href="#fig-cddl-model" class="auto internal xref">Figure 7</a> of <a href="#sec-cddl-model" class="auto internal xref">Appendix B</a>. For example, {e'context_id_param': h'abcd0000', e'salt_input_param': h'00} stands for {71: h'abcd0000', 72: h'00}.<a href="#section-1.1-9" class="pilcrow">¶</a></p>
+<p id="section-1.1-10">Note to RFC Editor: Please delete the paragraph immediately preceding this note. Also, in the CBOR diagnostic notation used in this document, please replace the constructs of the form e'SOME_NAME' with the value assigned to SOME_NAME in the CDDL model shown in <a href="#fig-cddl-model" class="auto internal xref">Figure 7</a> of <a href="#sec-cddl-model" class="auto internal xref">Appendix B</a>. Finally, please delete this note.<a href="#section-1.1-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1733,30 +1738,29 @@ The Client's private key is the one associated with the Client's authentication 
 Header: POST (Code=0.02)
 Uri-Host: "as.example.com"
 Uri-Path: "token"
-Content-Format: "application/ace+cbor"
+Content-Format: application/ace+cbor
 Payload:
 {
-  "audience" : "tempSensor4711",
-  "scope" : "read",
-  "context_id" : h'abcd0000',
-  "salt_input" : h'00',
-  "req_cnf" : {
-    "kccs" : {
-      "sub" : "42-50-31-FF-EF-37-32-39",
-      "cnf" : {
-        "COSE_Key" : {
-          "kty" : 2,
-          "crv" : 1,
-          "x" : h'd7cc072de2205bdc1537a543d53c60a6
-                  acb62eccd890c7fa27c9e354089bbe13',
-          "y" : h'f95e1d4b851a2cc80fff87d8e23f22af
-                  b725d535e515d020731e79a3b4e47120'
+  / audience /        5 : "tempSensor4711",
+  / scope /           9 : "read",
+    e'context_id_param' : h'abcd0000',
+    e'salt_input_param' : h'00',
+  e'client_cred_verify' : h'c5a6...f100' / elided for brevity /,
+  / req_cnf /         4 : {
+    e'kccs' : {
+      / sub / 2 : "42-50-31-FF-EF-37-32-39",
+      / cnf / 8 : {
+        / COSE_Key / 1 : {
+          / kty /  1 : 2 / EC2 /,
+          / crv / -1 : 1 / P-256 /,
+          / x /   -2 : h'd7cc072de2205bdc1537a543d53c60a6
+                         acb62eccd890c7fa27c9e354089bbe13',
+          / y /   -3 : h'f95e1d4b851a2cc80fff87d8e23f22af
+                         b725d535e515d020731e79a3b4e47120'
         }
       }
     }
-  },
-  "client_cred_verify" : h'/...
-   (signature content omitted for brevity)/'
+  }
 }
 </pre>
 </div>
@@ -1770,15 +1774,15 @@ Payload:
           <div class="alignLeft art-text artwork" id="section-3.1-14.1">
 <pre>
 {
-  "sub" : "42-50-31-FF-EF-37-32-39",
-  "cnf" : {
-    "COSE_Key" : {
-      "kty" : 2,
-      "crv" : 1,
-      "x" : h'd7cc072de2205bdc1537a543d53c60a6
-              acb62eccd890c7fa27c9e354089bbe13',
-      "y" : h'f95e1d4b851a2cc80fff87d8e23f22af
-              b725d535e515d020731e79a3b4e47120'
+  / sub / 2 : "42-50-31-FF-EF-37-32-39",
+  / cnf / 8 : {
+    / COSE_Key / 1 : {
+      / kty /  1 : 2 / EC2 /,
+      / crv / -1 : 1 / P-256 /,
+      / x /   -2 : h'd7cc072de2205bdc1537a543d53c60a6
+                     acb62eccd890c7fa27c9e354089bbe13',
+      / y /   -3 : h'f95e1d4b851a2cc80fff87d8e23f22af
+                     b725d535e515d020731e79a3b4e47120'
     }
   }
 }
@@ -1884,13 +1888,12 @@ If the Access Token is a CWT, the Client's authentication credential <span class
           <div class="alignLeft art-text artwork" id="section-3.2-10.1">
 <pre>
 Header: Created (Code=2.01)
-Content-Type: "application/ace+cbor"
+Content-Format: application/ace+cbor
 Payload:
 {
-  "access_token" : h'8343a1010aa2044c53/...
-   (remainder of CWT omitted for brevity)/',
-  "ace_profile" : "coap_group_oscore",
-  "expires_in" : 3600
+  / access_token / 1 : h'8343a1010aa2044c...00', / elided for brevity /
+  / ace_profile / 38 : e'coap_group_oscore',
+  / expires_in /   2 : 3600
 }
 </pre>
 </div>
@@ -1899,41 +1902,42 @@ Payload:
           </figcaption></figure>
 </div>
 <p id="section-3.2-11"><a href="#fig-example-AS-to-C-CWT" class="auto internal xref">Figure 5</a> shows an example CWT Claims Set, containing the Client's public key in the group (as pop-key), as specified by the inner confirmation value in the 'cnf' claim.<a href="#section-3.2-11" class="pilcrow">¶</a></p>
-<span id="name-example-cwt-claims-set-with"></span><div id="fig-example-AS-to-C-CWT">
+<span id="name-example-cwt-claims-set"></span><div id="fig-example-AS-to-C-CWT">
 <figure id="figure-5">
           <div class="alignLeft art-text artwork" id="section-3.2-12.1">
 <pre>
 {
-  "aud" : "tempSensorInLivingRoom",
-  "iat" : "1360189224",
-  "exp" : "1360289224",
-  "scope" :  "temperature_g firmware_p",
-  "cnf" : {
-    "kccs" : {
-      "sub" : "42-50-31-FF-EF-37-32-39",
-      "cnf" : {
-        "COSE_Key" : {
-          "kty" : 2,
-          "crv" : 1,
-          "x" : h'd7cc072de2205bdc1537a543d53c60a6
-                  acb62eccd890c7fa27c9e354089bbe13',
-          "y" : h'f95e1d4b851a2cc80fff87d8e23f22af
-                  b725d535e515d020731e79a3b4e47120'
+  / aud /           3 : "tempSensorInLivingRoom",
+  / iat /           6 : 1719820800,
+  / exp /           4 : 2035353600,
+  / scope /         9 : "temperature_g firmware_p",
+  e'context_id_claim' : h'abcd0000',
+  e'salt_input_claim' : h'00',
+  / cnf /           8 : {
+    e'kccs' : {
+      / sub / 2 : "42-50-31-FF-EF-37-32-39",
+      / cnf / 8 : {
+        / COSE_Key / 1 : {
+          / kty /  1 : 2 / EC2 /,
+          / crv / -1 : 1 / P-256 /,
+          / x /   -2 : h'd7cc072de2205bdc1537a543d53c60a6
+                         acb62eccd890c7fa27c9e354089bbe13',
+          / y /   -3 : h'f95e1d4b851a2cc80fff87d8e23f22af
+                         b725d535e515d020731e79a3b4e47120'
         }
       }
     }
-  "salt_input" : h'00',
-  "context_id" : h'abcd0000'
+  }
 }
 </pre>
 </div>
 <figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
-<a href="#name-example-cwt-claims-set-with" class="selfRef">Example CWT Claims Set with OSCORE Parameters.</a>
+<a href="#name-example-cwt-claims-set" class="selfRef">Example CWT Claims Set.</a>
           </figcaption></figure>
 </div>
 <p id="section-3.2-13">The same CWT Claims Set as in <a href="#fig-example-AS-to-C-CWT" class="auto internal xref">Figure 5</a> and encoded in CBOR is shown in <a href="#fig-example-AS-to-C-CWT-encoding" class="auto internal xref">Figure 6</a>, using the value abbreviations defined in <span>[<a href="#RFC9200" class="cite xref">RFC9200</a>]</span> and <span>[<a href="#RFC8747" class="cite xref">RFC8747</a>]</span>. The bytes in hexadecimal are reported in the first column, while their corresponding CBOR meaning is reported after the "#" sign on the second column, for easiness of readability.<a href="#section-3.2-13" class="pilcrow">¶</a></p>
 <p id="section-3.2-14">Editor's note: it should be checked (and in case fixed) that the values used below (which are not yet registered) are the final values registered by IANA.<a href="#section-3.2-14" class="pilcrow">¶</a></p>
-<span id="name-example-cwt-claims-set-with-"></span><div id="fig-example-AS-to-C-CWT-encoding">
+<span id="name-example-cwt-claims-set-usin"></span><div id="fig-example-AS-to-C-CWT-encoding">
 <figure id="figure-6">
           <div class="alignLeft art-text artwork" id="section-3.2-15.1">
 <pre>
@@ -1943,16 +1947,22 @@ A7                                      # map(7)
       74656D7053656E736F72496E4C6976696E67526F6F6D
       # "tempSensorInLivingRoom"
    06                                   # unsigned(6)
-   1A 5112D728                          # unsigned(1360189224)
+   1A 66826200                          # unsigned(1719820800)
    04                                   # unsigned(4)
-   1A 51145DC8                          # unsigned(1360289224)
+   1A 79510800                          # unsigned(2035353600)
    09                                   # unsigned(9)
    78 18                                # text(24)
       74656D70657261747572655F67206669726D776172655F70
       # "temperature_g firmware_p"
+   18 33                                # unsigned(51)
+   44                                   # bytes(4)
+      ABCD0000
+   18 34                                # unsigned(52)
+   41                                   # bytes(1)
+      00
    08                                   # unsigned(8)
    A1                                   # map(1)
-      05                                # unsigned(5)
+      0E                                # unsigned(14)
       A2                                # map(2)
          02                             # unsigned(2)
          77                             # text(23)
@@ -1974,16 +1984,10 @@ A7                                      # map(7)
                58 20                    # bytes(32)
                   F95E1D4B851A2CC80FFF87D8E23F22AF
                   B725D535E515D020731E79A3B4E47120
-   18 3C                                # unsigned(60)
-   41                                   # bytes(1)
-      00
-   18 3D                                # unsigned(61)
-   44                                   # bytes(4)
-      ABCD0000
 </pre>
 </div>
 <figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
-<a href="#name-example-cwt-claims-set-with-" class="selfRef">Example CWT Claims Set with OSCORE Parameters, CBOR Encoded.</a>
+<a href="#name-example-cwt-claims-set-usin" class="selfRef">Example CWT Claims Set Using CBOR Encoding.</a>
           </figcaption></figure>
 </div>
 <div id="context_id_claim">
@@ -2573,6 +2577,10 @@ If this is not the case, the RS <span class="bcp14">MUST</span> request the Clie
         <dd>
 <span class="refAuthor">Salowey, J.</span> and <span class="refAuthor">S. Turner</span>, <span class="refTitle">"IANA Registry Updates for TLS and DTLS"</span>, <span class="seriesInfo">RFC 8447</span>, <span class="seriesInfo">DOI 10.17487/RFC8447</span>, <time datetime="2018-08" class="refDate">August 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8447">https://www.rfc-editor.org/rfc/rfc8447</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC8610">[RFC8610]</dt>
+        <dd>
+<span class="refAuthor">Birkholz, H.</span>, <span class="refAuthor">Vigano, C.</span>, and <span class="refAuthor">C. Bormann</span>, <span class="refTitle">"Concise Data Definition Language (CDDL): A Notational Convention to Express Concise Binary Object Representation (CBOR) and JSON Data Structures"</span>, <span class="seriesInfo">RFC 8610</span>, <span class="seriesInfo">DOI 10.17487/RFC8610</span>, <time datetime="2019-06" class="refDate">June 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8610">https://www.rfc-editor.org/rfc/rfc8610</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC8613">[RFC8613]</dt>
         <dd>
 <span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Mattsson, J.</span>, <span class="refAuthor">Palombini, F.</span>, and <span class="refAuthor">L. Seitz</span>, <span class="refTitle">"Object Security for Constrained RESTful Environments (OSCORE)"</span>, <span class="seriesInfo">RFC 8613</span>, <span class="seriesInfo">DOI 10.17487/RFC8613</span>, <time datetime="2019-07" class="refDate">July 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8613">https://www.rfc-editor.org/rfc/rfc8613</a>&gt;</span>. </dd>
@@ -2700,56 +2708,95 @@ If this is not the case, the RS <span class="bcp14">MUST</span> request the Clie
       </ul>
 </section>
 </div>
-<div id="sec-document-updates">
+<div id="sec-cddl-model">
 <section id="appendix-B">
-      <h2 id="name-document-updates">
-<a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-document-updates" class="section-name selfRef">Document Updates</a>
+      <h2 id="name-cddl-model">
+<a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-cddl-model" class="section-name selfRef">CDDL Model</a>
       </h2>
 <p id="appendix-B-1">This section is to be removed before publishing as an RFC.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<span id="name-cddl-model-2"></span><div id="fig-cddl-model">
+<figure id="figure-7">
+        <div class="alignLeft art-CDDL art-text artwork" id="appendix-B-2.1">
+<pre>
+; ACE Profiles
+coap_group_oscore = 5
+
+; OAuth Parameters CBOR Mappings
+context_id_param = 71
+salt_input_param = 72
+client_cred_verify = 73
+client_cred_verify_mac = 74
+
+; CBOR Web Token (CWT) Claims
+context_id_claim = 51
+salt_input_claim = 52
+
+; CWT Confirmation Methods
+kccs = 14
+</pre>
+</div>
+<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
+<a href="#name-cddl-model-2" class="selfRef">CDDL model</a>
+        </figcaption></figure>
+</div>
+</section>
+</div>
+<div id="sec-document-updates">
+<section id="appendix-C">
+      <h2 id="name-document-updates">
+<a href="#appendix-C" class="section-number selfRef">Appendix C. </a><a href="#name-document-updates" class="section-name selfRef">Document Updates</a>
+      </h2>
+<p id="appendix-C-1">This section is to be removed before publishing as an RFC.<a href="#appendix-C-1" class="pilcrow">¶</a></p>
 <div id="sec-01-02">
-<section id="appendix-B.1">
+<section id="appendix-C.1">
         <h3 id="name-version-01-to-02">
-<a href="#appendix-B.1" class="section-number selfRef">B.1. </a><a href="#name-version-01-to-02" class="section-name selfRef">Version -01 to -02</a>
+<a href="#appendix-C.1" class="section-number selfRef">C.1. </a><a href="#name-version-01-to-02" class="section-name selfRef">Version -01 to -02</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-B.1-1.1">
-            <p id="appendix-B.1-1.1.1">Renamed the claim 'contextId_input' to 'context_id'.<a href="#appendix-B.1-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.1-1.1">
+            <p id="appendix-C.1-1.1.1">CBOR diagnostic notation uses placeholders from a CDDL model.<a href="#appendix-C.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-1.2">
-            <p id="appendix-B.1-1.2.1">Fixes in the IANA considerations.<a href="#appendix-B.1-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.1-1.2">
+            <p id="appendix-C.1-1.2.1">Renamed the claim 'contextId_input' to 'context_id'.<a href="#appendix-C.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-1.3">
-            <p id="appendix-B.1-1.3.1">Editorial fixes and improvements.<a href="#appendix-B.1-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.1-1.3">
+            <p id="appendix-C.1-1.3.1">Revised examples.<a href="#appendix-C.1-1.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.1-1.4">
+            <p id="appendix-C.1-1.4.1">Fixes in the IANA considerations.<a href="#appendix-C.1-1.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.1-1.5">
+            <p id="appendix-C.1-1.5.1">Editorial fixes and improvements.<a href="#appendix-C.1-1.5.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-00-01">
-<section id="appendix-B.2">
+<section id="appendix-C.2">
         <h3 id="name-version-00-to-01">
-<a href="#appendix-B.2" class="section-number selfRef">B.2. </a><a href="#name-version-00-to-01" class="section-name selfRef">Version -00 to -01</a>
+<a href="#appendix-C.2" class="section-number selfRef">C.2. </a><a href="#name-version-00-to-01" class="section-name selfRef">Version -00 to -01</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-B.2-1.1">
-            <p id="appendix-B.2-1.1.1">Deleting an Access Token does not delete the Group OSCORE Security Context.<a href="#appendix-B.2-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.2-1.1">
+            <p id="appendix-C.2-1.1.1">Deleting an Access Token does not delete the Group OSCORE Security Context.<a href="#appendix-C.2-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.2">
-            <p id="appendix-B.2-1.2.1">Distinct computation of the PoP input when C and the AS use (D)TLS 1.2 or 1.3.<a href="#appendix-B.2-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.2-1.2">
+            <p id="appendix-C.2-1.2.1">Distinct computation of the PoP input when C and the AS use (D)TLS 1.2 or 1.3.<a href="#appendix-C.2-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.3">
-            <p id="appendix-B.2-1.3.1">Revised computation of the PoP input when C and the AS use OSCORE.<a href="#appendix-B.2-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.2-1.3">
+            <p id="appendix-C.2-1.3.1">Revised computation of the PoP input when C and the AS use OSCORE.<a href="#appendix-C.2-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.4">
-            <p id="appendix-B.2-1.4.1">Revised computation of the PoP evidence when the OSCORE group is a pairwise-only group.<a href="#appendix-B.2-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.2-1.4">
+            <p id="appendix-C.2-1.4.1">Revised computation of the PoP evidence when the OSCORE group is a pairwise-only group.<a href="#appendix-C.2-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.5">
-            <p id="appendix-B.2-1.5.1">Clarified requirements on the AS for verifying the PoP evidence.<a href="#appendix-B.2-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.2-1.5">
+            <p id="appendix-C.2-1.5.1">Clarified requirements on the AS for verifying the PoP evidence.<a href="#appendix-C.2-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.6">
-            <p id="appendix-B.2-1.6.1">Renamed the TLS Exporter Label for computing the PoP input.<a href="#appendix-B.2-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.2-1.6">
+            <p id="appendix-C.2-1.6.1">Renamed the TLS Exporter Label for computing the PoP input.<a href="#appendix-C.2-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.7">
-            <p id="appendix-B.2-1.7.1">Editorial fixes and improvements.<a href="#appendix-B.2-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.2-1.7">
+            <p id="appendix-C.2-1.7.1">Editorial fixes and improvements.<a href="#appendix-C.2-1.7.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -2757,17 +2804,17 @@ If this is not the case, the RS <span class="bcp14">MUST</span> request the Clie
 </section>
 </div>
 <div id="acknowldegment">
-<section id="appendix-C">
+<section id="appendix-D">
       <h2 id="name-acknowledgments">
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<p id="appendix-C-1"><span class="contact-name">Ludwig Seitz</span> contributed as a co-author of initial versions of this document.<a href="#appendix-C-1" class="pilcrow">¶</a></p>
-<p id="appendix-C-2">The authors sincerely thank <span class="contact-name">Christian Amsüss</span>, <span class="contact-name">Benjamin Kaduk</span>, <span class="contact-name">John Preuß Mattsson</span>, <span class="contact-name">Dave Robin</span>, <span class="contact-name">Jim Schaad</span>, and <span class="contact-name">Göran Selander</span> for their comments and feedback.<a href="#appendix-C-2" class="pilcrow">¶</a></p>
-<p id="appendix-C-3">The work on this document has been partly supported by the Sweden's Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and CYPRESS; and by the H2020 project SIFIS-Home (Grant agreement 952652).<a href="#appendix-C-3" class="pilcrow">¶</a></p>
+<p id="appendix-D-1"><span class="contact-name">Ludwig Seitz</span> contributed as a co-author of initial versions of this document.<a href="#appendix-D-1" class="pilcrow">¶</a></p>
+<p id="appendix-D-2">The authors sincerely thank <span class="contact-name">Christian Amsüss</span>, <span class="contact-name">Benjamin Kaduk</span>, <span class="contact-name">John Preuß Mattsson</span>, <span class="contact-name">Dave Robin</span>, <span class="contact-name">Jim Schaad</span>, and <span class="contact-name">Göran Selander</span> for their comments and feedback.<a href="#appendix-D-2" class="pilcrow">¶</a></p>
+<p id="appendix-D-3">The work on this document has been partly supported by the Sweden's Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and CYPRESS; and by the H2020 project SIFIS-Home (Grant agreement 952652).<a href="#appendix-D-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">
-<section id="appendix-D">
+<section id="appendix-E">
       <h2 id="name-authors-addresses">
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>
