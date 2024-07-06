@@ -16,11 +16,6 @@ cat: std
 submissiontype: IETF
 
 coding: utf-8
-pi:    # can use array (if all yes) or hash here
-
-  toc: yes
-  sortrefs:   # defaults to yes
-  symrefs: yes
 
 author:
       -
@@ -56,7 +51,6 @@ normative:
   I-D.ietf-core-groupcomm-bis:
   I-D.ietf-core-oscore-groupcomm:
   I-D.ietf-ace-key-groupcomm-oscore:
-  RFC2119:
   RFC5246:
   RFC5705:
   RFC5869:
@@ -64,7 +58,6 @@ normative:
   RFC6749:
   RFC7252:
   RFC7748:
-  RFC8174:
   RFC8392:
   RFC8613:
   RFC8447:
@@ -168,7 +161,7 @@ OSCORE {{RFC8613}} specifies how to use COSE {{RFC9052}}{{RFC9053}} to secure Co
 
 ## Terminology ## {#terminology}
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{RFC2119}} {{RFC8174}} when, and only when, they appear in all capitals, as shown here.
+{::boilerplate bcp14-tagged}
 
 Readers are expected to be familiar with the terms and concepts related to CBOR {{RFC8949}}, COSE {{RFC9052}}{{RFC9053}}, CoAP {{RFC7252}}, OSCORE {{RFC8613}}, and Group OSCORE {{I-D.ietf-core-oscore-groupcomm}}. These especially include:
 
@@ -973,7 +966,7 @@ This appendix lists the specifications of this profile based on the requirements
 * Editorial fixes and improvements.
 
 # Acknowledgments # {#acknowldegment}
-{: numbered="no"}
+{:numbered="false"}
 
 {{{Ludwig Seitz}}} contributed as a co-author of initial versions of this document.
 
