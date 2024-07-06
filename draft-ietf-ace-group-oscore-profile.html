@@ -2109,8 +2109,10 @@ If this is not the case, the RS <span class="bcp14">MUST</span> request the Clie
 <a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-access-rights-verification" class="section-name selfRef">Access Rights Verification</a>
         </h3>
 <p id="section-4.4-1">The RS <span class="bcp14">MUST</span> follow the procedures defined in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10.2" class="relref">Section 5.10.2</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>. If an RS receives a request protected with Group OSCORE from a Client, the RS processes the request according to <span>[<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
-<p id="section-4.4-2">If the Group OSCORE verification succeeds, and the target resource requires authorization, the RS retrieves the authorization information from the Access Token associated with the Group OSCORE Security Context. Then, the RS <span class="bcp14">MUST</span> verify that the action requested on the resource is authorized.<a href="#section-4.4-2" class="pilcrow">¶</a></p>
-<p id="section-4.4-3">If the RS has no valid Access Token for the Client, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the Client with a 4.01 (Unauthorized) error response. If the RS has an Access Token for the Client but no actions are authorized on the target resource, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the Client with a 4.03 (Forbidden) error response. If the RS has an Access Token for the Client but the requested action is not authorized, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the Client with a 4.05 (Method Not Allowed) error response.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
+<p id="section-4.4-2">If the Group OSCORE verification succeeds and the target resource requires authorization, the RS retrieves the authorization information from the Access Token associated with the Group OSCORE Security Context. Then, the RS <span class="bcp14">MUST</span> verify that the action requested on the resource is authorized.<a href="#section-4.4-2" class="pilcrow">¶</a></p>
+<p id="section-4.4-3">If the RS has no valid Access Token for the Client, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the Client with a 4.01 (Unauthorized) error response.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
+<p id="section-4.4-4">If the RS has an Access Token for the Client but no actions are authorized on the target resource, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the Client with a 4.03 (Forbidden) error response.<a href="#section-4.4-4" class="pilcrow">¶</a></p>
+<p id="section-4.4-5">If the RS has an Access Token for the Client but the requested action is not authorized, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the Client with a 4.05 (Method Not Allowed) error response.<a href="#section-4.4-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-client-public-key-change">
@@ -2142,7 +2144,12 @@ If this is not the case, the RS <span class="bcp14">MUST</span> request the Clie
             <p id="section-4.5-3.2.1">After receiving the Access Token Response from the AS (see <a href="#sec-as-c-token" class="auto internal xref">Section 3.2</a>), the Client performs the same exchanges with the RS as defined in <a href="#sec-c-rs-comm" class="auto internal xref">Section 4</a>.<a href="#section-4.5-3.2.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<p id="section-4.5-4">When receiving the new Access Token, the RS performs the same steps defined in <a href="#sec-rs-c-created" class="auto internal xref">Section 4.2</a>, with the following addition in case the new Access Token is successfully verified and stored. The RS also deletes the old Access Token, i.e., the one whose associated triple (GID, SaltInput, AuthCred) has the same GID and SaltInput values as in the triple including the new authentication credential of the Client and associated with the new Access Token.<a href="#section-4.5-4" class="pilcrow">¶</a></p>
+<p id="section-4.5-4">When receiving the new Access Token, the RS performs the same steps defined in <a href="#sec-rs-c-created" class="auto internal xref">Section 4.2</a>, with the following addition in case the new Access Token is successfully verified and stored:<a href="#section-4.5-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.5-5.1">
+            <p id="section-4.5-5.1.1">The RS also deletes the old Access Token, i.e., the one whose associated triple (GID, SaltInput, AuthCred) has the same GID and SaltInput values as in the triple including the new authentication credential of the Client and associated with the new Access Token.<a href="#section-4.5-5.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 </section>
 </div>
 </section>
