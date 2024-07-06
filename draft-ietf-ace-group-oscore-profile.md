@@ -173,7 +173,7 @@ Readers are expected to be familiar with the terms and concepts related to CBOR 
 
 Readers are expected to be familiar with the terms and concepts described in the ACE framework for authentication and authorization {{RFC9200}}, as well as in the OSCORE profile of ACE {{RFC9203}}. The terminology for entities in the considered architecture is defined in OAuth 2.0 {{RFC6749}}. In particular, this includes Client (C), Resource Server (RS), and Authorization Server (AS).
 
-Note that, unless otherwise indicated, the term "endpoint" is used here following its OAuth definition, aimed at denoting resources such as /token and /introspect at the AS, and /authz-info at the RS. This document does not use the CoAP definition of "endpoint", which is "An entity participating in the CoAP protocol".
+Note that the term "endpoint" is used here following its OAuth definition {{RFC6749}}, aimed at denoting resources such as /token and /introspect at the AS, and /authz-info at the RS. This document does not use the CoAP definition of "endpoint", which is "An entity participating in the CoAP protocol".
 
 Additionally, this document makes use of the following terminology.
 
