@@ -710,9 +710,13 @@ If the RS receives a request protected with a Group OSCORE Security Context CTX,
 
 The RS MUST follow the procedures defined in {{Section 5.10.2 of RFC9200}}. If an RS receives a request protected with Group OSCORE from a Client, the RS processes the request according to {{I-D.ietf-core-oscore-groupcomm}}.
 
-If the Group OSCORE verification succeeds, and the target resource requires authorization, the RS retrieves the authorization information from the Access Token associated with the Group OSCORE Security Context. Then, the RS MUST verify that the action requested on the resource is authorized.
+If the Group OSCORE verification succeeds and the target resource requires authorization, the RS retrieves the authorization information from the Access Token associated with the Group OSCORE Security Context. Then, the RS MUST verify that the action requested on the resource is authorized.
 
-If the RS has no valid Access Token for the Client, the RS MUST reject the request and MUST reply to the Client with a 4.01 (Unauthorized) error response. If the RS has an Access Token for the Client but no actions are authorized on the target resource, the RS MUST reject the request and MUST reply to the Client with a 4.03 (Forbidden) error response. If the RS has an Access Token for the Client but the requested action is not authorized, the RS MUST reject the request and MUST reply to the Client with a 4.05 (Method Not Allowed) error response.
+If the RS has no valid Access Token for the Client, the RS MUST reject the request and MUST reply to the Client with a 4.01 (Unauthorized) error response.
+
+If the RS has an Access Token for the Client but no actions are authorized on the target resource, the RS MUST reject the request and MUST reply to the Client with a 4.03 (Forbidden) error response.
+
+If the RS has an Access Token for the Client but the requested action is not authorized, the RS MUST reject the request and MUST reply to the Client with a 4.05 (Method Not Allowed) error response.
 
 ## Change of Client's Authentication Credential in the Group ## {#sec-client-public-key-change}
 
@@ -732,7 +736,9 @@ After that, and in order to continue communicating with the RS, the Client MUST 
 
 2. After receiving the Access Token Response from the AS (see {{sec-as-c-token}}), the Client performs the same exchanges with the RS as defined in {{sec-c-rs-comm}}.
 
-When receiving the new Access Token, the RS performs the same steps defined in {{sec-rs-c-created}}, with the following addition in case the new Access Token is successfully verified and stored. The RS also deletes the old Access Token, i.e., the one whose associated triple (GID, SaltInput, AuthCred) has the same GID and SaltInput values as in the triple including the new authentication credential of the Client and associated with the new Access Token.
+When receiving the new Access Token, the RS performs the same steps defined in {{sec-rs-c-created}}, with the following addition in case the new Access Token is successfully verified and stored:
+
+* The RS also deletes the old Access Token, i.e., the one whose associated triple (GID, SaltInput, AuthCred) has the same GID and SaltInput values as in the triple including the new authentication credential of the Client and associated with the new Access Token.
 
 # Secure Communication with the AS # {#sec-comm-as}
 
