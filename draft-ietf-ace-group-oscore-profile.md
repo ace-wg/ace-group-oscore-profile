@@ -744,31 +744,21 @@ The Client or RS can acquire a new Group OSCORE Security Context, by re-joining 
 
 # CBOR Mappings # {#sec-cbor-mappings}
 
-The new parameters defined in this document MUST be mapped to CBOR types as specified in {{fig-cbor-mappings-parameters}}, using the given integer abbreviation for the map key.
+The new parameters defined in this document MUST be mapped to CBOR types as specified in {{table-cbor-mappings-parameters}}, using the given integer abbreviation for the map key.
 
-~~~~~~~~~~~
-+------------------------+----------+------------+
 | Parameter name         | CBOR Key | Value Type |
-+------------------------+----------+------------+
 | context_id             | TBD      | bstr       |
 | salt_input             | TBD      | bstr       |
 | client_cred_verify     | TBD      | bstr       |
 | client_cred_verify_mac | TBD      | bstr       |
-+------------------------+----------+------------+
-~~~~~~~~~~~
-{: #fig-cbor-mappings-parameters title="CBOR Mappings for New Parameters." artwork-align="center"}
+{: #table-cbor-mappings-parameters title="CBOR Mappings for New Parameters." align="center"}
 
-The new claims defined in this document MUST be mapped to CBOR types as specified in {{fig-cbor-mappings-claims}}, using the given integer abbreviation for the map key.
+The new claims defined in this document MUST be mapped to CBOR types as specified in {{table-cbor-mappings-claims}}, using the given integer abbreviation for the map key.
 
-~~~~~~~~~~~
-+-----------------+----------+------------+
 | Claim name      | CBOR Key | Value Type |
-+-----------------+----------+------------+
 | salt_input      | TBD      | bstr       |
 | contextId_input | TBD      | bstr       |
-+-----------------+----------+------------+
-~~~~~~~~~~~
-{: #fig-cbor-mappings-claims title="CBOR Mappings for New Claims." artwork-align="center"}
+{: #table-cbor-mappings-claims title="CBOR Mappings for New Claims." align="center"}
 
 # Security Considerations # {#sec-security-considerations}
 
