@@ -93,8 +93,8 @@ Table of Contents
        3.1.3.  'client_cred_verify' Parameter
        3.1.4.  'client_cred_verify_mac' Parameter
      3.2.  AS-to-C: Access Token
-       3.2.1.  Salt Input Claim
-       3.2.2.  Context ID Input Claim
+       3.2.1.  'context_id' Claim
+       3.2.2.  'salt_input' Claim
    4.  Client-RS Communication
      4.1.  C-to-RS POST to authz-info Endpoint
      4.2.  RS-to-C: 2.01 (Created)
@@ -915,13 +915,13 @@ Table of Contents
    *  The salt input specified in the 'salt_input' parameter of the
       Access Token Request.  If the Access Token is a CWT, the content
       of the 'salt_input' parameter MUST be specified in the
-      'salt_input' claim of the Access Token, defined in Section 3.2.1
+      'salt_input' claim of the Access Token, defined in Section 3.2.2
       of this document.
 
    *  The Context ID input specified in the 'context_id' parameter of
       the Access Token Request.  If the Access Token is a CWT, the
       content of the 'context_id' parameter MUST be specified in the
-      'context_id' claim of the Access Token, defined in Section 3.2.2
+      'context_id' claim of the Access Token, defined in Section 3.2.1
       of this document.
 
    *  The authentication credential that the client uses in the OSCORE
@@ -1036,16 +1036,7 @@ Table of Contents
        Figure 6: Example CWT Claims Set with OSCORE Parameters, CBOR
                                   Encoded.
 
-3.2.1.  Salt Input Claim
-
-   The 'salt_input' claim provides a value that the Client requesting
-   the Access Token wishes to use as a part of a salt with the RS, e.g.,
-   for deriving cryptographic material.
-
-   This parameter specifies the value of the salt input, encoded as a
-   CBOR byte string.
-
-3.2.2.  Context ID Input Claim
+3.2.1.  'context_id' Claim
 
    The 'context_id' claim provides a value that the Client requesting
    the Access Token wishes to use with the RS, as a hint for a security
@@ -1053,6 +1044,15 @@ Table of Contents
 
    This parameter specifies the value of the Context ID input, encoded
    as a CBOR byte string.
+
+3.2.2.  'salt_input' Claim
+
+   The 'salt_input' claim provides a value that the Client requesting
+   the Access Token wishes to use as a part of a salt with the RS, e.g.,
+   for deriving cryptographic material.
+
+   This parameter specifies the value of the salt input, encoded as a
+   CBOR byte string.
 
 4.  Client-RS Communication
 
@@ -1357,9 +1357,9 @@ Table of Contents
                   +============+==========+============+
                   | Claim name | CBOR Key | Value Type |
                   +============+==========+============+
-                  | salt_input | TBD      | bstr       |
-                  +------------+----------+------------+
                   | context_id | TBD      | bstr       |
+                  +------------+----------+------------+
+                  | salt_input | TBD      | bstr       |
                   +------------+----------+------------+
 
                   Table 2: CBOR Mappings for New Claims.
@@ -1562,9 +1562,9 @@ Table of Contents
    (CWT) Claims" registry, following the procedure specified in
    Section 9.1 of [RFC8392].
 
-   *  Claim Name: "salt_input"
+   *  Claim Name: "context_id"
 
-   *  Claim Description: Client provided salt input
+   *  Claim Description: Client provided Context ID
 
    *  JWT Claim Name: "N/A"
 
@@ -1578,9 +1578,9 @@ Table of Contents
 
 
 
-   *  Claim Name: "context_id"
+   *  Claim Name: "salt_input"
 
-   *  Claim Description: Client provided Context ID
+   *  Claim Description: Client provided salt input
 
    *  JWT Claim Name: "N/A"
 
