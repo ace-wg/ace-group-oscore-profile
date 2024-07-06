@@ -616,17 +616,17 @@ A7                                      # map(7)
 ~~~~~~~~~~~
 {: #fig-example-AS-to-C-CWT-encoding title="Example CWT Claims Set with OSCORE Parameters, CBOR Encoded."}
 
-### Salt Input Claim ### {#salt_input_claim}
-
-The 'salt_input' claim provides a value that the Client requesting the Access Token wishes to use as a part of a salt with the RS, e.g., for deriving cryptographic material.
-
-This parameter specifies the value of the salt input, encoded as a CBOR byte string.
-
-### Context ID Input Claim ### {#context_id_claim}
+### 'context_id' Claim ### {#context_id_claim}
 
 The 'context_id' claim provides a value that the Client requesting the Access Token wishes to use with the RS, as a hint for a security context.
 
 This parameter specifies the value of the Context ID input, encoded as a CBOR byte string.
+
+### 'salt_input' Claim ### {#salt_input_claim}
+
+The 'salt_input' claim provides a value that the Client requesting the Access Token wishes to use as a part of a salt with the RS, e.g., for deriving cryptographic material.
+
+This parameter specifies the value of the salt input, encoded as a CBOR byte string.
 
 # Client-RS Communication # {#sec-c-rs-comm}
 
@@ -756,8 +756,8 @@ The new parameters defined in this document MUST be mapped to CBOR types as spec
 The new claims defined in this document MUST be mapped to CBOR types as specified in {{table-cbor-mappings-claims}}, using the given integer abbreviation for the map key.
 
 | Claim name | CBOR Key | Value Type |
-| salt_input | TBD      | bstr       |
 | context_id | TBD      | bstr       |
+| salt_input | TBD      | bstr       |
 {: #table-cbor-mappings-claims title="CBOR Mappings for New Claims." align="center"}
 
 # Security Considerations # {#sec-security-considerations}
@@ -869,16 +869,6 @@ IANA is asked to add the following entries to the "OAuth Parameters CBOR Mapping
 
 IANA is asked to add the following entries to the "CBOR Web Token (CWT) Claims" registry, following the procedure specified in {{Section 9.1 of RFC8392}}.
 
-* Claim Name: "salt_input"
-* Claim Description: Client provided salt input
-* JWT Claim Name: "N/A"
-* Claim Key: TBD
-* Claim Value Type: bstr
-* Change Controller: IETF
-* Reference: {{salt_input_claim}} of {{&SELF}}
-
-<br>
-
 * Claim Name: "context_id"
 * Claim Description: Client provided Context ID
 * JWT Claim Name: "N/A"
@@ -886,6 +876,16 @@ IANA is asked to add the following entries to the "CBOR Web Token (CWT) Claims" 
 * Claim Value Type: bstr
 * Change Controller: IETF
 * Reference: {{context_id_claim}} of {{&SELF}}
+
+<br>
+
+* Claim Name: "salt_input"
+* Claim Description: Client provided salt input
+* JWT Claim Name: "N/A"
+* Claim Key: TBD
+* Claim Value Type: bstr
+* Change Controller: IETF
+* Reference: {{salt_input_claim}} of {{&SELF}}
 
 ## TLS Exporter Label Registry ## {#iana-tls-exporter-label}
 
