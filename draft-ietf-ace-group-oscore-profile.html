@@ -1655,11 +1655,11 @@ The following shows an example of input to the HMAC-Hash() function.<a href="#se
 On the Client side, the OSCORE Security Context shared with the AS includes:<a href="#section-3.1-6.3.5" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.1-6.3.6">
 <pre>
-o ID Context: 0x37cbf3210017a2d3 (8 bytes)
+ID Context: 0x37cbf3210017a2d3 (8 bytes)
 
-o Sender ID: 0x01 (1 byte)
+Sender ID: 0x01 (1 byte)
 
-o Master Secret: 0x0102030405060708090a0b0c0d0e0f10 (16 bytes)
+Master Secret: 0x0102030405060708090a0b0c0d0e0f10 (16 bytes)
 </pre><a href="#section-3.1-6.3.6" class="pilcrow">¶</a>
 </div>
 <p id="section-3.1-6.3.7">
@@ -1668,37 +1668,22 @@ Then, the following holds.<a href="#section-3.1-6.3.7" class="pilcrow">¶</a></p
 <pre>
 x1 (Raw value) (8 bytes)
 0x37cbf3210017a2d3
-</pre><a href="#section-3.1-6.3.8" class="pilcrow">¶</a>
-</div>
-<div class="alignLeft art-text artwork" id="section-3.1-6.3.9">
-<pre>
+
 x1 (CBOR Data Item) (9 bytes)
 0x4837cbf3210017a2d3
-</pre><a href="#section-3.1-6.3.9" class="pilcrow">¶</a>
-</div>
-<div class="alignLeft art-text artwork" id="section-3.1-6.3.10">
-<pre>
+
 x2 (Raw value) (1 bytes)
 0x01
-</pre><a href="#section-3.1-6.3.10" class="pilcrow">¶</a>
-</div>
-<div class="alignLeft art-text artwork" id="section-3.1-6.3.11">
-<pre>
+
 x2 (CBOR Data Item) (2 bytes)
 0x4101
-</pre><a href="#section-3.1-6.3.11" class="pilcrow">¶</a>
-</div>
-<div class="alignLeft art-text artwork" id="section-3.1-6.3.12">
-<pre>
+
 salt (11 bytes)
 0x4837cbf3210017a2d34101
-</pre><a href="#section-3.1-6.3.12" class="pilcrow">¶</a>
-</div>
-<div class="alignLeft art-text artwork" id="section-3.1-6.3.13">
-<pre>
+
 IKM (16 bytes)
 0x0102030405060708090a0b0c0d0e0f10
-</pre><a href="#section-3.1-6.3.13" class="pilcrow">¶</a>
+</pre><a href="#section-3.1-6.3.8" class="pilcrow">¶</a>
 </div>
 </li>
         </ul>

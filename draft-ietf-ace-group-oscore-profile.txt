@@ -658,11 +658,11 @@ Table of Contents
       On the Client side, the OSCORE Security Context shared with the AS
       includes:
 
-      o ID Context: 0x37cbf3210017a2d3 (8 bytes)
+      ID Context: 0x37cbf3210017a2d3 (8 bytes)
 
-      o Sender ID: 0x01 (1 byte)
+      Sender ID: 0x01 (1 byte)
 
-      o Master Secret: 0x0102030405060708090a0b0c0d0e0f10 (16 bytes)
+      Master Secret: 0x0102030405060708090a0b0c0d0e0f10 (16 bytes)
 
       Then, the following holds.
 
