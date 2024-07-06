@@ -94,6 +94,7 @@ informative:
   I-D.tiloca-core-oscore-discovery:
   I-D.ietf-cose-cbor-encoded-cert:
   I-D.ietf-ace-edhoc-oscore-profile:
+  I-D.ietf-ace-workflow-and-params:
   RFC5280:
   RFC8446:
   RFC9147:
@@ -468,6 +469,13 @@ In the example above, the Client specifies that its authentication credential in
 ~~~~~~~~~~~
 {: #fig-client-auth-cred title="Example of Client Authentication Credential as CWT Claims Set (CCS)."}
 
+
+\[
+
+TODO: Specify how C requests a new Access Token that dynamically updates its access rights. (See {{sec-as-update-access-rights}} for pre-requirements and a high-level direction)
+
+\]
+
 ### 'context_id' Parameter ### {#context_id}
 
 The 'context_id' parameter is an OPTIONAL parameter of the Access Token Request message defined in {{Section 5.8.1 of RFC9200}}. This parameter provides a value that the Client wishes to use with the RS as a hint for a security context. Its exact content is profile specific.
@@ -484,7 +492,7 @@ The 'client_cred_verify' parameter is an OPTIONAL parameter of the Access Token 
 
 The 'client_cred_verify_mac' parameter is an OPTIONAL parameter of the Access Token Request message defined in {{Section 5.8.1. of RFC9200}}. This parameter provides a Message Authentication Code (MAC) computed by the Client to prove the possession of its own private key.
 
-## AS-to-C: Access Token ## {#sec-as-c-token}
+## AS-to-C: Response ## {#sec-as-c-token}
 
 After having verified the POST request to the /token endpoint and that the Client is authorized to obtain an Access Token corresponding to its Access Token Request, the AS MUST verify the proof-of-possession (PoP) evidence. In particular, the AS proceeds as follows.
 
@@ -620,6 +628,43 @@ A7                                      # map(7)
 ~~~~~~~~~~~
 {: #fig-example-AS-to-C-CWT-encoding title="Example CWT Claims Set Using CBOR Encoding."}
 
+
+### Update of Access Rights # {#sec-as-update-access-rights}
+
+\[
+
+TODO: Specify how the AS issues an Access Token that dynamically updates the access rights of C. (See below for pre-requirements and a high-level direction)
+
+(This should be specified with content in the present section, as well as in {{sec-c-as-token-endpoint}} and {{sec-rs-update-access-rights}}).
+
+At the moment, this profile does not support the dynamic update of access rights for the Client like other transport profiles of ACE do.
+
+This can be enabled by building on concepts defined in {{I-D.ietf-ace-workflow-and-params}}:
+
+* "Token series" - In this profile, it would be specialized as a set of consecutive Access Tokens issued by the AS for the pair (C, AUD), where C is the Client whose public authentication credential is bound to those Access Tokens, while AUD is the audience for which C requests those Access Tokens.
+
+* "token_series_id" - At the time of writing, {{I-D.ietf-ace-workflow-and-params}} describes the intended direction for defining this new prospective parameter, to be used in the Access Token Request/Response exchange between C and the AS.
+
+  This parameter is meant to specify the unique identifier of a token series. In parallel, it is planned to define a new, corresponding claim to include into Access Tokens.
+
+At a high-level, the above can enable the dynamic update of access rights as follows:
+
+* Each Access Token in a token series includes the claim "token_series_id", with value the identifier of the token series that the Access Token belongs to.
+
+* When issuing the first Access Token in a token series, the AS includes the parameter "token_series_id" in the Access Token Response to the Client, with value the identifier of the token series that the Access Token belongs to.
+
+* When C requests from the AS an Access Token that dynamically updates its current access rights to access protected resources at the same audience, C sends to the AS an Access Token Request such that:
+
+  - It includes the parameter "token_series_id", with value the identifier of the token series for which the new Access Token is requested.
+
+  - It does _not_ include the parameters "context_id", "salt_input", and "client_cred_verify" or "client_cred_verify_mac".
+
+* If the AS issues the new Access Token that dynamically updated the access rights of C, then the Access Token includes the claim "token_series_id", with value the identifier of the same token series for which the Access Token has been issued.
+
+When receiving the new Access Token, the RS uses the value of the claim "token_series_id", and identifies the stored old Access Token that has to be superseded by the new one, as both belonging to the same token series.
+
+\]
+
 ### 'context_id' Claim ### {#context_id_claim}
 
 The 'context_id' claim provides a value that the Client requesting the Access Token wishes to use with the RS, as a hint for a security context.
@@ -705,6 +750,14 @@ When processing an incoming request protected with Group OSCORE, the RS MUST con
 For every incoming request, if Group OSCORE verification succeeds, the verification of access rights is performed as described in {{sec-c-rs-access-rights}}.
 
 If the RS receives a request protected with a Group OSCORE Security Context CTX, the target resource requires authorization, and the RS does not store a valid Access Token related to CTX, then the RS MUST reply with a 4.01 (Unauthorized) error response protected with CTX.
+
+## Update of Access Rights # {#sec-rs-update-access-rights}
+
+\[
+
+TODO: Specify the processing on the RS when receiving an Access Token that dynamically updates the access rights of C. (See {{sec-as-update-access-rights}} for pre-requirements and a high-level direction)
+
+\]
 
 ## Access Rights Verification ## {#sec-c-rs-access-rights}
 
@@ -968,6 +1021,8 @@ kccs = 14
 * Renamed the claim 'contextId_input' to 'context_id'.
 
 * Revised examples.
+
+* Placeholders and early direction for dynamic update of access rights.
 
 * Fixes in the IANA considerations.
 
