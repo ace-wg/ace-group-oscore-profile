@@ -1217,6 +1217,9 @@ svg :is([fill="white"], [fill^="#fff"]) {
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.5">
                 <p id="section-toc.1-1.4.2.5.1"><a href="#section-4.5" class="auto internal xref">4.5</a>.  <a href="#name-access-rights-verification" class="internal xref">Access Rights Verification</a></p>
 </li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.6">
+                <p id="section-toc.1-1.4.2.6.1"><a href="#section-4.6" class="auto internal xref">4.6</a>.  <a href="#name-storing-multiple-access-tok" class="internal xref">Storing Multiple Access Tokens per PoP-Key</a></p>
+</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
@@ -2181,6 +2184,69 @@ If this is not the case, the RS <span class="bcp14">MUST</span> request the Clie
 <p id="section-4.5-5">If the RS has an Access Token for the Client but the requested action is not authorized, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the Client with a 4.05 (Method Not Allowed) error response.<a href="#section-4.5-5" class="pilcrow">¶</a></p>
 </section>
 </div>
+<div id="storing-multiple-access-tokens-per-pop-key">
+<section id="section-4.6">
+        <h3 id="name-storing-multiple-access-tok">
+<a href="#section-4.6" class="section-number selfRef">4.6. </a><a href="#name-storing-multiple-access-tok" class="section-name selfRef">Storing Multiple Access Tokens per PoP-Key</a>
+        </h3>
+<p id="section-4.6-1">According to <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10.1" class="relref">Section 5.10.1</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>, an RS is recommended to store only one Access Token per proof-of-possession key (pop-key), and to supersede such an Access Token when receiving and successfully validating a new one bound to the same pop-key.<a href="#section-4.6-1" class="pilcrow">¶</a></p>
+<p id="section-4.6-2">However, when using the profile specified in this document, an RS might practically have to deviate from that recommendation and store multiple Access Tokens bound to the same pop-key, i.e., to the same public authentication credential of a Client.<a href="#section-4.6-2" class="pilcrow">¶</a></p>
+<p id="section-4.6-3">For example, this can occur in the following cases.<a href="#section-4.6-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.6-4.1">
+            <p id="section-4.6-4.1.1">The RS is the single RS associated with an audience AUD1, and also belongs to a group-audience AUD2 (see <span><a href="https://rfc-editor.org/rfc/rfc9200#section-6.9" class="relref">Section 6.9</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>).<a href="#section-4.6-4.1.1" class="pilcrow">¶</a></p>
+<p id="section-4.6-4.1.2">
+A Client C with public authentication credential AUTH_CRED_C can request two Access Tokens T1 and T2 from the AS, such that:<a href="#section-4.6-4.1.2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.6-4.1.3.1">
+                <p id="section-4.6-4.1.3.1.1">T1 targets AUD1 and has scope SCOPE1;<a href="#section-4.6-4.1.3.1.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-4.6-4.1.3.2">
+                <p id="section-4.6-4.1.3.2.1">T2 targets AUD2 and has scope SCOPE2 different from SCOPE1.<a href="#section-4.6-4.1.3.2.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+<p id="section-4.6-4.1.4">
+Both T1 and T2 are going to be bound to the same pop-key specified by AUTH_CRED_C.<a href="#section-4.6-4.1.4" class="pilcrow">¶</a></p>
+<p id="section-4.6-4.1.5">
+In fact, if the AS issues Access Tokens targeting a group-audience, then the above can possibly be the case when using any transport profile of ACE that supports asymmetric pop-keys. If so, the RS should be ready to store at minimum one Access Token per pop-key per audience it belongs to.<a href="#section-4.6-4.1.5" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.6-4.2">
+            <p id="section-4.6-4.2.1">The RS is a member of two OSCORE groups G1 and G2. In particular, both the same format of public authentication credentials is used in both OSCORE groups.<a href="#section-4.6-4.2.1" class="pilcrow">¶</a></p>
+<p id="section-4.6-4.2.2">
+A Client C with public authentication credential AUTH_CRED_C of such format, also member of the two OSCORE group G1 and G2, can conveniently use AUTH_CRED_C as its public authentication credential in both those groups. Therefore, C can request two Access Tokens T1 and T2 from the AS, such that:<a href="#section-4.6-4.2.2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.6-4.2.3.1">
+                <p id="section-4.6-4.2.3.1.1">T1 targets RS and reflects the membership of C in G1, as per its claims "context_id" and "salt_input";<a href="#section-4.6-4.2.3.1.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-4.6-4.2.3.2">
+                <p id="section-4.6-4.2.3.2.1">T2 targets RS and reflects the membership of C in G2, as per its claims "context_id" and "salt_input".<a href="#section-4.6-4.2.3.2.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+<p id="section-4.6-4.2.4">
+Both T1 and T2 are going to be bound to the same pop-key specified by AUTH_CRED_C.<a href="#section-4.6-4.2.4" class="pilcrow">¶</a></p>
+<p id="section-4.6-4.2.5">
+When using the profile specified in this document, the RS should be ready to store at minimum one Access Token per pop-key per OSCORE group it is a member of (although, per the previous point, even this can be limiting).<a href="#section-4.6-4.2.5" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.6-4.3">
+            <p id="section-4.6-4.3.1">The RS uses both the profile specified in this document and a different transport profile of ACE that also relies on asymmetric pop-keys, e.g., the EDHOC and OSCORE profile defined in <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>.<a href="#section-4.6-4.3.1" class="pilcrow">¶</a></p>
+<p id="section-4.6-4.3.2">
+In such a case, a Client C with public authentication credential AUTH_CRED_C can request two Access Tokens T1 and T2 from the AS, such that:<a href="#section-4.6-4.3.2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.6-4.3.3.1">
+                <p id="section-4.6-4.3.3.1.1">T1 targets RS and is meant to be used according to the Group OSCORE profile defined in this document;<a href="#section-4.6-4.3.3.1.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-4.6-4.3.3.2">
+                <p id="section-4.6-4.3.3.2.1">T2 targets RS and is meant to be used according to the EDHOC and OSCORE profile defined in <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>.<a href="#section-4.6-4.3.3.2.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+<p id="section-4.6-4.3.4">
+Both T1 and T2 are going to be bound to the same pop-key specified by AUTH_CRED_C.<a href="#section-4.6-4.3.4" class="pilcrow">¶</a></p>
+<p id="section-4.6-4.3.5">
+When using multiple transport profiles of ACE that rely on asymmetric pop-keys, it is reasonable that the RS is capable to store at minimum one Access Token per pop-key per used profile (although, per the previous points, even this can be limiting).<a href="#section-4.6-4.3.5" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
 </section>
 </div>
 <div id="sec-client-public-key-change">
@@ -2843,10 +2909,13 @@ kccs = 14
             <p id="appendix-C.1-1.4.1">Placeholders and early direction for dynamic update of access rights.<a href="#appendix-C.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-C.1-1.5">
-            <p id="appendix-C.1-1.5.1">Fixes in the IANA considerations.<a href="#appendix-C.1-1.5.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.5.1">Added text on storing multiple Access Tokens per PoP-Key on the RS.<a href="#appendix-C.1-1.5.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-C.1-1.6">
-            <p id="appendix-C.1-1.6.1">Editorial fixes and improvements.<a href="#appendix-C.1-1.6.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.6.1">Fixes in the IANA considerations.<a href="#appendix-C.1-1.6.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.1-1.7">
+            <p id="appendix-C.1-1.7.1">Editorial fixes and improvements.<a href="#appendix-C.1-1.7.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
