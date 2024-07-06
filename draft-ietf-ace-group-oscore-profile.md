@@ -59,6 +59,7 @@ normative:
   RFC7252:
   RFC7748:
   RFC8392:
+  RFC8610:
   RFC8613:
   RFC8447:
   RFC8747:
@@ -179,7 +180,11 @@ Additionally, this document makes use of the following terminology.
 
 * Pairwise-only group: an OSCORE group that uses only the pairwise mode of Group OSCORE (see {{Section 9 of I-D.ietf-core-oscore-groupcomm}}).
 
-Examples throughout this document are expressed in CBOR diagnostic notation, without the tag and value abbreviations.
+Examples throughout this document are expressed in CBOR diagnostic notation as defined in {{Section 8 of RFC8949}} and {{Section G of RFC8610}}. Diagnostic notation comments are often used to provide a textual representation of the numeric parameter names and values.
+
+In the CBOR diagnostic notation used in this document, constructs of the form e'SOME_NAME' are replaced by the value assigned to SOME_NAME in the CDDL model shown in {{fig-cddl-model}} of {{sec-cddl-model}}. For example, {e'context_id_param': h'abcd0000', e'salt_input_param': h'00} stands for {71: h'abcd0000', 72: h'00}.
+
+Note to RFC Editor: Please delete the paragraph immediately preceding this note. Also, in the CBOR diagnostic notation used in this document, please replace the constructs of the form e'SOME_NAME' with the value assigned to SOME_NAME in the CDDL model shown in {{fig-cddl-model}} of {{sec-cddl-model}}. Finally, please delete this note.
 
 # Protocol Overview # {#sec-protocol-overview}
 
@@ -417,30 +422,29 @@ An example of such a request is shown in {{fig-example-C-to-AS-symm}}.
 Header: POST (Code=0.02)
 Uri-Host: "as.example.com"
 Uri-Path: "token"
-Content-Format: "application/ace+cbor"
+Content-Format: application/ace+cbor
 Payload:
 {
-  "audience" : "tempSensor4711",
-  "scope" : "read",
-  "context_id" : h'abcd0000',
-  "salt_input" : h'00',
-  "req_cnf" : {
-    "kccs" : {
-      "sub" : "42-50-31-FF-EF-37-32-39",
-      "cnf" : {
-        "COSE_Key" : {
-          "kty" : 2,
-          "crv" : 1,
-          "x" : h'd7cc072de2205bdc1537a543d53c60a6
-                  acb62eccd890c7fa27c9e354089bbe13',
-          "y" : h'f95e1d4b851a2cc80fff87d8e23f22af
-                  b725d535e515d020731e79a3b4e47120'
+  / audience /        5 : "tempSensor4711",
+  / scope /           9 : "read",
+    e'context_id_param' : h'abcd0000',
+    e'salt_input_param' : h'00',
+  e'client_cred_verify' : h'c5a6...f100' / elided for brevity /,
+  / req_cnf /         4 : {
+    e'kccs' : {
+      / sub / 2 : "42-50-31-FF-EF-37-32-39",
+      / cnf / 8 : {
+        / COSE_Key / 1 : {
+          / kty /  1 : 2 / EC2 /,
+          / crv / -1 : 1 / P-256 /,
+          / x /   -2 : h'd7cc072de2205bdc1537a543d53c60a6
+                         acb62eccd890c7fa27c9e354089bbe13',
+          / y /   -3 : h'f95e1d4b851a2cc80fff87d8e23f22af
+                         b725d535e515d020731e79a3b4e47120'
         }
       }
     }
-  },
-  "client_cred_verify" : h'/...
-   (signature content omitted for brevity)/'
+  }
 }
 ~~~~~~~~~~~
 {: #fig-example-C-to-AS-symm title="Example C-to-AS POST /token Request for an Access Token Bound to an Asymmetric Key."}
@@ -449,15 +453,15 @@ In the example above, the Client specifies that its authentication credential in
 
 ~~~~~~~~~~~
 {
-  "sub" : "42-50-31-FF-EF-37-32-39",
-  "cnf" : {
-    "COSE_Key" : {
-      "kty" : 2,
-      "crv" : 1,
-      "x" : h'd7cc072de2205bdc1537a543d53c60a6
-              acb62eccd890c7fa27c9e354089bbe13',
-      "y" : h'f95e1d4b851a2cc80fff87d8e23f22af
-              b725d535e515d020731e79a3b4e47120'
+  / sub / 2 : "42-50-31-FF-EF-37-32-39",
+  / cnf / 8 : {
+    / COSE_Key / 1 : {
+      / kty /  1 : 2 / EC2 /,
+      / crv / -1 : 1 / P-256 /,
+      / x /   -2 : h'd7cc072de2205bdc1537a543d53c60a6
+                     acb62eccd890c7fa27c9e354089bbe13',
+      / y /   -3 : h'f95e1d4b851a2cc80fff87d8e23f22af
+                     b725d535e515d020731e79a3b4e47120'
     }
   }
 }
@@ -526,13 +530,12 @@ The AS MUST include the following information as metadata of the issued Access T
 
 ~~~~~~~~~~~
 Header: Created (Code=2.01)
-Content-Type: "application/ace+cbor"
+Content-Format: application/ace+cbor
 Payload:
 {
-  "access_token" : h'8343a1010aa2044c53/...
-   (remainder of CWT omitted for brevity)/',
-  "ace_profile" : "coap_group_oscore",
-  "expires_in" : 3600
+  / access_token / 1 : h'8343a1010aa2044c...00', / elided for brevity /
+  / ace_profile / 38 : e'coap_group_oscore',
+  / expires_in /   2 : 3600
 }
 ~~~~~~~~~~~
 {: #fig-example-AS-to-C title="Example AS-to-C Access Token Response with the Group OSCORE Profile."}
@@ -541,29 +544,30 @@ Payload:
 
 ~~~~~~~~~~~
 {
-  "aud" : "tempSensorInLivingRoom",
-  "iat" : "1360189224",
-  "exp" : "1360289224",
-  "scope" :  "temperature_g firmware_p",
-  "cnf" : {
-    "kccs" : {
-      "sub" : "42-50-31-FF-EF-37-32-39",
-      "cnf" : {
-        "COSE_Key" : {
-          "kty" : 2,
-          "crv" : 1,
-          "x" : h'd7cc072de2205bdc1537a543d53c60a6
-                  acb62eccd890c7fa27c9e354089bbe13',
-          "y" : h'f95e1d4b851a2cc80fff87d8e23f22af
-                  b725d535e515d020731e79a3b4e47120'
+  / aud /           3 : "tempSensorInLivingRoom",
+  / iat /           6 : 1719820800,
+  / exp /           4 : 2035353600,
+  / scope /         9 : "temperature_g firmware_p",
+  e'context_id_claim' : h'abcd0000',
+  e'salt_input_claim' : h'00',
+  / cnf /           8 : {
+    e'kccs' : {
+      / sub / 2 : "42-50-31-FF-EF-37-32-39",
+      / cnf / 8 : {
+        / COSE_Key / 1 : {
+          / kty /  1 : 2 / EC2 /,
+          / crv / -1 : 1 / P-256 /,
+          / x /   -2 : h'd7cc072de2205bdc1537a543d53c60a6
+                         acb62eccd890c7fa27c9e354089bbe13',
+          / y /   -3 : h'f95e1d4b851a2cc80fff87d8e23f22af
+                         b725d535e515d020731e79a3b4e47120'
         }
       }
     }
-  "salt_input" : h'00',
-  "context_id" : h'abcd0000'
+  }
 }
 ~~~~~~~~~~~
-{: #fig-example-AS-to-C-CWT title="Example CWT Claims Set with OSCORE Parameters."}
+{: #fig-example-AS-to-C-CWT title="Example CWT Claims Set."}
 
 The same CWT Claims Set as in {{fig-example-AS-to-C-CWT}} and encoded in CBOR is shown in {{fig-example-AS-to-C-CWT-encoding}}, using the value abbreviations defined in {{RFC9200}} and {{RFC8747}}. The bytes in hexadecimal are reported in the first column, while their corresponding CBOR meaning is reported after the "#" sign on the second column, for easiness of readability.
 
@@ -576,16 +580,22 @@ A7                                      # map(7)
       74656D7053656E736F72496E4C6976696E67526F6F6D
       # "tempSensorInLivingRoom"
    06                                   # unsigned(6)
-   1A 5112D728                          # unsigned(1360189224)
+   1A 66826200                          # unsigned(1719820800)
    04                                   # unsigned(4)
-   1A 51145DC8                          # unsigned(1360289224)
+   1A 79510800                          # unsigned(2035353600)
    09                                   # unsigned(9)
    78 18                                # text(24)
       74656D70657261747572655F67206669726D776172655F70
       # "temperature_g firmware_p"
+   18 33                                # unsigned(51)
+   44                                   # bytes(4)
+      ABCD0000
+   18 34                                # unsigned(52)
+   41                                   # bytes(1)
+      00
    08                                   # unsigned(8)
    A1                                   # map(1)
-      05                                # unsigned(5)
+      0E                                # unsigned(14)
       A2                                # map(2)
          02                             # unsigned(2)
          77                             # text(23)
@@ -607,14 +617,8 @@ A7                                      # map(7)
                58 20                    # bytes(32)
                   F95E1D4B851A2CC80FFF87D8E23F22AF
                   B725D535E515D020731E79A3B4E47120
-   18 3C                                # unsigned(60)
-   41                                   # bytes(1)
-      00
-   18 3D                                # unsigned(61)
-   44                                   # bytes(4)
-      ABCD0000
 ~~~~~~~~~~~
-{: #fig-example-AS-to-C-CWT-encoding title="Example CWT Claims Set with OSCORE Parameters, CBOR Encoded."}
+{: #fig-example-AS-to-C-CWT-encoding title="Example CWT Claims Set Using CBOR Encoding."}
 
 ### 'context_id' Claim ### {#context_id_claim}
 
@@ -926,12 +930,38 @@ This appendix lists the specifications of this profile based on the requirements
 
 * Optionally, define other methods of token transport than the authz-info endpoint: Not defined.
 
+# CDDL Model # {#sec-cddl-model}
+{:removeinrfc}
+
+~~~~~~~~~~~~~~~~~~~~ CDDL
+; ACE Profiles
+coap_group_oscore = 5
+
+; OAuth Parameters CBOR Mappings
+context_id_param = 71
+salt_input_param = 72
+client_cred_verify = 73
+client_cred_verify_mac = 74
+
+; CBOR Web Token (CWT) Claims
+context_id_claim = 51
+salt_input_claim = 52
+
+; CWT Confirmation Methods
+kccs = 14
+~~~~~~~~~~~~~~~~~~~~
+{: #fig-cddl-model title="CDDL model" artwork-align="left"}
+
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
 
 ## Version -01 to -02 ## {#sec-01-02}
 
+* CBOR diagnostic notation uses placeholders from a CDDL model.
+
 * Renamed the claim 'contextId_input' to 'context_id'.
+
+* Revised examples.
 
 * Fixes in the IANA considerations.
 
