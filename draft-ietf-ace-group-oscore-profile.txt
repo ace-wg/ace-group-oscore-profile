@@ -5,9 +5,9 @@
 ACE Working Group                                              M. Tiloca
 Internet-Draft                                                R. Höglund
 Intended status: Standards Track                                 RISE AB
-Expires: 29 August 2024                                     F. Palombini
+Expires: 7 January 2025                                     F. Palombini
                                                              Ericsson AB
-                                                        26 February 2024
+                                                             6 July 2024
 
 
  The Group Object Security for Constrained RESTful Environments (Group
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 August 2024.
+   This Internet-Draft will expire on 7 January 2025.
 
 Copyright Notice
 
@@ -1610,17 +1610,16 @@ Table of Contents
               Dijk, E., Wang, C., and M. Tiloca, "Group Communication
               for the Constrained Application Protocol (CoAP)", Work in
               Progress, Internet-Draft, draft-ietf-core-groupcomm-bis-
-              10, 23 October 2023,
-              <https://datatracker.ietf.org/doc/html/draft-ietf-core-
-              groupcomm-bis-10>.
+              11, 24 April 2024, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-core-groupcomm-bis-11>.
 
    [I-D.ietf-core-oscore-groupcomm]
               Tiloca, M., Selander, G., Palombini, F., Mattsson, J. P.,
-              and J. Park, "Group Object Security for Constrained
+              and R. Höglund, "Group Object Security for Constrained
               RESTful Environments (Group OSCORE)", Work in Progress,
-              Internet-Draft, draft-ietf-core-oscore-groupcomm-20, 2
-              September 2023, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-core-oscore-groupcomm-20>.
+              Internet-Draft, draft-ietf-core-oscore-groupcomm-21, 4
+              March 2024, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-core-oscore-groupcomm-21>.
 
    [NIST-800-56A]
               Barker, E., Chen, L., Roginsky, A., Vassilev, A., and R.
@@ -1728,25 +1727,25 @@ Table of Contents
               Security for Constrained Environments (OSCORE) Profile for
               Authentication and Authorization for Constrained
               Environments (ACE)", Work in Progress, Internet-Draft,
-              draft-ietf-ace-edhoc-oscore-profile-03, 23 October 2023,
+              draft-ietf-ace-edhoc-oscore-profile-04, 4 March 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-ace-
-              edhoc-oscore-profile-03>.
+              edhoc-oscore-profile-04>.
 
    [I-D.ietf-cose-cbor-encoded-cert]
               Mattsson, J. P., Selander, G., Raza, S., Höglund, J., and
               M. Furuhed, "CBOR Encoded X.509 Certificates (C509
               Certificates)", Work in Progress, Internet-Draft, draft-
-              ietf-cose-cbor-encoded-cert-07, 20 October 2023,
+              ietf-cose-cbor-encoded-cert-09, 4 March 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-cose-
-              cbor-encoded-cert-07>.
+              cbor-encoded-cert-09>.
 
    [I-D.tiloca-core-oscore-discovery]
               Tiloca, M., Amsüss, C., and P. Van der Stok, "Discovery of
               OSCORE Groups with the CoRE Resource Directory", Work in
               Progress, Internet-Draft, draft-tiloca-core-oscore-
-              discovery-14, 8 September 2023,
+              discovery-15, 4 March 2024,
               <https://datatracker.ietf.org/doc/html/draft-tiloca-core-
-              oscore-discovery-14>.
+              oscore-discovery-15>.
 
    [NIST-800-207]
               Rose, S., Borchert, O., Mitchell, S., and S. Connelly,
@@ -1870,9 +1869,10 @@ Acknowledgments
    Preuß Mattsson, Dave Robin, Jim Schaad, and Göran Selander for their
    comments and feedback.
 
-   The work on this document has been partly supported by VINNOVA and
-   the Celtic-Next project CRITISEC; and by the H2020 project SIFIS-Home
-   (Grant agreement 952652).
+   The work on this document has been partly supported by the Sweden's
+   Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and
+   CYPRESS; and by the H2020 project SIFIS-Home (Grant agreement
+   952652).
 
 Authors' Addresses
 
