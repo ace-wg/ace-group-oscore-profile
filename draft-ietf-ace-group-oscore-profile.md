@@ -192,64 +192,64 @@ In particular, the process of joining the OSCORE group through the respective Gr
 An overview of the protocol flow for this profile is shown in {{fig-protocol-overview}}, where it is assumed that both the Resource Servers RS1 and RS2 are associated with the same Authorization Server AS. It is also assumed that the Client C, as well as RS1 and RS2 have previously joined an OSCORE group with Group Identifier (gid) 0xabcd0000, and that they got assigned Sender ID (sid) 0x00, 0x01, and 0x02 in the group, respectively. The names of messages coincide with those of {{RFC9200}} when applicable, and messages in square brackets are optional.
 
 ~~~~~~~~~~~ aasvg
-C                            RS1          RS2                        AS
-| [--- Resource Request --->] |            |                          |
-|                             |            |                          |
-| [<----- AS Request -------] |            |                          |
-|       Creation Hints        |            |                          |
-|                             |            |                          |
-|-------- POST /token ----------------------------------------------->|
-|  (aud: "RS1", sid: 0x00,    |            |                          |
-|   gid: 0xabcd0000, ...)     |            |                          |
-|                             |            |                          |
-|                             |            |                          |
-|<---------------------------------------------- Access Token T1 -----|
-|                             |               + Access Information    |
-|                             |            |                          |
-|---- POST /authz-info ------>|            |                          |
-|    (access_token: T1)       |            |                          |
-|                             |            |                          |
-|<------ 2.01 Created --------|            |                          |
-|                             |            |                          |
-|-------- POST /token ----------------------------------------------->|
-|  (aud: "RS2", sid: 0x00,    |            |                          |
-|   gid: 0xabcd0000, ...)     |            |                          |
-|                             |            |                          |
-|                             |            |                          |
-|<---------------------------------------------- Access Token T2 -----|
-|                             |               + Access Information    |
-|                             |            |                          |
-|----- POST /authz-info ------------------>|                          |
-|     (access_token: T2)      |            |                          |
-|                             |            |                          |
-|                             |            |                          |
-|<------ 2.01 Created ---------------------|                          |
-|                             |            |                          |
-|-- Group OSCORE Request -+-->|            |                          |
-|    (kid: 0x00,           \  |            |                          |
-|     gid: 0xabcd0000)      \------------->|                          |
-|                             |            |                          |
-|                          /proof-of-possession/                      |
-|                             |            |                          |
-|                             |            |                          |
-|<-- Group OSCORE Response ---|            |                          |
-|       (kid: 0x01)           |            |                          |
-|                             |            |                          |
-/proof-of-possession/         |            |                          |
-|                             |            |                          |
-/Mutual authentication        |            |                          |
- between C and RS1/           |            |                          |
-|                             |            |                          |
-|                             |            |                          |
-|<-- Group OSCORE Response ----------------|                          |
-|       (kid: 0x02)           |            |                          |
-|                             |            |                          |
-/proof-of-possession/         |            |                          |
-|                             |            |                          |
-/Mutual authentication        |            |                          |
- between C and RS2/           |            |                          |
-|                             |            |                          |
-|            ...              |            |                          |
+C                             RS1         RS2                        AS
+|                              |           |                          |
+| [--- Resource Request ---->] |           |                          |
+|                              |           |                          |
+| [<------ AS Request -------] |           |                          |
+|       Creation Hints         |           |                          |
+|                              |           |                          |
++-------- POST /token ----------------------------------------------->|
+|   (aud: "RS1", sid: 0x00,    |           |                          |
+|    gid: 0xabcd0000, ...)     |           |                          |
+|                              |           |                          |
+|<---------------------------------------------- Access Token T1 -----+
+|                              |               + Access Information   |
+|                              |           |                          |
++----- POST /authz-info ------>|           |                          |
+|     (access_token: T1)       |           |                          |
+|                              |           |                          |
+|<------- 2.01 Created --------+           |                          |
+|                              |           |                          |
++-------- POST /token ----------------------------------------------->|
+|   (aud: "RS2", sid: 0x00,    |           |                          |
+|    gid: 0xabcd0000, ...)     |           |                          |
+|                              |           |                          |
+|<---------------------------------------------- Access Token T2 -----+
+|                              |              + Access Information    |
+|                              |           |                          |
++----- POST /authz-info ------------------>|                          |
+|     (access_token: T2)       |           |                          |
+|                              |           |                          |
+|<------ 2.01 Created ---------------------+                          |
+|                              |           |                          |
++-- Group OSCORE Request --+-->|           |                          |
+|    (kid: 0x00,            \  |           |                          |
+|     gid: 0xabcd0000)       \ |           |                          |
+|                             `----------->|                          |
+|                              |           |                          |
+|                           /proof-of-possession/                     |
+|                              |           |                          |
+|<--- Group OSCORE Response ---+           |                          |
+|        (kid: 0x01)           |           |                          |
+|                              |           |                          |
+/proof-of-possession/          |           |                          |
+|                              |           |                          |
+|                              |           |                          |
+/Mutual authentication         |           |                          |
+ between C and RS1/            |           |                          |
+|                              |           |                          |
+|<--- Group OSCORE Response ---------------+                          |
+|        (kid: 0x02)           |           |                          |
+|                              |           |                          |
+/proof-of-possession/          |           |                          |
+|                              |           |                          |
+|                              |           |                          |
+/Mutual authentication         |           |                          |
+ between C and RS2/            |           |                          |
+|                              |           |                          |
+|            ...               |           |                          |
+|                              |           |                          |
 ~~~~~~~~~~~
 {: #fig-protocol-overview title="Protocol Overview." artwork-align="center"}
 
