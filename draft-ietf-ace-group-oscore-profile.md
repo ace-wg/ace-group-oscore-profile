@@ -949,6 +949,10 @@ This appendix lists the specifications of this profile based on the requirements
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
 
+## Version -01 to -02 ## {#sec-01-02}
+
+* Editorial fixes and improvements.
+
 ## Version -00 to -01 ## {#sec-00-01}
 
 * Deleting an Access Token does not delete the Group OSCORE Security Context.
