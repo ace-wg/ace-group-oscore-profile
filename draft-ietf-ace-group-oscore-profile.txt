@@ -921,8 +921,8 @@ Table of Contents
    *  The Context ID input specified in the 'context_id' parameter of
       the Access Token Request.  If the Access Token is a CWT, the
       content of the 'context_id' parameter MUST be specified in the
-      'contextId_input' claim of the Access Token, defined in
-      Section 3.2.2 of this document.
+      'context_id' claim of the Access Token, defined in Section 3.2.2
+      of this document.
 
    *  The authentication credential that the client uses in the OSCORE
       group and specified in the 'req_cnf' parameter of the Access Token
@@ -974,7 +974,7 @@ Table of Contents
          }
        }
      "salt_input" : h'00',
-     "contextId_input" : h'abcd0000'
+     "context_id" : h'abcd0000'
    }
 
           Figure 5: Example CWT Claims Set with OSCORE Parameters.
@@ -1047,9 +1047,9 @@ Table of Contents
 
 3.2.2.  Context ID Input Claim
 
-   The 'contextId_input' claim provides a value that the Client
-   requesting the Access Token wishes to use with the RS, as a hint for
-   a security context.
+   The 'context_id' claim provides a value that the Client requesting
+   the Access Token wishes to use with the RS, as a hint for a security
+   context.
 
    This parameter specifies the value of the Context ID input, encoded
    as a CBOR byte string.
@@ -1118,12 +1118,12 @@ Table of Contents
    The RS MUST verify the validity of the Access Token as defined in
    Section 5.10.1 of [RFC9200], with the following additions.
 
-   *  The RS MUST check that the claims 'salt_input', 'contextId_input',
-      and 'cnf' are included in the Access Token.
+   *  The RS MUST check that the claims 'salt_input', 'context_id', and
+      'cnf' are included in the Access Token.
 
-   *  The RS considers: the content of the 'contextId_input' claim as
-      the GID of the OSCORE group; the content of the 'salt_input' claim
-      as the Sender ID that the Client has in the group; and the inner
+   *  The RS considers: the content of the 'context_id' claim as the GID
+      of the OSCORE group; the content of the 'salt_input' claim as the
+      Sender ID that the Client has in the group; and the inner
       confirmation value of the 'cnf' claim as the authentication
       credential that the Client uses in the group.
 
@@ -1354,15 +1354,15 @@ Table of Contents
    as specified in Table 2, using the given integer abbreviation for the
    map key.
 
-                +=================+==========+============+
-                | Claim name      | CBOR Key | Value Type |
-                +=================+==========+============+
-                | salt_input      | TBD      | bstr       |
-                +-----------------+----------+------------+
-                | contextId_input | TBD      | bstr       |
-                +-----------------+----------+------------+
+                  +============+==========+============+
+                  | Claim name | CBOR Key | Value Type |
+                  +============+==========+============+
+                  | salt_input | TBD      | bstr       |
+                  +------------+----------+------------+
+                  | context_id | TBD      | bstr       |
+                  +------------+----------+------------+
 
-                   Table 2: CBOR Mappings for New Claims.
+                  Table 2: CBOR Mappings for New Claims.
 
 8.  Security Considerations
 
@@ -1578,9 +1578,9 @@ Table of Contents
 
 
 
-   *  Claim Name: "contextId_input"
+   *  Claim Name: "context_id"
 
-   *  Claim Description: Client context id input
+   *  Claim Description: Client provided Context ID
 
    *  JWT Claim Name: "N/A"
 
@@ -1854,6 +1854,8 @@ Appendix B.  Document Updates
    This section is to be removed before publishing as an RFC.
 
 B.1.  Version -01 to -02
+
+   *  Renamed the claim 'contextId_input' to 'context_id'.
 
    *  Fixes in the IANA considerations.
 
