@@ -924,7 +924,7 @@ This appendix lists the specifications of this profile based on the requirements
 
 * If introspection is supported, specify the communication and security protocol for introspection: HTTP/CoAP (+ TLS/DTLS/OSCORE).
 
-* Specify the communication and security protocol for interactions between client and AS: HTTP/CoAP (+ TLS/DTLS/OSCORE).
+* Specify the communication and security protocol for interactions between the client and AS: HTTP/CoAP (+ TLS/DTLS/OSCORE).
 
 * Specify if/how the authz-info endpoint is protected, including how error responses are protected: Not protected.
 
