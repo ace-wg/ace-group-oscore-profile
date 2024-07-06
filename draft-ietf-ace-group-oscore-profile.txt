@@ -1333,32 +1333,36 @@ Table of Contents
 7.  CBOR Mappings
 
    The new parameters defined in this document MUST be mapped to CBOR
-   types as specified in Figure 7, using the given integer abbreviation
+   types as specified in Table 1, using the given integer abbreviation
    for the map key.
 
-            +------------------------+----------+------------+
+            +========================+==========+============+
             | Parameter name         | CBOR Key | Value Type |
-            +------------------------+----------+------------+
+            +========================+==========+============+
             | context_id             | TBD      | bstr       |
+            +------------------------+----------+------------+
             | salt_input             | TBD      | bstr       |
+            +------------------------+----------+------------+
             | client_cred_verify     | TBD      | bstr       |
+            +------------------------+----------+------------+
             | client_cred_verify_mac | TBD      | bstr       |
             +------------------------+----------+------------+
 
-                Figure 7: CBOR Mappings for New Parameters.
+                Table 1: CBOR Mappings for New Parameters.
 
    The new claims defined in this document MUST be mapped to CBOR types
-   as specified in Figure 8, using the given integer abbreviation for
-   the map key.
+   as specified in Table 2, using the given integer abbreviation for the
+   map key.
 
-                +-----------------+----------+------------+
+                +=================+==========+============+
                 | Claim name      | CBOR Key | Value Type |
-                +-----------------+----------+------------+
+                +=================+==========+============+
                 | salt_input      | TBD      | bstr       |
+                +-----------------+----------+------------+
                 | contextId_input | TBD      | bstr       |
                 +-----------------+----------+------------+
 
-                  Figure 8: CBOR Mappings for New Claims.
+                   Table 2: CBOR Mappings for New Claims.
 
 8.  Security Considerations
 

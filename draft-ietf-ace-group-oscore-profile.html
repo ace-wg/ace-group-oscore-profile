@@ -2166,41 +2166,71 @@ If this is not the case, the RS <span class="bcp14">MUST</span> request the Clie
       <h2 id="name-cbor-mappings">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-cbor-mappings" class="section-name selfRef">CBOR Mappings</a>
       </h2>
-<p id="section-7-1">The new parameters defined in this document <span class="bcp14">MUST</span> be mapped to CBOR types as specified in <a href="#fig-cbor-mappings-parameters" class="auto internal xref">Figure 7</a>, using the given integer abbreviation for the map key.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<span id="name-cbor-mappings-for-new-param"></span><div id="fig-cbor-mappings-parameters">
-<figure id="figure-7">
-        <div class="alignCenter art-text artwork" id="section-7-2.1">
-<pre>
-+------------------------+----------+------------+
-| Parameter name         | CBOR Key | Value Type |
-+------------------------+----------+------------+
-| context_id             | TBD      | bstr       |
-| salt_input             | TBD      | bstr       |
-| client_cred_verify     | TBD      | bstr       |
-| client_cred_verify_mac | TBD      | bstr       |
-+------------------------+----------+------------+
-</pre>
-</div>
-<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
+<p id="section-7-1">The new parameters defined in this document <span class="bcp14">MUST</span> be mapped to CBOR types as specified in <a href="#_table-cbor-mappings-parameters" class="auto internal xref">Table 1</a>, using the given integer abbreviation for the map key.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<span id="name-cbor-mappings-for-new-param"></span><div id="_table-cbor-mappings-parameters">
+<table class="center" id="table-1">
+        <caption>
+<a href="#table-1" class="selfRef">Table 1</a>:
 <a href="#name-cbor-mappings-for-new-param" class="selfRef">CBOR Mappings for New Parameters.</a>
-        </figcaption></figure>
+        </caption>
+<thead>
+          <tr>
+            <th class="text-left" rowspan="1" colspan="1">Parameter name</th>
+            <th class="text-left" rowspan="1" colspan="1">CBOR Key</th>
+            <th class="text-left" rowspan="1" colspan="1">Value Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">context_id</td>
+            <td class="text-left" rowspan="1" colspan="1">TBD</td>
+            <td class="text-left" rowspan="1" colspan="1">bstr</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">salt_input</td>
+            <td class="text-left" rowspan="1" colspan="1">TBD</td>
+            <td class="text-left" rowspan="1" colspan="1">bstr</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">client_cred_verify</td>
+            <td class="text-left" rowspan="1" colspan="1">TBD</td>
+            <td class="text-left" rowspan="1" colspan="1">bstr</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">client_cred_verify_mac</td>
+            <td class="text-left" rowspan="1" colspan="1">TBD</td>
+            <td class="text-left" rowspan="1" colspan="1">bstr</td>
+          </tr>
+        </tbody>
+      </table>
 </div>
-<p id="section-7-3">The new claims defined in this document <span class="bcp14">MUST</span> be mapped to CBOR types as specified in <a href="#fig-cbor-mappings-claims" class="auto internal xref">Figure 8</a>, using the given integer abbreviation for the map key.<a href="#section-7-3" class="pilcrow">¶</a></p>
-<span id="name-cbor-mappings-for-new-claim"></span><div id="fig-cbor-mappings-claims">
-<figure id="figure-8">
-        <div class="alignCenter art-text artwork" id="section-7-4.1">
-<pre>
-+-----------------+----------+------------+
-| Claim name      | CBOR Key | Value Type |
-+-----------------+----------+------------+
-| salt_input      | TBD      | bstr       |
-| contextId_input | TBD      | bstr       |
-+-----------------+----------+------------+
-</pre>
-</div>
-<figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
+<p id="section-7-3">The new claims defined in this document <span class="bcp14">MUST</span> be mapped to CBOR types as specified in <a href="#_table-cbor-mappings-claims" class="auto internal xref">Table 2</a>, using the given integer abbreviation for the map key.<a href="#section-7-3" class="pilcrow">¶</a></p>
+<span id="name-cbor-mappings-for-new-claim"></span><div id="_table-cbor-mappings-claims">
+<table class="center" id="table-2">
+        <caption>
+<a href="#table-2" class="selfRef">Table 2</a>:
 <a href="#name-cbor-mappings-for-new-claim" class="selfRef">CBOR Mappings for New Claims.</a>
-        </figcaption></figure>
+        </caption>
+<thead>
+          <tr>
+            <th class="text-left" rowspan="1" colspan="1">Claim name</th>
+            <th class="text-left" rowspan="1" colspan="1">CBOR Key</th>
+            <th class="text-left" rowspan="1" colspan="1">Value Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">salt_input</td>
+            <td class="text-left" rowspan="1" colspan="1">TBD</td>
+            <td class="text-left" rowspan="1" colspan="1">bstr</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">contextId_input</td>
+            <td class="text-left" rowspan="1" colspan="1">TBD</td>
+            <td class="text-left" rowspan="1" colspan="1">bstr</td>
+          </tr>
+        </tbody>
+      </table>
 </div>
 </section>
 </div>
