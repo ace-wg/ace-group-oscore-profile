@@ -796,9 +796,9 @@ This document has the following actions for IANA.
 
 Note to RFC Editor: Please replace "{{&SELF}}" with the RFC number of this document and delete this paragraph.
 
-## ACE Profile Registry ## {#iana-ace-oauth-profile}
+## ACE Profiles Registry ## {#iana-ace-oauth-profile}
 
-IANA is asked to add the following entry to the "ACE Profile" registry within the "Authentication and Authorization for Constrained Environments (ACE)" registry group, following the procedure specified in {{Section 8.8 of RFC9200}}.
+IANA is asked to add the following entry to the "ACE Profiles" registry within the "Authentication and Authorization for Constrained Environments (ACE)" registry group, following the procedure specified in {{Section 8.8 of RFC9200}}.
 
 * Name: coap_group_oscore
 * Description: Profile to secure communications between constrained nodes using the Authentication and Authorization for Constrained Environments framework, by enabling authentication and fine-grained authorization of members of an OSCORE group that use a pre-established Group OSCORE Security Context to communicate with Group OSCORE.
@@ -811,29 +811,29 @@ IANA is asked to add the following entries to the "OAuth Parameters" registry, f
 
 * Name: "context_id"
 * Parameter Usage Location: token request
-* Change Controller: IESG
-* Specification Document(s): {{context_id}} of {{&SELF}}
+* Change Controller: IETF
+* Reference: {{context_id}} of {{&SELF}}
 
-&nbsp;
+<br>
 
 * Name: "salt_input"
 * Parameter Usage Location: token request
-* Change Controller: IESG
-* Specification Document(s): {{salt_input}} of {{&SELF}}
+* Change Controller: IETF
+* Reference: {{salt_input}} of {{&SELF}}
 
-&nbsp;
+<br>
 
 * Name: "client_cred_verify"
 * Parameter Usage Location: token request
-* Change Controller: IESG
-* Specification Document(s): {{client_cred_verify}} of {{&SELF}}
+* Change Controller: IETF
+* Reference: {{client_cred_verify}} of {{&SELF}}
 
-&nbsp;
+<br>
 
 * Name: "client_cred_verify_mac"
 * Parameter Usage Location: token request
-* Change Controller: IESG
-* Specification Document(s): {{client_cred_verify_mac}} of {{&SELF}}
+* Change Controller: IETF
+* Reference: {{client_cred_verify_mac}} of {{&SELF}}
 
 ## OAuth Parameters CBOR Mappings Registry ## {#iana-token-cbor-mappings}
 
@@ -844,21 +844,21 @@ IANA is asked to add the following entries to the "OAuth Parameters CBOR Mapping
 * Value Type: bstr
 * Reference: {{context_id}} of {{&SELF}}
 
-&nbsp;
+<br>
 
 * Name: "salt_input"
 * CBOR Key: TBD
 * Value Type: bstr
 * Reference: {{salt_input}} of {{&SELF}}
 
-&nbsp;
+<br>
 
 * Name: "client_cred_verify"
 * CBOR Key: TBD
 * Value Type: bstr
 * Reference: {{client_cred_verify}} of {{&SELF}}
 
-&nbsp;
+<br>
 
 * Name: "client_cred_verify_mac"
 * CBOR Key: TBD
@@ -873,19 +873,19 @@ IANA is asked to add the following entries to the "CBOR Web Token (CWT) Claims" 
 * Claim Description: Client provided salt input
 * JWT Claim Name: "N/A"
 * Claim Key: TBD
-* Claim Value Type(s): bstr
-* Change Controller: IESG
-* Specification Document(s): {{salt_input_claim}} of {{&SELF}}
+* Claim Value Type: bstr
+* Change Controller: IETF
+* Reference: {{salt_input_claim}} of {{&SELF}}
 
-&nbsp;
+<br>
 
 * Claim Name: "contextId_input"
 * Claim Description: Client context id input
 * JWT Claim Name: "N/A"
 * Claim Key: TBD
-* Claim Value Type(s): bstr
-* Change Controller: IESG
-* Specification Document(s): {{contextId_input_claim}} of {{&SELF}}
+* Claim Value Type: bstr
+* Change Controller: IETF
+* Reference: {{contextId_input_claim}} of {{&SELF}}
 
 ## TLS Exporter Label Registry ## {#iana-tls-exporter-label}
 
@@ -930,6 +930,8 @@ This appendix lists the specifications of this profile based on the requirements
 {:removeinrfc}
 
 ## Version -01 to -02 ## {#sec-01-02}
+
+* Fixes in the IANA considerations.
 
 * Editorial fixes and improvements.
 
