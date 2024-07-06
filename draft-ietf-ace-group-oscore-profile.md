@@ -771,6 +771,50 @@ If the RS has an Access Token for the Client but no actions are authorized on th
 
 If the RS has an Access Token for the Client but the requested action is not authorized, the RS MUST reject the request and MUST reply to the Client with a 4.05 (Method Not Allowed) error response.
 
+## Storing Multiple Access Tokens per PoP-Key
+
+According to {{Section 5.10.1 of RFC9200}}, an RS is recommended to store only one Access Token per proof-of-possession key (pop-key), and to supersede such an Access Token when receiving and successfully validating a new one bound to the same pop-key.
+
+However, when using the profile specified in this document, an RS might practically have to deviate from that recommendation and store multiple Access Tokens bound to the same pop-key, i.e., to the same public authentication credential of a Client.
+
+For example, this can occur in the following cases.
+
+* The RS is the single RS associated with an audience AUD1, and also belongs to a group-audience AUD2 (see {{Section 6.9 of RFC9200}}).
+
+  A Client C with public authentication credential AUTH_CRED_C can request two Access Tokens T1 and T2 from the AS, such that:
+
+  - T1 targets AUD1 and has scope SCOPE1;
+
+  - T2 targets AUD2 and has scope SCOPE2 different from SCOPE1.
+
+  Both T1 and T2 are going to be bound to the same pop-key specified by AUTH_CRED_C.
+
+  In fact, if the AS issues Access Tokens targeting a group-audience, then the above can possibly be the case when using any transport profile of ACE that supports asymmetric pop-keys. If so, the RS should be ready to store at minimum one Access Token per pop-key per audience it belongs to.
+
+* The RS is a member of two OSCORE groups G1 and G2. In particular, both the same format of public authentication credentials is used in both OSCORE groups.
+
+  A Client C with public authentication credential AUTH_CRED_C of such format, also member of the two OSCORE group G1 and G2, can conveniently use AUTH_CRED_C as its public authentication credential in both those groups. Therefore, C can request two Access Tokens T1 and T2 from the AS, such that:
+
+  - T1 targets RS and reflects the membership of C in G1, as per its claims "context_id" and "salt_input";
+
+  - T2 targets RS and reflects the membership of C in G2, as per its claims "context_id" and "salt_input".
+
+  Both T1 and T2 are going to be bound to the same pop-key specified by AUTH_CRED_C.
+
+  When using the profile specified in this document, the RS should be ready to store at minimum one Access Token per pop-key per OSCORE group it is a member of (although, per the previous point, even this can be limiting).
+
+* The RS uses both the profile specified in this document and a different transport profile of ACE that also relies on asymmetric pop-keys, e.g., the EDHOC and OSCORE profile defined in {{I-D.ietf-ace-edhoc-oscore-profile}}.
+
+  In such a case, a Client C with public authentication credential AUTH_CRED_C can request two Access Tokens T1 and T2 from the AS, such that:
+
+  - T1 targets RS and is meant to be used according to the Group OSCORE profile defined in this document;
+
+  - T2 targets RS and is meant to be used according to the EDHOC and OSCORE profile defined in {{I-D.ietf-ace-edhoc-oscore-profile}}.
+
+  Both T1 and T2 are going to be bound to the same pop-key specified by AUTH_CRED_C.
+
+  When using multiple transport profiles of ACE that rely on asymmetric pop-keys, it is reasonable that the RS is capable to store at minimum one Access Token per pop-key per used profile (although, per the previous points, even this can be limiting).
+
 # Change of Client's Authentication Credential in the Group ## {#sec-client-public-key-change}
 
 During its membership in the OSCORE group, the Client might change the authentication credential that it uses in the group. When this happens, the Client uploads the new authentication credential to the Group Manager, as defined in {{Section 9.4 of I-D.ietf-ace-key-groupcomm-oscore}}.
@@ -1023,6 +1067,8 @@ kccs = 14
 * Revised examples.
 
 * Placeholders and early direction for dynamic update of access rights.
+
+* Added text on storing multiple Access Tokens per PoP-Key on the RS.
 
 * Fixes in the IANA considerations.
 
