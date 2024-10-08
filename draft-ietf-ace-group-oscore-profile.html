@@ -11,22 +11,22 @@
 <meta content="
        This document specifies a profile for the Authentication and Authorization for Constrained Environments (ACE) framework. The profile uses Group Object Security for Constrained RESTful Environments (Group OSCORE) to provide communication security between a Client and one or multiple Resource Servers that are members of an OSCORE group. The profile securely binds an OAuth 2.0 Access Token to the public key of the Client associated with the private key used by that Client in the OSCORE group. The profile uses Group OSCORE to achieve server authentication, as well as proof-of-possession for the Client's public key. Also, it provides proof of the Client's membership to the OSCORE group by binding the Access Token to information from the Group OSCORE Security Context, thus allowing the Resource Server(s) to verify the Client's membership upon receiving a message protected with Group OSCORE from the Client. Effectively, the profile enables fine-grained access control paired with secure group communication, in accordance with the Zero Trust principles. 
     " name="description">
-<meta content="xml2rfc 3.22.0" name="generator">
+<meta content="xml2rfc 3.23.2" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-ace-group-oscore-profile-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.22.0
-    Python 3.12.3
+  xml2rfc 3.23.2
+    Python 3.12.6
     ConfigArgParse 1.7
-    google-i18n-address 3.1.0
+    google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.4
     lxml 4.9.4
-    platformdirs 4.2.2
+    platformdirs 4.3.6
     pycountry 22.3.5
     PyYAML 6.0.1
     requests 2.32.3
-    setuptools 69.5.1
+    setuptools 70.3.0
     wcwidth 0.2.13
 -->
 <link href="draft-ietf-ace-group-oscore-profile.xml" rel="alternate" type="application/rfc+xml">
@@ -1026,11 +1026,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Group OSCORE Profile of ACE</td>
-<td class="right">July 2024</td>
+<td class="right">October 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Tiloca, et al.</td>
-<td class="center">Expires 7 January 2025</td>
+<td class="center">Expires 11 April 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1043,12 +1043,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-ace-group-oscore-profile-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-07-06" class="published">6 July 2024</time>
+<time datetime="2024-10-08" class="published">8 October 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-01-07">7 January 2025</time></dd>
+<dd class="expires"><time datetime="2025-04-11">11 April 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1101,7 +1101,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 7 January 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 11 April 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1336,7 +1336,7 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
           <li class="normal" id="section-1.1-3.2">
             <p id="section-1.1-3.2.1">Authentication credential, as the set of information associated with an entity, including that entity's public key and parameters associated with the public key. Examples of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) <span>[<a href="#RFC8392" class="cite xref">RFC8392</a>]</span>, X.509 certificates <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, and C509 certificates <span>[<a href="#I-D.ietf-cose-cbor-encoded-cert" class="cite xref">I-D.ietf-cose-cbor-encoded-cert</a>]</span>.<a href="#section-1.1-3.2.1" class="pilcrow">¶</a></p>
 <p id="section-1.1-3.2.2">
-Members of an OSCORE group have an associated authentication credential in the format used within the group. As per <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-21#section-2.4" class="relref">Section 2.4</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>, an authentication credential provides the public key as well as the comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).<a href="#section-1.1-3.2.2" class="pilcrow">¶</a></p>
+Members of an OSCORE group have an associated authentication credential in the format used within the group. As per <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-2.4" class="relref">Section 2.4</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>, an authentication credential provides the public key as well as the comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).<a href="#section-1.1-3.2.2" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-1.1-4">Readers are expected to be familiar with the terms and concepts described in the ACE framework for authentication and authorization <span>[<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>, as well as in the OSCORE profile of ACE <span>[<a href="#RFC9203" class="cite xref">RFC9203</a>]</span>. The terminology for entities in the considered architecture is defined in OAuth 2.0 <span>[<a href="#RFC6749" class="cite xref">RFC6749</a>]</span>. In particular, this includes Client (C), Resource Server (RS), and Authorization Server (AS).<a href="#section-1.1-4" class="pilcrow">¶</a></p>
@@ -1344,7 +1344,7 @@ Members of an OSCORE group have an associated authentication credential in the f
 <p id="section-1.1-6">Additionally, this document makes use of the following terminology.<a href="#section-1.1-6" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1.1-7.1">
-            <p id="section-1.1-7.1.1">Pairwise-only group: an OSCORE group that uses only the pairwise mode of Group OSCORE (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-21#section-9" class="relref">Section 9</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-1.1-7.1.1" class="pilcrow">¶</a></p>
+            <p id="section-1.1-7.1.1">Pairwise-only group: an OSCORE group that uses only the pairwise mode of Group OSCORE (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-9" class="relref">Section 9</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-1.1-7.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-1.1-8">Examples throughout this document are expressed in CBOR diagnostic notation as defined in <span><a href="https://rfc-editor.org/rfc/rfc8949#section-8" class="relref">Section 8</a> of [<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> and <span><a href="https://rfc-editor.org/rfc/rfc8610#appendix-G" class="relref">Appendix G</a> of [<a href="#RFC8610" class="cite xref">RFC8610</a>]</span>. Diagnostic notation comments are often used to provide a textual representation of the numeric parameter names and values.<a href="#section-1.1-8" class="pilcrow">¶</a></p>
@@ -1600,7 +1600,7 @@ Members of an OSCORE group have an associated authentication credential in the f
 <p id="section-3.1-3.3.2">
 At the time of writing this specification, acceptable formats of authentication credentials in Group OSCORE are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) <span>[<a href="#RFC8392" class="cite xref">RFC8392</a>]</span>, X.509 certificates <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, and C509 certificates <span>[<a href="#I-D.ietf-cose-cbor-encoded-cert" class="cite xref">I-D.ietf-cose-cbor-encoded-cert</a>]</span>.<a href="#section-3.1-3.3.2" class="pilcrow">¶</a></p>
 <p id="section-3.1-3.3.3">
-Further formats may be available in the future, and would be acceptable to use as long as they comply with the criteria compiled in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-21#section-2.4" class="relref">Section 2.4</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>. In particular, an authentication credential has to explicitly include the public key as well as the comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).<a href="#section-3.1-3.3.3" class="pilcrow">¶</a></p>
+Further formats may be available in the future, and would be acceptable to use as long as they comply with the criteria compiled in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-2.4" class="relref">Section 2.4</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>. In particular, an authentication credential has to explicitly include the public key as well as the comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).<a href="#section-3.1-3.3.3" class="pilcrow">¶</a></p>
 <p id="section-3.1-3.3.4">
 [ As to CWTs and CCSs, the CWT Confirmation Methods 'kcwt' and 'kccs' are under pending registration requested by draft-ietf-ace-edhoc-oscore-profile. ]<a href="#section-3.1-3.3.4" class="pilcrow">¶</a></p>
 <p id="section-3.1-3.3.5">
@@ -2077,7 +2077,7 @@ This parameter is meant to specify the unique identifier of a token series. In p
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-client-rs-communication" class="section-name selfRef">Client-RS Communication</a>
       </h2>
 <p id="section-4-1">This section details the POST request and response to the /authz-info endpoint between the Client and the RS.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">The proof-of-possession required to bind the Access Token to the Client is explicitly performed when the RS receives and verifies a request from the Client protected with Group OSCORE, either with the group mode (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-21#section-8" class="relref">Section 8</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>) or with the pairwise mode (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-21#section-9" class="relref">Section 9</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-4-2" class="pilcrow">¶</a></p>
+<p id="section-4-2">The proof-of-possession required to bind the Access Token to the Client is explicitly performed when the RS receives and verifies a request from the Client protected with Group OSCORE, either with the group mode (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-8" class="relref">Section 8</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>) or with the pairwise mode (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-9" class="relref">Section 9</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-4-2" class="pilcrow">¶</a></p>
 <p id="section-4-3">In particular, the RS uses the Client's public key bound to the Access Token, either when verifying the signature of the request (if protected with the group mode), or when verifying the request as integrity-protected with pairwise keying material derived from the two peers' authentication credentials and asymmetric keys (if protected with the pairwise mode). In either case, the RS also authenticates the Client.<a href="#section-4-3" class="pilcrow">¶</a></p>
 <p id="section-4-4">Similarly, when receiving a protected response from the RS, the Client uses the RS's public key either when verifying the signature of the response (if protected with the group mode), or when verifying the response as integrity-protected with pairwise keying material derived from the two peers' authentication credentials and asymmetric keys (if protected with the pairwise mode). In either case, the Client also authenticates the RS. Mutual authentication is only achieved after the client has successfully verified the protected response from the RS.<a href="#section-4-4" class="pilcrow">¶</a></p>
 <p id="section-4-5">Therefore, an attacker using a stolen Access Token cannot generate a valid Group OSCORE message as protected through the Client's private key, and thus cannot prove possession of the pop-key bound to the Access Token. Also, if a Client legitimately owns an Access Token but has not joined the OSCORE group, it cannot generate a valid Group OSCORE message, as it does not store the necessary keying material shared among the group members.<a href="#section-4-5" class="pilcrow">¶</a></p>
@@ -2123,10 +2123,10 @@ If this is not the case, the RS <span class="bcp14">MUST</span> request the Clie
 <p id="section-4.2-6">The RS <span class="bcp14">MUST</span> keep this association up-to-date over time, as the triple (GID, SaltInput, AuthCred) associated with the Access Token might change. In particular:<a href="#section-4.2-6" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.2-7.1">
-            <p id="section-4.2-7.1.1">If the OSCORE group is rekeyed (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-21#section-3.2" class="relref">Section 3.2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span> and <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-16#section-11" class="relref">Section 11</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>), the Group Identifier also changes in the group, and the new one replaces the current 'GID' value in the triple (GID, SaltInput, AuthCred).<a href="#section-4.2-7.1.1" class="pilcrow">¶</a></p>
+            <p id="section-4.2-7.1.1">If the OSCORE group is rekeyed (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-3.2" class="relref">Section 3.2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span> and <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-16#section-11" class="relref">Section 11</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>), the Group Identifier also changes in the group, and the new one replaces the current 'GID' value in the triple (GID, SaltInput, AuthCred).<a href="#section-4.2-7.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.2-7.2">
-            <p id="section-4.2-7.2.1">If the Client requests and obtains a new OSCORE Sender ID from the Group Manager (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-21#section-2.6.3.1" class="relref">Section 2.6.3.1</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span> and <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-16#section-9.2" class="relref">Section 9.2</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>), the new Sender ID replaces the current 'SaltInput' value in the triple (GID, SaltInput, AuthCred).<a href="#section-4.2-7.2.1" class="pilcrow">¶</a></p>
+            <p id="section-4.2-7.2.1">If the Client requests and obtains a new OSCORE Sender ID from the Group Manager (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-2.6.3.1" class="relref">Section 2.6.3.1</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span> and <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-16#section-9.2" class="relref">Section 9.2</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>), the new Sender ID replaces the current 'SaltInput' value in the triple (GID, SaltInput, AuthCred).<a href="#section-4.2-7.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-4.2-8">As defined in <a href="#sec-client-public-key-change" class="auto internal xref">Section 5</a>, a possible change of the Client's authentication credential requires the Client to upload to the RS a new Access Token bound to the new authentication credential.<a href="#section-4.2-8" class="pilcrow">¶</a></p>
@@ -2300,7 +2300,7 @@ When using multiple transport profiles of ACE that rely on asymmetric pop-keys, 
       <h2 id="name-discarding-the-security-con">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-discarding-the-security-con" class="section-name selfRef">Discarding the Security Context</a>
       </h2>
-<p id="section-7-1">As members of an OSCORE group, the Client and the RS may independently leave the group or be forced to, e.g., if compromised or suspected so. Upon leaving the OSCORE group, the Client or RS also discards the Group OSCORE Security Context, which may anyway be renewed by the Group Manager through a group rekeying process (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-21#section-3.2" class="relref">Section 3.2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-1">As members of an OSCORE group, the Client and the RS may independently leave the group or be forced to, e.g., if compromised or suspected so. Upon leaving the OSCORE group, the Client or RS also discards the Group OSCORE Security Context, which may anyway be renewed by the Group Manager through a group rekeying process (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-3.2" class="relref">Section 3.2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-7-1" class="pilcrow">¶</a></p>
 <p id="section-7-2">The Client or RS can acquire a new Group OSCORE Security Context, by re-joining the OSCORE group, e.g., by using the approach defined in <span>[<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>. In such a case, the Client <span class="bcp14">SHOULD</span> request a new Access Token to be uploaded to the RS.<a href="#section-7-2" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2387,7 +2387,7 @@ When using multiple transport profiles of ACE that rely on asymmetric pop-keys, 
 <p id="section-9-3">In such a case, as per <span><a href="https://rfc-editor.org/rfc/rfc9200#section-6.1" class="relref">Section 6.1</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>, the AS has to ensure the integrity protection of the Access Token by protecting it through an asymmetric signature. In addition, the used group-audience has to correctly identify all the RSs that are intended recipients of the Access Token, and for which the single scope specified in the Access Token applies. As a particular case, the audience can be the name of the OSCORE group, if the Access Token is intended for all the RSs in that group.<a href="#section-9-3" class="pilcrow">¶</a></p>
 <p id="section-9-4">Furthermore, this document inherits the general security considerations about Group OSCORE <span>[<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>, as to the specific use of Group OSCORE according to this profile.<a href="#section-9-4" class="pilcrow">¶</a></p>
 <p id="section-9-5">Group OSCORE is designed to secure point-to-point as well as point-to-multipoint communications, providing a secure binding between a single request and multiple corresponding responses. In particular, Group OSCORE fulfills the same security requirements of OSCORE.<a href="#section-9-5" class="pilcrow">¶</a></p>
-<p id="section-9-6">Group OSCORE ensures source authentication of messages both in group mode (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-21#section-8" class="relref">Section 8</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>) and in pairwise mode (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-21#section-9" class="relref">Section 9</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-9-6" class="pilcrow">¶</a></p>
+<p id="section-9-6">Group OSCORE ensures source authentication of messages both in group mode (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-8" class="relref">Section 8</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>) and in pairwise mode (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-9" class="relref">Section 9</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-9-6" class="pilcrow">¶</a></p>
 <p id="section-9-7">When protecting an outgoing message in group mode, the sender uses its private key to compute a digital signature, which is embedded in the protected message. The group mode can be used to protect messages sent to multiple recipients (e.g., over IP multicast) or to a single recipient.<a href="#section-9-7" class="pilcrow">¶</a></p>
 <p id="section-9-8">When protecting an outgoing message in pairwise mode, the sender uses a pairwise symmetric key, as derived from the asymmetric keys of the two peers exchanging the message. The pairwise mode can be used to protect only messages intended for a single recipient.<a href="#section-9-8" class="pilcrow">¶</a></p>
 </section>
@@ -2646,6 +2646,7 @@ When using multiple transport profiles of ACE that rely on asymmetric pop-keys, 
 </div>
 </section>
 </div>
+<div id="sec-combined-references">
 <section id="section-12">
       <h2 id="name-references">
 <a href="#section-12" class="section-number selfRef">12. </a><a href="#name-references" class="section-name selfRef">References</a>
@@ -2666,7 +2667,7 @@ When using multiple transport profiles of ACE that rely on asymmetric pop-keys, 
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-oscore-groupcomm">[I-D.ietf-core-oscore-groupcomm]</dt>
         <dd>
-<span class="refAuthor">Tiloca, M.</span>, <span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Palombini, F.</span>, <span class="refAuthor">Mattsson, J. P.</span>, and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"Group Object Security for Constrained RESTful Environments (Group OSCORE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-oscore-groupcomm-21</span>, <time datetime="2024-03-04" class="refDate">4 March 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-21">https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-21</a>&gt;</span>. </dd>
+<span class="refAuthor">Tiloca, M.</span>, <span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Palombini, F.</span>, <span class="refAuthor">Mattsson, J. P.</span>, and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"Group Object Security for Constrained RESTful Environments (Group OSCORE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-oscore-groupcomm-23</span>, <time datetime="2024-09-26" class="refDate">26 September 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23">https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="NIST-800-56A">[NIST-800-56A]</dt>
         <dd>
@@ -2763,19 +2764,19 @@ When using multiple transport profiles of ACE that rely on asymmetric pop-keys, 
 <dl class="references">
 <dt id="I-D.ietf-ace-edhoc-oscore-profile">[I-D.ietf-ace-edhoc-oscore-profile]</dt>
         <dd>
-<span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Tiloca, M.</span>, and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC) and Object Security for Constrained Environments (OSCORE) Profile for Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-edhoc-oscore-profile-04</span>, <time datetime="2024-03-04" class="refDate">4 March 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-04">https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-04</a>&gt;</span>. </dd>
+<span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Tiloca, M.</span>, and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC) and Object Security for Constrained Environments (OSCORE) Profile for Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-edhoc-oscore-profile-05</span>, <time datetime="2024-07-08" class="refDate">8 July 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-05">https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-05</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-ace-workflow-and-params">[I-D.ietf-ace-workflow-and-params]</dt>
         <dd>
-<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">G. Selander</span>, <span class="refTitle">"Alternative Workflow and OAuth Parameters for the Authentication and Authorization for Constrained Environments (ACE) Framework"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-workflow-and-params-01</span>, <time datetime="2024-03-04" class="refDate">4 March 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-workflow-and-params-01">https://datatracker.ietf.org/doc/html/draft-ietf-ace-workflow-and-params-01</a>&gt;</span>. </dd>
+<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">G. Selander</span>, <span class="refTitle">"Alternative Workflow and OAuth Parameters for the Authentication and Authorization for Constrained Environments (ACE) Framework"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-workflow-and-params-02</span>, <time datetime="2024-07-08" class="refDate">8 July 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-workflow-and-params-02">https://datatracker.ietf.org/doc/html/draft-ietf-ace-workflow-and-params-02</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-cose-cbor-encoded-cert">[I-D.ietf-cose-cbor-encoded-cert]</dt>
         <dd>
-<span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Raza, S.</span>, <span class="refAuthor">Höglund, J.</span>, and <span class="refAuthor">M. Furuhed</span>, <span class="refTitle">"CBOR Encoded X.509 Certificates (C509 Certificates)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-cose-cbor-encoded-cert-09</span>, <time datetime="2024-03-04" class="refDate">4 March 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-09">https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-09</a>&gt;</span>. </dd>
+<span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Raza, S.</span>, <span class="refAuthor">Höglund, J.</span>, and <span class="refAuthor">M. Furuhed</span>, <span class="refTitle">"CBOR Encoded X.509 Certificates (C509 Certificates)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-cose-cbor-encoded-cert-11</span>, <time datetime="2024-07-08" class="refDate">8 July 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-11">https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-11</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.tiloca-core-oscore-discovery">[I-D.tiloca-core-oscore-discovery]</dt>
         <dd>
-<span class="refAuthor">Tiloca, M.</span>, <span class="refAuthor">Amsüss, C.</span>, and <span class="refAuthor">P. Van der Stok</span>, <span class="refTitle">"Discovery of OSCORE Groups with the CoRE Resource Directory"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-tiloca-core-oscore-discovery-15</span>, <time datetime="2024-03-04" class="refDate">4 March 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-tiloca-core-oscore-discovery-15">https://datatracker.ietf.org/doc/html/draft-tiloca-core-oscore-discovery-15</a>&gt;</span>. </dd>
+<span class="refAuthor">Tiloca, M.</span>, <span class="refAuthor">Amsüss, C.</span>, and <span class="refAuthor">P. Van der Stok</span>, <span class="refTitle">"Discovery of OSCORE Groups with the CoRE Resource Directory"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-tiloca-core-oscore-discovery-16</span>, <time datetime="2024-09-04" class="refDate">4 September 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-tiloca-core-oscore-discovery-16">https://datatracker.ietf.org/doc/html/draft-tiloca-core-oscore-discovery-16</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="NIST-800-207">[NIST-800-207]</dt>
         <dd>
@@ -2805,6 +2806,7 @@ When using multiple transport profiles of ACE that rely on asymmetric pop-keys, 
 </section>
 </div>
 </section>
+</div>
 <div id="profile-requirements">
 <section id="appendix-A">
       <h2 id="name-profile-requirements">
@@ -2958,7 +2960,7 @@ kccs = 14
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
 <p id="appendix-D-1"><span class="contact-name">Ludwig Seitz</span> contributed as a co-author of initial versions of this document.<a href="#appendix-D-1" class="pilcrow">¶</a></p>
-<p id="appendix-D-2">The authors sincerely thank <span class="contact-name">Christian Amsüss</span>, <span class="contact-name">Benjamin Kaduk</span>, <span class="contact-name">John Preuß Mattsson</span>, <span class="contact-name">Dave Robin</span>, <span class="contact-name">Jim Schaad</span>, and <span class="contact-name">Göran Selander</span> for their comments and feedback.<a href="#appendix-D-2" class="pilcrow">¶</a></p>
+<p id="appendix-D-2">The authors sincerely thank <span class="contact-name">Christian Amsüss</span>, <span class="contact-name">Tim Hollebeek</span>, <span class="contact-name">Benjamin Kaduk</span>, <span class="contact-name">John Preuß Mattsson</span>, <span class="contact-name">Dave Robin</span>, <span class="contact-name">Jim Schaad</span>, and <span class="contact-name">Göran Selander</span> for their comments and feedback.<a href="#appendix-D-2" class="pilcrow">¶</a></p>
 <p id="appendix-D-3">The work on this document has been partly supported by the Sweden's Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and CYPRESS; and by the H2020 project SIFIS-Home (Grant agreement 952652).<a href="#appendix-D-3" class="pilcrow">¶</a></p>
 </section>
 </div>
