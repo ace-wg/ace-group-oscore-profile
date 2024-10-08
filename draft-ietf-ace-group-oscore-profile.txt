@@ -123,8 +123,9 @@ Table of Contents
    Appendix A.  Profile Requirements
    Appendix B.  CDDL Model
    Appendix C.  Document Updates
-     C.1.  Version -01 to -02
-     C.2.  Version -00 to -01
+     C.1.  Version -02 to -03
+     C.2.  Version -01 to -02
+     C.3.  Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -1397,8 +1398,8 @@ Table of Contents
       per pop-key per audience it belongs to.
 
    *  The RS is a member of two OSCORE groups G1 and G2.  In particular,
-      both the same format of public authentication credentials is used
-      in both OSCORE groups.
+      the same format of public authentication credentials is used in
+      both OSCORE groups.
 
       A Client C with public authentication credential AUTH_CRED_C of
       such format, also member of the two OSCORE group G1 and G2, can
@@ -2079,7 +2080,11 @@ Appendix C.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-C.1.  Version -01 to -02
+C.1.  Version -02 to -03
+
+   *  Editorial fixes and improvements.
+
+C.2.  Version -01 to -02
 
    *  CBOR diagnostic notation uses placeholders from a CDDL model.
 
@@ -2097,7 +2102,7 @@ C.1.  Version -01 to -02
 
    *  Editorial fixes and improvements.
 
-C.2.  Version -00 to -01
+C.3.  Version -00 to -01
 
    *  Deleting an Access Token does not delete the Group OSCORE Security
       Context.
