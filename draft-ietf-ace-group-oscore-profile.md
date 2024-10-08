@@ -791,7 +791,7 @@ For example, this can occur in the following cases.
 
   In fact, if the AS issues Access Tokens targeting a group-audience, then the above can possibly be the case when using any transport profile of ACE that supports asymmetric pop-keys. If so, the RS should be ready to store at minimum one Access Token per pop-key per audience it belongs to.
 
-* The RS is a member of two OSCORE groups G1 and G2. In particular, both the same format of public authentication credentials is used in both OSCORE groups.
+* The RS is a member of two OSCORE groups G1 and G2. In particular, the same format of public authentication credentials is used in both OSCORE groups.
 
   A Client C with public authentication credential AUTH_CRED_C of such format, also member of the two OSCORE group G1 and G2, can conveniently use AUTH_CRED_C as its public authentication credential in both those groups. Therefore, C can request two Access Tokens T1 and T2 from the AS, such that:
 
@@ -1057,6 +1057,10 @@ kccs = 14
 
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
+
+## Version -02 to -03 ## {#sec-02-03}
+
+* Editorial fixes and improvements.
 
 ## Version -01 to -02 ## {#sec-01-02}
 
