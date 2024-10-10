@@ -222,7 +222,7 @@ C                             RS1         RS2                        AS
 |    gid: 0xabcd0000, ...)     |           |                          |
 |                              |           |                          |
 |<---------------------------------------------- Access token T2 -----+
-|                              |              + Access Information    |
+|                              |               + Access Information   |
 |                              |           |                          |
 +----- POST /authz-info ------------------>|                          |
 |     (access_token: T2)       |           |                          |
@@ -267,25 +267,27 @@ After the client and resource servers have joined the group, this profile provid
 
 As a pre-requisite for this profile, the client has to have successfully joined the OSCORE group where also the resource servers (RSs) are members. Depending on the limited information initially available, the client may have to first discover the exact OSCORE group used by the RSs for the resources of interest, e.g., by using the approach defined in {{I-D.tiloca-core-oscore-discovery}}.
 
-## Access Token Retrieval ## {#sec-protocol-overview-token-retrieval}
+## Requesting an Access Token ## {#sec-protocol-overview-token-retrieval}
 
-This profile requires that the client retrieves an access token from the AS for the resource(s) that it wants to access at the RS(s), by using the /token endpoint as specified in {{Section 5.8 of RFC9200}}.
+This profile requires that the client requests an access token from the AS for the resource(s) that it wants to access at the RS(s), by using the /token endpoint as specified in {{Section 5.8 of RFC9200}}.
 
 In general, different RSs can be associated with different ASs, even if the RSs are members of the same OSCORE group. However, assuming proper configurations and trust relations, it is possible for multiple RSs associated with the same AS to be part of a single audience (i.e., a group-audience, see {{Section 6.9 of RFC9200}}). In such a case, the client can request a single access token intended for the group-audience, hence to all the RSs included therein. A particular group-audience might be defined as including all the RSs in the OSCORE group.
 
 In the Access Token Request to the AS, the client MUST include the Group Identifier of the OSCORE group and its own Sender ID in that group. The AS MUST specify these pieces of information in the access token.
 
-Furthermore, in the Access Token Request to the AS, the client MUST also include: its own authentication credential used in the OSCORE group; and a proof-of-possession (PoP) evidence to prove possession of the corresponding private key. The PoP evidence is computed over a PoP input uniquely related to the secure communication association between the client and the AS. The AS MUST include also the authentication credential specified by the client in the access token.
+Furthermore, in the Access Token Request to the AS, the client MUST also include: its own authentication credential used in the OSCORE group; and a proof-of-possession (PoP) evidence to prove possession of the corresponding private key to the AS. The PoP evidence is computed over a PoP input uniquely related to the secure communication association between the client and the AS. The AS MUST include also the authentication credential specified by the client in the access token.
 
-The Access Token Request and Response MUST be confidentiality-protected and ensure authenticity. In this profile, it is RECOMMENDED to use OSCORE {{RFC8613}} between the client and the AS, to reduce the number of libraries the client has to support. Other protocols fulfilling the security requirements defined in {{Sections 5 and 6 of RFC9200}} MAY alternatively be used, such as TLS {{RFC8446}} or DTLS {{RFC9147}}.
+If the request from the client is granted, then the AS can send back the issued access token in the Access Token Response to the client, or instead upload the access token directly to the RS as described in the alternative workflow defined in {{I-D.ietf-ace-workflow-and-params}}. This document focuses on the former option (also shown in the example in {{fig-protocol-overview}}), while the latter option is not detailed further here.
+
+The Access Token Request and Response exchanged between the client and the AS MUST be confidentiality-protected and ensure authenticity. In this profile, it is RECOMMENDED to use OSCORE {{RFC8613}} between the client and the AS, to reduce the number of libraries that the client has to support. Other protocols fulfilling the security requirements defined in {{Sections 5 and 6 of RFC9200}} MAY alternatively be used, such as TLS {{RFC8446}} or DTLS {{RFC9147}}.
 
 ## Access Token Uploading ## {#sec-protocol-overview-token-posting}
 
 After having retrieved the access token from the AS, the client uploads the access token to the RS, by sending a POST request to the /authz-info endpoint and using the mechanisms specified in {{Section 5.10 of RFC9200}}. When using this profile, the communication that C has with the /authz-info endpoint is not protected.
 
-If the access token is valid, the RS replies to the POST request with a 2.01 (Created) response. Also, the RS associates the received access token with the Group OSCORE Security Context identified by the Group Identifier specified in the access token, following {{Section 3.2 of RFC8613}}. In practice, the RS maintains a collection of Security Contexts with associated authorization information, for all the clients that it is currently communicating with. The authorization information is a policy that is used as input when processing requests from those clients.
+If the access token is valid, the RS replies to the POST request with a 2.01 (Created) response. Also, the RS associates the received access token with the Group OSCORE Security Context identified by the Group Identifier specified in the access token (see {{Section 2.1.3 of I-D.ietf-core-oscore-groupcomm}}). In practice, the RS maintains a collection of Security Contexts with associated authorization information, for all the clients that it is currently communicating with. The authorization information is a policy that is used as input when processing requests from those clients.
 
-Finally, the RS stores the association between i) the authorization information from the access token; and ii) the Group Identifier of the OSCORE group together with the Sender ID and the authentication credential of the client in that group. This binds the access token to the Group OSCORE Security Context of the OSCORE group.
+Finally, the RS stores the association between i) the authorization information from the access token; and ii) the Group Identifier of the OSCORE group together with the Sender ID and the authentication credential of the client in that group (see {{Section 2 of I-D.ietf-core-oscore-groupcomm}}). This binds the access token to the Group OSCORE Security Context of the OSCORE group.
 
 Finally, when the client communicates with the RS using the Group OSCORE Security Context, the RS verifies that the client is a legitimate member of the OSCORE group and especially the exact group member with the same Sender ID associated with the access token. This occurs when verifying a request protected with Group OSCORE, since the request includes the client's Sender ID and either it embeds a signature computed also over that Sender ID (if protected with the group mode), or it is protected by means of pairwise symmetric keying material derived from the asymmetric keys of the two peers (if protected with the pairwise mode).
 
@@ -349,9 +351,9 @@ To this end, the client MUST use as PoP input the byte representation of an info
 
   - 'salt' takes (x1 \| x2), where \| denotes byte string concatenation, while x1 and x2 are defined as follows.
 
-    - x1 is the binary serialization of a CBOR data item. If CTX does not specify an OSCORE ID Context, the CBOR data item is the CBOR simple value `null` (0xf6). Otherwise, the CBOR data item is a CBOR byte string, with value the OSCORE ID Context specified in CTX.
+    - x1 is the binary representation of a CBOR data item. If CTX does not specify an OSCORE ID Context, the CBOR data item is the CBOR simple value `null` (0xf6). Otherwise, the CBOR data item is a CBOR byte string, with value the OSCORE ID Context specified in CTX.
 
-    - x2 is the binary serialization of a CBOR byte string. The value of the CBOR byte string is the OSCORE Sender ID of the client, which the client stores in its Sender Context of CTX and the AS stores in its Recipient Context of CTX.
+    - x2 is the binary representation of a CBOR byte string. The value of the CBOR byte string is the OSCORE Sender ID of the client, which the client stores in its Sender Context of CTX and the AS stores in its Recipient Context of CTX.
 
   - 'IKM' is the OSCORE Master Secret specified in CTX.
 
@@ -423,7 +425,7 @@ An example of such a request is shown in {{fig-example-C-to-AS-symm}}.
 Header: POST (Code=0.02)
 Uri-Host: "as.example.com"
 Uri-Path: "token"
-Content-Format: application/ace+cbor
+Content-Format: 19 (application/ace+cbor)
 Payload:
 {
   / audience /        5 : "tempSensor4711",
@@ -522,6 +524,8 @@ If all verifications are successful, the AS responds as defined in {{Section 5.8
 
    * The AS MUST NOT include the 'rs_cnf' parameter defined in {{RFC9201}}. In general, the AS may not be aware of the authentication credentials (and public keys included thereof) that the RSs use in the OSCORE group. Also, the client is able to retrieve the authentication credentials of other group members from the responsible Group Manager, both upon joining the group or later on as a group member, as defined in {{I-D.ietf-ace-key-groupcomm-oscore}}.
 
+   * According to this document, the AS includes the 'access_token' parameter specifying the issued access token in the Access Token Response. An alternative workflow where the access token is uploaded by the AS directly to the RS is described in {{I-D.ietf-ace-workflow-and-params}}.
+
 The AS MUST include the following information as metadata of the issued access token. The use of CBOR web tokens (CWT) as specified in {{RFC8392}} is RECOMMENDED.
 
 * The profile "coap_group_oscore". If the access token is a CWT, this is specified in the 'ace_profile' claim of the access token, as per {{Section 5.10 of RFC9200}}.
@@ -538,7 +542,7 @@ The AS MUST include the following information as metadata of the issued access t
 
 ~~~~~~~~~~~
 Header: Created (Code=2.01)
-Content-Format: application/ace+cbor
+Content-Format: 19 (application/ace+cbor)
 Payload:
 {
   / access_token / 1 : h'8343a1010aa2044c...00', / elided for brevity /
@@ -1067,6 +1071,8 @@ kccs = 14
 * Lowercase "client", "resource server", "authorization server", and "access token".
 
 * Consistent update of section numbers for external references.
+
+* Mentioned that this profile can also use the ACE alternative workflow.
 
 * Fixes in the IANA considerations.
 
