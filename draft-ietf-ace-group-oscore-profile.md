@@ -916,28 +916,28 @@ IANA is asked to add the following entry to the "ACE Profiles" registry within t
 
 IANA is asked to add the following entries to the "OAuth Parameters" registry, following the procedure specified in {{Section 11.2 of RFC6749}}.
 
-* Name: "context_id"
+* Name: context_id
 * Parameter Usage Location: token request
 * Change Controller: IETF
 * Reference: {{context_id}} of {{&SELF}}
 
 <br>
 
-* Name: "salt_input"
+* Name: salt_input
 * Parameter Usage Location: token request
 * Change Controller: IETF
 * Reference: {{salt_input}} of {{&SELF}}
 
 <br>
 
-* Name: "client_cred_verify"
+* Name: client_cred_verify
 * Parameter Usage Location: token request
 * Change Controller: IETF
 * Reference: {{client_cred_verify}} of {{&SELF}}
 
 <br>
 
-* Name: "client_cred_verify_mac"
+* Name: client_cred_verify_mac
 * Parameter Usage Location: token request
 * Change Controller: IETF
 * Reference: {{client_cred_verify_mac}} of {{&SELF}}
@@ -946,51 +946,55 @@ IANA is asked to add the following entries to the "OAuth Parameters" registry, f
 
 IANA is asked to add the following entries to the "OAuth Parameters CBOR Mappings" registry within the "Authentication and Authorization for Constrained Environments (ACE)" registry group, following the procedure specified in {{Section 8.10 of RFC9200}}.
 
-* Name: "context_id"
+* Name: context_id
 * CBOR Key: TBD
-* Value Type: bstr
+* Value Type: byte string
 * Reference: {{context_id}} of {{&SELF}}
+* Original Specification: {{&SELF}}
 
 <br>
 
-* Name: "salt_input"
+* Name: salt_input
 * CBOR Key: TBD
-* Value Type: bstr
+* Value Type: byte string
 * Reference: {{salt_input}} of {{&SELF}}
+* Original Specification: {{&SELF}}
 
 <br>
 
-* Name: "client_cred_verify"
+* Name: client_cred_verify
 * CBOR Key: TBD
-* Value Type: bstr
+* Value Type: byte string
 * Reference: {{client_cred_verify}} of {{&SELF}}
+* Original Specification: {{&SELF}}
 
 <br>
 
-* Name: "client_cred_verify_mac"
+* Name: client_cred_verify_mac
 * CBOR Key: TBD
-* Value Type: bstr
+* Value Type: byte string
 * Reference: {{client_cred_verify_mac}} of {{&SELF}}
+* Original Specification: {{&SELF}}
 
 ## CBOR Web Token (CWT) Claims Registry ## {#iana-token-cwt-claims}
 
 IANA is asked to add the following entries to the "CBOR Web Token (CWT) Claims" registry, following the procedure specified in {{Section 9.1 of RFC8392}}.
 
-* Claim Name: "context_id"
+* Claim Name: context_id
 * Claim Description: Client provided Context ID
-* JWT Claim Name: "N/A"
+* JWT Claim Name: N/A
 * Claim Key: TBD
-* Claim Value Type: bstr
+* Claim Value Type: byte string
 * Change Controller: IETF
 * Reference: {{context_id_claim}} of {{&SELF}}
 
 <br>
 
-* Claim Name: "salt_input"
+* Claim Name: salt_input
 * Claim Description: Client provided salt input
-* JWT Claim Name: "N/A"
+* JWT Claim Name: N/A
 * Claim Key: TBD
-* Claim Value Type: bstr
+* Claim Value Type: byte string
 * Change Controller: IETF
 * Reference: {{salt_input_claim}} of {{&SELF}}
 
@@ -1059,6 +1063,8 @@ kccs = 14
 {:removeinrfc}
 
 ## Version -02 to -03 ## {#sec-02-03}
+
+* Fixes in the IANA considerations.
 
 * Editorial fixes and improvements.
 
