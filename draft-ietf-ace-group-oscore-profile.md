@@ -179,7 +179,7 @@ Note that the term "endpoint" is used here following its OAuth definition {{RFC6
 
 Additionally, this document makes use of the following terminology.
 
-* Pairwise-only group: an OSCORE group that uses only the pairwise mode of Group OSCORE (see {{Section 9 of I-D.ietf-core-oscore-groupcomm}}).
+* Pairwise-only group: an OSCORE group that uses only the pairwise mode of Group OSCORE (see {{Section 8 of I-D.ietf-core-oscore-groupcomm}}).
 
 Examples throughout this document are expressed in CBOR diagnostic notation as defined in {{Section 8 of RFC8949}} and {{Section G of RFC8610}}. Diagnostic notation comments are often used to provide a textual representation of the numeric parameter names and values.
 
@@ -681,7 +681,7 @@ This parameter specifies the value of the salt input, encoded as a CBOR byte str
 
 This section details the POST request and response to the /authz-info endpoint between the client and the RS.
 
-The proof-of-possession required to bind the Access Token to the client is explicitly performed when the RS receives and verifies a request from the client protected with Group OSCORE, either with the group mode (see {{Section 8 of I-D.ietf-core-oscore-groupcomm}}) or with the pairwise mode (see {{Section 9 of I-D.ietf-core-oscore-groupcomm}}).
+The proof-of-possession required to bind the Access Token to the client is explicitly performed when the RS receives and verifies a request from the client protected with Group OSCORE, either with the group mode (see {{Section 7 of I-D.ietf-core-oscore-groupcomm}}) or with the pairwise mode (see {{Section 8 of I-D.ietf-core-oscore-groupcomm}}).
 
 In particular, the RS uses the client's public key bound to the Access Token, either when verifying the signature of the request (if protected with the group mode), or when verifying the request as integrity-protected with pairwise keying material derived from the two peers' authentication credentials and asymmetric keys (if protected with the pairwise mode). In either case, the RS also authenticates the client.
 
@@ -721,7 +721,7 @@ In particular, the RS associates the authorization information from the Access T
 
 The RS MUST keep this association up-to-date over time, as the triple (GID, SaltInput, AuthCred) associated with the Access Token might change. In particular:
 
-* If the OSCORE group is rekeyed (see {{Section 3.2 of I-D.ietf-core-oscore-groupcomm}} and {{Section 11 of I-D.ietf-ace-key-groupcomm-oscore}}), the Group Identifier also changes in the group, and the new one replaces the current 'GID' value in the triple (GID, SaltInput, AuthCred).
+* If the OSCORE group is rekeyed (see {{Section 12.2 of I-D.ietf-core-oscore-groupcomm}} and {{Section 11 of I-D.ietf-ace-key-groupcomm-oscore}}), the Group Identifier also changes in the group, and the new one replaces the current 'GID' value in the triple (GID, SaltInput, AuthCred).
 
 * If the client requests and obtains a new OSCORE Sender ID from the Group Manager (see {{Section 2.6.3.1 of I-D.ietf-core-oscore-groupcomm}} and {{Section 9.2 of I-D.ietf-ace-key-groupcomm-oscore}}), the new Sender ID replaces the current 'SaltInput' value in the triple (GID, SaltInput, AuthCred).
 
@@ -845,7 +845,7 @@ If OSCORE {{RFC8613}} is used, the requesting entity and the AS are expected to 
 
 # Discarding the Security Context # {#sec-discard-context}
 
-As members of an OSCORE group, the client and the RS may independently leave the group or be forced to, e.g., if compromised or suspected so. Upon leaving the OSCORE group, the client or RS also discards the Group OSCORE Security Context, which may anyway be renewed by the Group Manager through a group rekeying process (see {{Section 3.2 of I-D.ietf-core-oscore-groupcomm}}).
+As members of an OSCORE group, the client and the RS may independently leave the group or be forced to, e.g., if compromised or suspected so. Upon leaving the OSCORE group, the client or RS also discards the Group OSCORE Security Context, which may anyway be renewed by the Group Manager through a group rekeying process (see {{Section 12.2 of I-D.ietf-core-oscore-groupcomm}}).
 
 The client or RS can acquire a new Group OSCORE Security Context, by re-joining the OSCORE group, e.g., by using the approach defined in {{I-D.ietf-ace-key-groupcomm-oscore}}. In such a case, the client SHOULD request a new Access Token to be uploaded to the RS.
 
@@ -879,7 +879,7 @@ Furthermore, this document inherits the general security considerations about Gr
 
 Group OSCORE is designed to secure point-to-point as well as point-to-multipoint communications, providing a secure binding between a single request and multiple corresponding responses. In particular, Group OSCORE fulfills the same security requirements of OSCORE.
 
-Group OSCORE ensures source authentication of messages both in group mode (see {{Section 8 of I-D.ietf-core-oscore-groupcomm}}) and in pairwise mode (see {{Section 9 of I-D.ietf-core-oscore-groupcomm}}).
+Group OSCORE ensures source authentication of messages both in group mode (see {{Section 7 of I-D.ietf-core-oscore-groupcomm}}) and in pairwise mode (see {{Section 8 of I-D.ietf-core-oscore-groupcomm}}).
 
 When protecting an outgoing message in group mode, the sender uses its private key to compute a digital signature, which is embedded in the protected message. The group mode can be used to protect messages sent to multiple recipients (e.g., over IP multicast) or to a single recipient.
 
@@ -1065,6 +1065,8 @@ kccs = 14
 ## Version -02 to -03 ## {#sec-02-03}
 
 * Used lowercase "client", "resource server", and "authorization server".
+
+* Consistent update of section numbers for external references.
 
 * Fixes in the IANA considerations.
 
