@@ -133,7 +133,7 @@ Table of Contents
 
    A number of applications rely on a group communication model where a
    client can access a resource hosted by multiple resource servers at
-   once, e.g., over IP multicast.  Typical examples are switching of
+   once, e.g., over IP multicast.  Typical examples include switching of
    luminaries, actuators control, and distribution of software updates.
    Secure communication in the group can be achieved by sharing a set of
    keying material, which is typically provided upon joining the group.
@@ -142,34 +142,35 @@ Table of Contents
    control in a straightforward fashion.  That is, any client authorized
    to join the group, hence to obtain the group keying material, can be
    also implicitly authorized to perform any action at any resource of
-   any Server in the group.  An example of application where such
+   any server in the group.  An example of application where such
    implicit authorization might serve well is a simple lighting
-   scenario, where the lightbulbs are the Servers, while the user
+   scenario, where the lightbulbs are the servers, while the user
    account on an app on the user's phone is the client.  In this case,
    it might be fine to not require additional authorization evidence
    from any user account, if it is acceptable that any current group
    member is also authorized to switch on and off any light, or to check
-   their status.
+   the status of any light.
 
    However, in different instances of such applications, the approach
-   above is not desirable, as different group members are intended for
+   above is not desirable, as different group members are intended to
    have different access rights to resources of other group members.
    For instance, enforcing access control in accordance with a more
    fine-grained approach is required in the two following use cases.
 
    As a first case, an application provides control of smart locks
-   acting as Servers in the group, where: a first type of client, e.g.,
+   acting as servers in the group, where: a first type of client, e.g.,
    a user account of a child, is allowed to only query the status of the
    smart locks; while a second type of client, e.g., a user account of a
    parent, is allowed to both query and change the status of the smart
    locks.  Further similar applications concern the enforcement of
    different sets of permissions in groups with sensor/actuator devices,
-   e.g., thermostats acting as Servers.  Also, some group members may
-   even be intended as Servers only.  Hence, they must be prevented from
+   e.g., thermostats acting as servers.  Also, some group members may
+   even be intended as servers only.  Hence, they must be prevented from
    acting as clients altogether and from accessing resources at other
-   Servers, especially when attempting to perform non-safe operations.
+   servers in the group, especially when attempting to perform non-safe
+   operations.
 
-   As a second case, building automation scenarios often rely on Servers
+   As a second case, building automation scenarios often rely on servers
    that, under different circumstances, enforce different level of
    priority for processing received commands.  For instance, BACnet
    deployments consider multiple classes of clients, e.g., a normal
@@ -177,8 +178,8 @@ Table of Contents
    client is not allowed to override a command from a C2 client, until
    the latter relinquishes control at its higher priority.  That is: i)
    only C2 clients should be able to adjust the minimum required level
-   of priority on the Servers, so rightly locking out C1 clients if
-   needed; and ii) when a Server is set to accept only high-priority
+   of priority on the servers, so rightly locking out C1 clients if
+   needed; and ii) when a server is set to accept only high-priority
    commands, only C2 clients should be able to perform such commands
    otherwise allowed also to C1 clients.  Given the different maximum
    authority of different clients, fine-grained access control would
@@ -191,7 +192,7 @@ Table of Contents
    In the cases above, being a legitimate group member and storing the
    group keying material is not supposed to imply any particular access
    rights.  Instead, access control to the secure group communication
-   channel and access control to the resource space provided by Servers
+   channel and access control to the resource space provided by servers
    in the group should remain logically separated domains.
 
    This is aligned with the Zero Trust paradigm [NIST-800-207], which
@@ -223,8 +224,9 @@ Table of Contents
    enforced within the same group, by using the Authentication and
    Authorization for Constrained Environments (ACE) framework [RFC9200].
    That is, a client has to first obtain authorization credentials in
-   the form of an access token, and upload it to the resource server(s)
-   in the group before accessing the intended resources.
+   the form of an access token, and upload it to the intended resource
+   server(s) in the group before accessing the target resources hosted
+   therein.
 
    The ACE framework delegates to separate profile documents how to
    secure communications between the client and the resource servers.
@@ -305,7 +307,7 @@ Table of Contents
       set of information related to the public key algorithm, including,
       e.g., the used elliptic curve (when applicable).
 
-   Readers are expected to be familiar with the terms and concepts
+   Readers are also expected to be familiar with the terms and concepts
    described in the ACE framework for authentication and authorization
    [RFC9200], as well as in the OSCORE profile of ACE [RFC9203].  The
    terminology for entities in the considered architecture is defined in
@@ -327,7 +329,7 @@ Table of Contents
    Examples throughout this document are expressed in CBOR diagnostic
    notation as defined in Section 8 of [RFC8949] and Appendix G of
    [RFC8610].  Diagnostic notation comments are often used to provide a
-   textual representation of the numeric parameter names and values.
+   textual representation of the parameters' keys and values.
 
    In the CBOR diagnostic notation used in this document, constructs of
    the form e'SOME_NAME' are replaced by the value assigned to SOME_NAME
