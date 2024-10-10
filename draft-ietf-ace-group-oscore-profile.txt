@@ -321,7 +321,7 @@ Table of Contents
    Additionally, this document makes use of the following terminology.
 
    *  Pairwise-only group: an OSCORE group that uses only the pairwise
-      mode of Group OSCORE (see Section 9 of
+      mode of Group OSCORE (see Section 8 of
       [I-D.ietf-core-oscore-groupcomm]).
 
    Examples throughout this document are expressed in CBOR diagnostic
@@ -1157,8 +1157,8 @@ Table of Contents
    The proof-of-possession required to bind the Access Token to the
    client is explicitly performed when the RS receives and verifies a
    request from the client protected with Group OSCORE, either with the
-   group mode (see Section 8 of [I-D.ietf-core-oscore-groupcomm]) or
-   with the pairwise mode (see Section 9 of
+   group mode (see Section 7 of [I-D.ietf-core-oscore-groupcomm]) or
+   with the pairwise mode (see Section 8 of
    [I-D.ietf-core-oscore-groupcomm]).
 
    In particular, the RS uses the client's public key bound to the
@@ -1261,7 +1261,7 @@ Table of Contents
    (GID, SaltInput, AuthCred) associated with the Access Token might
    change.  In particular:
 
-   *  If the OSCORE group is rekeyed (see Section 3.2 of
+   *  If the OSCORE group is rekeyed (see Section 12.2 of
       [I-D.ietf-core-oscore-groupcomm] and Section 11 of
       [I-D.ietf-ace-key-groupcomm-oscore]), the Group Identifier also
       changes in the group, and the new one replaces the current 'GID'
@@ -1513,7 +1513,7 @@ Table of Contents
    or suspected so.  Upon leaving the OSCORE group, the client or RS
    also discards the Group OSCORE Security Context, which may anyway be
    renewed by the Group Manager through a group rekeying process (see
-   Section 3.2 of [I-D.ietf-core-oscore-groupcomm]).
+   Section 12.2 of [I-D.ietf-core-oscore-groupcomm]).
 
    The client or RS can acquire a new Group OSCORE Security Context, by
    re-joining the OSCORE group, e.g., by using the approach defined in
@@ -1588,8 +1588,8 @@ Table of Contents
    Group OSCORE fulfills the same security requirements of OSCORE.
 
    Group OSCORE ensures source authentication of messages both in group
-   mode (see Section 8 of [I-D.ietf-core-oscore-groupcomm]) and in
-   pairwise mode (see Section 9 of [I-D.ietf-core-oscore-groupcomm]).
+   mode (see Section 7 of [I-D.ietf-core-oscore-groupcomm]) and in
+   pairwise mode (see Section 8 of [I-D.ietf-core-oscore-groupcomm]).
 
    When protecting an outgoing message in group mode, the sender uses
    its private key to compute a digital signature, which is embedded in
@@ -2092,6 +2092,8 @@ C.1.  Version -02 to -03
 
    *  Used lowercase "client", "resource server", and "authorization
       server".
+
+   *  Consistent update of section numbers for external references.
 
    *  Fixes in the IANA considerations.
 
