@@ -1219,7 +1219,7 @@ Table of Contents
    up) authentication credential; ii) successfully posting the access
    token to the RS; and then iii) attempting to communicate using Group
    OSCORE and impersonating C1, while also blaming C1 for the
-   consequences of the interactation with the RS.
+   consequences of the interaction with the RS.
 
 4.1.  C-to-RS POST to /authz-info Endpoint
 
