@@ -841,7 +841,7 @@ If the RS has an access token for the client but no actions are authorized on th
 
 If the RS has an access token for the client but the requested action is not authorized, the RS MUST reject the request and MUST reply to the client with a 4.05 (Method Not Allowed) error response.
 
-## Storing Multiple Access Tokens per PoP Key
+## Storing Multiple Access Tokens per PoP Key # {#sec-multiple-pop-keys}
 
 According to {{Section 5.10.1 of RFC9200}}, an RS is recommended to store only one access token per proof-of-possession (PoP) key, and to supersede such an access token when receiving and successfully validating a new one bound to the same PoP key.
 
@@ -937,6 +937,32 @@ If OSCORE {{RFC8613}} is used, the requesting entity and the AS are expected to 
 As members of an OSCORE group, the client and the RS may independently leave the group or be forced to, e.g., if compromised or suspected so. Upon leaving the OSCORE group, the client or RS also discards the Group OSCORE Security Context, which may anyway be renewed by the Group Manager through a group rekeying process (see {{Section 12.2 of I-D.ietf-core-oscore-groupcomm}}).
 
 The client or RS can acquire a new Group OSCORE Security Context, by re-joining the OSCORE group, e.g., by using the approach defined in {{I-D.ietf-ace-key-groupcomm-oscore}}. In such a case, the client SHOULD request a new access token to be uploaded to the RS.
+
+# Guidelines on Using Multiple Profiles # {#sec-multiple-profiles}
+
+When using the profile defined in this document, access tokens are to be bound to a Group OSCORE Security Context, which is used to protect communications between the client and the RS(s) in the targeted audience by using the security protocol Group OSCORE.
+
+After having obtained an access token T1 for this profile and uploaded it to the RS (RSs) pertaining to the targeted audience, the client might want to establish a separate, pairwise OSCORE association with that RS (with one RS among those RSs). In order to do that, the client can ask the AS for a different access token T2 intended for that RS (for one RS among those RSs), as per the OSCORE profile defined in {{RFC9203}}.
+
+Since the ACE framework does not allow the client to negotiate with the AS the profile to use, the client has instead to choose the use of the OSCORE profile, and to explicitly indicate it to the AS when requesting T2.
+
+To this end, the client may indicate its wish for an access token aligned with the Group OSCORE profile or with the OSCORE profile, by specifying one of two different audiences in the 'audience' parameter of the Access Token Request to the AS. Assuming a proper configuration of the access policies at the AS, this is still conducive to a consistent evaluation of what is specified in the 'scope' parameter of the Access Token Request against the access policies at the AS.
+
+For example, an RS registered at the AS can be associated with two audiences:
+
+- "AUD_GP_OSC", which the client can use to request an access token for the Group OSCORE profile and targeting (also) that RS. That is, the client specifies this audience when requesting the access token T1.
+
+- "AUD_OSC", which the client can use to request an access token for the OSCORE profile and targeting only that RS. That is, the client specifies this audience when requesting the access token T2.
+
+Note that an RS has to be able to store at least one access token per PoP key. When specifically considering the Group OSCORE profile and the OSCORE profile, the RS can always store both corresponding access tokens T1 and T2, since they are always bound to different PoP keys. That is:
+
+- In the Group OSCORE profile, the PoP key is the client's public key, which is included in the client's authentication credential specified in the 'cnf' claim of the access token.
+
+- In the OSCORE profile, the PoP key is fundamentally an OSCORE Master Secret, which is specified within the OSCORE_Input_Material object of the 'cnf' claim of the access token.
+
+The same approach discussed above can be used in case the profile used for the access token T2 is instead the EDHOC and OSCORE profile defined in {{I-D.ietf-ace-edhoc-oscore-profile}}. In such a case, the same PoP key might be bound to both T1 and T2, i.e., if the client's public key is included both in the authentication credential that the client uses in the OSCORE group and in the authentication credential that the client uses as CRED_I (CRED_R) when running the EDHOC protocol in the forward (reverse) message flow.
+
+{{sec-multiple-pop-keys}} provides considerations and recommendations on storing multiple access tokens per PoP key when using the Group OSCORE profile, also in parallel with alternative profiles.
 
 # CBOR Mappings # {#sec-cbor-mappings}
 
@@ -1168,6 +1194,8 @@ kccs = 14
 * Clarified the process of access right verification.
 
 * Added fine-grained recommendations on storing multiple access tokens bound to the same PoP key.
+
+* Added guidelines on using multiple profiles.
 
 * Fixes in the IANA considerations.
 
