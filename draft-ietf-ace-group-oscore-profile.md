@@ -693,11 +693,11 @@ Similarly, when receiving a protected response from the RS, the client uses the 
 
 Therefore, an attacker using a stolen access token cannot generate a valid Group OSCORE message as protected through the client's private key, and thus cannot prove possession of the pop-key bound to the access token. Also, if a client legitimately owns an access token but has not joined the OSCORE group, it cannot generate a valid Group OSCORE message, as it does not store the necessary keying material shared among the group members.
 
-Furthermore, a client C1 is supposed to obtain a valid access token from the AS, as specifying its own authentication credential (and the public key included thereof) associated with the its own private key used in the OSCORE group, together with its own Sender ID in that OSCORE group (see {{sec-c-as-token-endpoint}}). This allows the RS receiving the access token to verify with the Group Manager of that OSCORE group whether such a client indeed has that Sender ID and uses that authentication credential in the OSCORE group.
+Furthermore, a client C1 is supposed to obtain a valid access token from the AS, as specifying its own authentication credential (and the public key included thereof) associated with its own private key used in the OSCORE group, together with its own Sender ID in that OSCORE group (see {{sec-c-as-token-endpoint}}). This allows the RS receiving the access token to verify with the Group Manager of that OSCORE group whether such a client indeed has that Sender ID and uses that authentication credential in the OSCORE group.
 
-As a consequence, a different client C2, also member of the same OSCORE group, is not able to impersonate C1, by: i) getting a valid access token, specifying the Sender ID of C1 and a different (made-up) authentication credential; ii) successfully posting the access token to the RS; and then iii) attempting to communicate using Group OSCORE impersonating C1, while blaming C1 for the consequences.
+As a consequence, a different client C2, also member of the same OSCORE group, is not able to impersonate C1, by: i) getting a valid access token, specifying the Sender ID of C1 and a different (made-up) authentication credential; ii) successfully posting the access token to the RS; and then iii) attempting to communicate using Group OSCORE and impersonating C1, while also blaming C1 for the consequences of the interactation with the RS.
 
-## C-to-RS POST to authz-info Endpoint ## {#sec-c-rs-authz}
+## C-to-RS POST to /authz-info Endpoint ## {#sec-c-rs-authz}
 
 The client uploads the access token to the /authz-info endpoint of the RS, as defined in {{Section 5.10.1 of RFC9200}}.
 
@@ -737,7 +737,7 @@ Finally, the RS MUST send a 2.01 (Created) response to the client, as defined in
 
 When previously joining the OSCORE group, both the client and the RS have already established the related Group OSCORE Security Context to communicate as group members. Therefore, they can simply start to securely communicate using Group OSCORE, without deriving any additional keying material or security association.
 
-If the client or the RS delete an access token (e.g., when the access token has expired or has been revoked), it MUST NOT delete the related Group OSCORE Security Context.
+If either of the client or the RS deletes an access token (e.g., when the access token has expired or has been revoked), it MUST NOT delete the related Group OSCORE Security Context.
 
 ### Client Side
 
@@ -843,9 +843,9 @@ When receiving the new access token, the RS performs the same steps defined in {
 
 # Secure Communication with the AS # {#sec-comm-as}
 
-As specified in the ACE framework (see {{Sections 5.8 and 5.9 of RFC9200}}), the requesting entity (client and/or RS) and the AS communicate via the /token or /introspection endpoint. The use of CoAP and OSCORE {{RFC8613}} for this communication is RECOMMENDED in this profile. Other protocols fulfilling the security requirements defined in {{Sections 5 and 6 of RFC9200}} (such as HTTP and DTLS or TLS) MAY be used instead.
+As specified in the ACE framework (see {{Sections 5.8 and 5.9 of RFC9200}}), the requesting entity (client and/or RS) and the AS communicate via the /token or /introspect endpoint. The use of CoAP and OSCORE {{RFC8613}} for this communication is RECOMMENDED in this profile. Other protocols fulfilling the security requirements defined in {{Sections 5 and 6 of RFC9200}} (such as HTTP and DTLS or TLS) MAY be used instead.
 
-If OSCORE {{RFC8613}} is used, the requesting entity and the AS are expected to have a pre-established Security Context in place. How this Security Context is established is out of the scope of this profile. Furthermore, the requesting entity and the AS communicate using OSCORE through the /token endpoint as specified in {{Section 5.8 of RFC9200}}, and through the /introspection endpoint as specified in {{Section 5.9 of RFC9200}}.
+If OSCORE {{RFC8613}} is used, the requesting entity and the AS are expected to have a pre-established Security Context in place. How this Security Context is established is out of the scope of this profile. Furthermore, the requesting entity and the AS communicate using OSCORE through the /token endpoint as specified in {{Section 5.8 of RFC9200}}, and through the /introspect endpoint as specified in {{Section 5.9 of RFC9200}}.
 
 # Discarding the Security Context # {#sec-discard-context}
 
@@ -857,18 +857,18 @@ The client or RS can acquire a new Group OSCORE Security Context, by re-joining 
 
 The new parameters defined in this document MUST be mapped to CBOR types as specified in {{table-cbor-mappings-parameters}}, using the given integer abbreviation for the map key.
 
-| Parameter name         | CBOR Key | Value Type |
-| context_id             | TBD      | bstr       |
-| salt_input             | TBD      | bstr       |
-| client_cred_verify     | TBD      | bstr       |
-| client_cred_verify_mac | TBD      | bstr       |
+| Parameter name         | CBOR Key | Value Type  |
+| context_id             | TBD      | byte string |
+| salt_input             | TBD      | byte string |
+| client_cred_verify     | TBD      | byte string |
+| client_cred_verify_mac | TBD      | byte string |
 {: #table-cbor-mappings-parameters title="CBOR Mappings for New Parameters." align="center"}
 
 The new claims defined in this document MUST be mapped to CBOR types as specified in {{table-cbor-mappings-claims}}, using the given integer abbreviation for the map key.
 
-| Claim name | CBOR Key | Value Type |
-| context_id | TBD      | bstr       |
-| salt_input | TBD      | bstr       |
+| Claim name | CBOR Key | Value Type  |
+| context_id | TBD      | byte string |
+| salt_input | TBD      | byte string |
 {: #table-cbor-mappings-claims title="CBOR Mappings for New Claims." align="center"}
 
 # Security Considerations # {#sec-security-considerations}
@@ -1037,9 +1037,9 @@ This appendix lists the specifications of this profile based on the requirements
 
 * Specify the communication and security protocol for interactions between the client and AS: HTTP/CoAP (+ TLS/DTLS/OSCORE).
 
-* Specify if/how the authz-info endpoint is protected, including how error responses are protected: Not protected.
+* Specify if/how the /authz-info endpoint is protected, including how error responses are protected: Not protected.
 
-* Optionally, define other methods of token transport than the authz-info endpoint: Not defined.
+* Optionally, define other methods of token transport than the /authz-info endpoint: Not defined.
 
 # CDDL Model # {#sec-cddl-model}
 {:removeinrfc}
