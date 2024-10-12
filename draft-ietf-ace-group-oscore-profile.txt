@@ -1492,8 +1492,8 @@ Table of Contents
 
       -  targets a specific audience; and
 
-      -  is related with a specific secure association used by the
-         client to protect communications with the RS.
+      -  is related to a specific secure association used by the client
+         to protect communications with the RS.
 
    In accordance with these recommendations, if an access token T_NEW
    does not differ in any of the respects above from an existing access
