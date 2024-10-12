@@ -561,7 +561,7 @@ Table of Contents
    Token Response.
 
    The access token MUST be bound to the public key of the client as
-   proof-of-possession key (PoP key), which is included in the client's
+   proof-of-possession key (PoP) key, which is included in the client's
    authentication credential specified in the 'cnf' claim of the access
    token.
 
