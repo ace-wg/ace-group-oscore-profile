@@ -87,15 +87,16 @@ Table of Contents
      2.3.  Access Token Uploading
      2.4.  Secure Communication
    3.  Client-AS Communication
-     3.1.  C-to-AS: POST to Token Endpoint
-       3.1.1.  'context_id' Parameter
-       3.1.2.  'salt_input' Parameter
-       3.1.3.  'client_cred_verify' Parameter
-       3.1.4.  'client_cred_verify_mac' Parameter
-     3.2.  AS-to-C: Response
-       3.2.1.  Update of Access Rights
-       3.2.2.  'context_id' Claim
-       3.2.3.  'salt_input' Claim
+     3.1.  Preliminary Operations
+     3.2.  C-to-AS: POST to Token Endpoint
+       3.2.1.  'context_id' Parameter
+       3.2.2.  'salt_input' Parameter
+       3.2.3.  'client_cred_verify' Parameter
+       3.2.4.  'client_cred_verify_mac' Parameter
+     3.3.  AS-to-C: Response
+       3.3.1.  Update of Access Rights
+       3.3.2.  'context_id' Claim
+       3.3.3.  'salt_input' Claim
    4.  Client-RS Communication
      4.1.  C-to-RS POST to /authz-info Endpoint
      4.2.  RS-to-C: 2.01 (Created)
@@ -565,7 +566,55 @@ Table of Contents
    authentication credential specified in the 'cnf' claim of the access
    token.
 
-3.1.  C-to-AS: POST to Token Endpoint
+3.1.  Preliminary Operations
+
+   The following considers a client that is a member of an OSCORE group
+   G with GID* as current Group Identifier (GID), within which the
+   client currently has SID* as Sender ID and uses a public
+   authentication credential AUTH_CRED_C that specifies the PoP key K.
+
+   The client MUST perform the following steps, before requesting an
+   access token to be bound to AUTH_CRED_C (hence to the PoP key K) and
+   to be associated with the client's membership in group G through the
+   values GID* and SID*.
+
+   1.  The client checks whether it is a member of any two OSCORE groups
+       G1 and G2 such that all the following conditions hold.
+
+       *  Both groups have GID* as current GID.
+
+       *  The client uses SID* as Sender ID in both groups.
+
+       *  The client uses the same AUTH_CRED_C in both groups.
+
+   2.  If such two groups G1 and G2 are found at Step 2, then the client
+       moves to Step 3.  Otherwise, the client terminates this algorithm
+       and proceeds with requesting the access token as defined in
+       Section 3.2.
+
+   3.  The client can choose to terminate this algorithm and perform it
+       again later on.
+
+       Alternatively, the client can alter its current group
+       memberships, in order to ensure that two groups like G1 and G2
+       cannot be determined.  To this end, the client has two available
+       options.
+
+       *  The client leaves some of the OSCORE groups that could be
+          determined as groups like G1 and G2 (see Section 9.11 of
+          [I-D.ietf-ace-key-groupcomm-oscore]).
+
+       *  The client obtains a new Sender ID in some of the OSCORE
+          groups that could be determined as groups like G1 and G2.  To
+          this end, the client can request a new Sender ID in a group to
+          the Group Manager responsible for that group (see Section 9.2
+          of [I-D.ietf-ace-key-groupcomm-oscore]), or re-join a group
+          thereby obtaining a new Sender ID in that group (see
+          Section 6.1 of [I-D.ietf-ace-key-groupcomm-oscore]).
+
+       Finally, the client moves to Step 1.
+
+3.2.  C-to-AS: POST to Token Endpoint
 
    The Client-to-AS request is specified in Section 5.8.1 of [RFC9200].
    The client MUST send this POST request to the /token endpoint over a
@@ -576,15 +625,15 @@ Table of Contents
    in the OSCORE profile of ACE (see Section 3.1 of [RFC9203]), with the
    following additional parameters that MUST be included in the payload.
 
-   *  'context_id', defined in Section 3.1.1 of this document.  This
-      parameter specifies the Group Identifier (GID), i.e., the ID
-      Context of an OSCORE group that includes as members both the
-      client and the RS(s) in the audience for which the access token is
-      asked to be issued.  In particular, the client wishes to
-      communicate with the RS(s) in that audience using the Group OSCORE
-      Security Context associated with that OSCORE group.
+   *  'context_id', defined in Section 3.2.1 of this document.  This
+      parameter specifies the GID, i.e., the ID Context of an OSCORE
+      group that includes as members both the client and the RS(s) in
+      the audience for which the access token is asked to be issued.  In
+      particular, the client wishes to communicate with the RS(s) in
+      that audience using the Group OSCORE Security Context associated
+      with that OSCORE group.
 
-   *  'salt_input', defined in Section 3.1.2 of this document.  This
+   *  'salt_input', defined in Section 3.2.2 of this document.  This
       parameter includes the Sender ID that the client has in the OSCORE
       group whose GID is specified in the 'context_id' parameter above.
 
@@ -754,12 +803,12 @@ Table of Contents
    Finally, the client MUST include one of the two following parameters
    in the payload of the POST request to the AS.
 
-   *  'client_cred_verify', defined in Section 3.1.3 of this document,
+   *  'client_cred_verify', defined in Section 3.2.3 of this document,
       specifying the client's PoP evidence as a signature, which is
       computed as defined above.  This parameter MUST be included if and
       only if the OSCORE group is not a pairwise-only group.
 
-   *  'client_cred_verify_mac', defined in Section 3.1.4 of this
+   *  'client_cred_verify_mac', defined in Section 3.2.4 of this
       document, specifying the client's PoP evidence as a MAC, which is
       computed as defined above.  This parameter MUST be included if and
       only if the OSCORE group is a pairwise-only group.
@@ -820,12 +869,12 @@ Table of Contents
    [
 
    TODO: Specify how C requests a new access token that dynamically
-   updates its access rights.  (See Section 3.2.1 for pre-requirements
+   updates its access rights.  (See Section 3.3.1 for pre-requirements
    and a high-level direction)
 
    ]
 
-3.1.1.  'context_id' Parameter
+3.2.1.  'context_id' Parameter
 
    The 'context_id' parameter is an OPTIONAL parameter of the Access
    Token Request message defined in Section 5.8.1 of [RFC9200].  This
@@ -833,7 +882,7 @@ Table of Contents
    as a hint for a security context.  Its exact content is profile
    specific.
 
-3.1.2.  'salt_input' Parameter
+3.2.2.  'salt_input' Parameter
 
    The 'salt_input' parameter is an OPTIONAL parameter of the Access
    Token Request message defined in Section 5.8.1 of [RFC9200].  This
@@ -841,14 +890,14 @@ Table of Contents
    salt with the RS, for deriving cryptographic keying material.  Its
    exact content is profile specific.
 
-3.1.3.  'client_cred_verify' Parameter
+3.2.3.  'client_cred_verify' Parameter
 
    The 'client_cred_verify' parameter is an OPTIONAL parameter of the
    Access Token Request message defined in Section 5.8.1. of [RFC9200].
    This parameter provides a signature computed by the client to prove
    the possession of its own private key.
 
-3.1.4.  'client_cred_verify_mac' Parameter
+3.2.4.  'client_cred_verify_mac' Parameter
 
    The 'client_cred_verify_mac' parameter is an OPTIONAL parameter of
    the Access Token Request message defined in Section 5.8.1. of
@@ -856,7 +905,7 @@ Table of Contents
    (MAC) computed by the client to prove the possession of its own
    private key.
 
-3.2.  AS-to-C: Response
+3.3.  AS-to-C: Response
 
    After having verified the POST request to the /token endpoint and
    that the client is authorized to obtain an access token corresponding
@@ -865,7 +914,7 @@ Table of Contents
    follows.
 
    *  As PoP input, the AS uses the same value used by the client in
-      Section 3.1.
+      Section 3.2.
 
    *  As public key of the client, the AS uses the one included in the
       authentication credential specified in the 'req_cnf' parameter of
@@ -900,7 +949,7 @@ Table of Contents
       Then, the AS recomputes the MAC through the same process taken by
       the client when preparing the value of the
       'client_cred_verify_mac' parameter for the access token (see
-      Section 3.1), with the difference that the AS uses its own Diffie-
+      Section 3.2), with the difference that the AS uses its own Diffie-
       Hellman private key and the Diffie-Hellman public key of the
       client.  The verification succeeds if and only if the recomputed
       MAC is equal to the MAC conveyed as PoP evidence in the Access
@@ -958,13 +1007,13 @@ Table of Contents
    *  The salt input specified in the 'salt_input' parameter of the
       Access Token Request.  If the access token is a CWT, the content
       of the 'salt_input' parameter MUST be specified in the
-      'salt_input' claim of the access token, defined in Section 3.2.3
+      'salt_input' claim of the access token, defined in Section 3.3.3
       of this document.
 
    *  The Context ID input specified in the 'context_id' parameter of
       the Access Token Request.  If the access token is a CWT, the
       content of the 'context_id' parameter MUST be specified in the
-      'context_id' claim of the access token, defined in Section 3.2.2
+      'context_id' claim of the access token, defined in Section 3.3.2
       of this document.
 
    *  The authentication credential that the client uses in the OSCORE
@@ -975,7 +1024,7 @@ Table of Contents
       credential MUST be specified in the 'cnf' claim, which follows the
       syntax from Section 3.1 of [RFC8747].  In particular, the 'cnf'
       claim includes the same authentication credential specified in the
-      'req_cnf' parameter of the Access Token Request (see Section 3.1).
+      'req_cnf' parameter of the Access Token Request (see Section 3.2).
 
    Figure 4 shows an example of such an AS response.  The access token
    has been truncated for readability.
@@ -1078,7 +1127,7 @@ Table of Contents
 
            Figure 6: Example CWT Claims Set Using CBOR Encoding.
 
-3.2.1.  Update of Access Rights
+3.3.1.  Update of Access Rights
 
    [
 
@@ -1087,7 +1136,7 @@ Table of Contents
    a high-level direction)
 
    (This should be specified with content in the present section, as
-   well as in Section 3.1 and Section 4.4).
+   well as in Section 3.2 and Section 4.4).
 
    At the moment, this profile does not support the dynamic update of
    access rights for the client like other transport profiles of ACE do.
@@ -1148,7 +1197,7 @@ Table of Contents
 
    ]
 
-3.2.2.  'context_id' Claim
+3.3.2.  'context_id' Claim
 
    The 'context_id' claim provides a value that the client requesting
    the access token wishes to use with the RS, as a hint for a security
@@ -1157,7 +1206,7 @@ Table of Contents
    This parameter specifies the value of the Context ID input, encoded
    as a CBOR byte string.
 
-3.2.3.  'salt_input' Claim
+3.3.3.  'salt_input' Claim
 
    The 'salt_input' claim provides a value that the client requesting
    the access token wishes to use as a part of a salt with the RS, e.g.,
@@ -1208,7 +1257,7 @@ Table of Contents
    from the AS, as specifying its own authentication credential (and the
    public key included thereof) associated with its own private key used
    in the OSCORE group, together with its own Sender ID in that OSCORE
-   group (see Section 3.1).  This allows the RS receiving the access
+   group (see Section 3.2).  This allows the RS receiving the access
    token to verify with the Group Manager of that OSCORE group whether
    such a client indeed has that Sender ID and uses that authentication
    credential in the OSCORE group.
@@ -1354,7 +1403,7 @@ Table of Contents
    [
 
    TODO: Specify the processing on the RS when receiving an access token
-   that dynamically updates the access rights of C.  (See Section 3.2.1
+   that dynamically updates the access rights of C.  (See Section 3.3.1
    for pre-requirements and a high-level direction)
 
    ]
@@ -1523,7 +1572,7 @@ Table of Contents
 
    1.  The client requests a new access token to the AS, as defined in
        Section 3.  In particular, when sending the Access Token Request
-       as defined in Section 3.1, the client specifies:
+       as defined in Section 3.2, the client specifies:
 
        *  The current Group Identifier of the OSCORE group, as value of
           the 'context_id' parameter.
@@ -1540,7 +1589,7 @@ Table of Contents
           parameter.
 
    2.  After receiving the Access Token Response from the AS (see
-       Section 3.2), the client performs the same exchanges with the RS
+       Section 3.3), the client performs the same exchanges with the RS
        as defined in Section 4.
 
    When receiving the new access token, the RS performs the same steps
@@ -1734,7 +1783,7 @@ Table of Contents
 
    *  Change Controller: IETF
 
-   *  Reference: Section 3.1.1 of [RFC-XXXX]
+   *  Reference: Section 3.2.1 of [RFC-XXXX]
 
 
 
@@ -1744,7 +1793,7 @@ Table of Contents
 
    *  Change Controller: IETF
 
-   *  Reference: Section 3.1.2 of [RFC-XXXX]
+   *  Reference: Section 3.2.2 of [RFC-XXXX]
 
 
 
@@ -1754,7 +1803,7 @@ Table of Contents
 
    *  Change Controller: IETF
 
-   *  Reference: Section 3.1.3 of [RFC-XXXX]
+   *  Reference: Section 3.2.3 of [RFC-XXXX]
 
 
 
@@ -1764,7 +1813,7 @@ Table of Contents
 
    *  Change Controller: IETF
 
-   *  Reference: Section 3.1.4 of [RFC-XXXX]
+   *  Reference: Section 3.2.4 of [RFC-XXXX]
 
 11.3.  OAuth Parameters CBOR Mappings Registry
 
@@ -1779,7 +1828,7 @@ Table of Contents
 
    *  Value Type: byte string
 
-   *  Reference: Section 3.1.1 of [RFC-XXXX]
+   *  Reference: Section 3.2.1 of [RFC-XXXX]
 
    *  Original Specification: [RFC-XXXX]
 
@@ -1791,7 +1840,7 @@ Table of Contents
 
    *  Value Type: byte string
 
-   *  Reference: Section 3.1.2 of [RFC-XXXX]
+   *  Reference: Section 3.2.2 of [RFC-XXXX]
 
    *  Original Specification: [RFC-XXXX]
 
@@ -1803,7 +1852,7 @@ Table of Contents
 
    *  Value Type: byte string
 
-   *  Reference: Section 3.1.3 of [RFC-XXXX]
+   *  Reference: Section 3.2.3 of [RFC-XXXX]
 
    *  Original Specification: [RFC-XXXX]
 
@@ -1815,7 +1864,7 @@ Table of Contents
 
    *  Value Type: byte string
 
-   *  Reference: Section 3.1.4 of [RFC-XXXX]
+   *  Reference: Section 3.2.4 of [RFC-XXXX]
 
    *  Original Specification: [RFC-XXXX]
 
@@ -1837,7 +1886,7 @@ Table of Contents
 
    *  Change Controller: IETF
 
-   *  Reference: Section 3.2.2 of [RFC-XXXX]
+   *  Reference: Section 3.3.2 of [RFC-XXXX]
 
 
 
@@ -1853,7 +1902,7 @@ Table of Contents
 
    *  Change Controller: IETF
 
-   *  Reference: Section 3.2.3 of [RFC-XXXX]
+   *  Reference: Section 3.3.3 of [RFC-XXXX]
 
 11.5.  TLS Exporter Label Registry
 
@@ -1868,7 +1917,7 @@ Table of Contents
 
    *  Recommended: N
 
-   *  Reference: Section 3.1 of [RFC-XXXX]
+   *  Reference: Section 3.2 of [RFC-XXXX]
 
 12.  References
 
@@ -2165,6 +2214,9 @@ C.1.  Version -02 to -03
 
    *  Clarified that the client may ask for a new access token after the
       old one becomes invalid.
+
+   *  Enforced uniqueness pre-requirements on the client's group
+      membership before requesting an access token.
 
    *  Added fine-grained recommendations on storing multiple access
       tokens bound to the same PoP key.
