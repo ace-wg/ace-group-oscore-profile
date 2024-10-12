@@ -301,7 +301,7 @@ The client can send a request protected with Group OSCORE {{I-D.ietf-core-oscore
 
 This section details the Access Token POST Request that the client sends to the /token endpoint of the AS, as well as the related Access Token Response.
 
-The access token MUST be bound to the public key of the client as proof-of-possession key (pop-key), which is included in the client's authentication credential specified in the 'cnf' claim of the access token.
+The access token MUST be bound to the public key of the client as proof-of-possession key (PoP key), which is included in the client's authentication credential specified in the 'cnf' claim of the access token.
 
 ## C-to-AS: POST to Token Endpoint ## {#sec-c-as-token-endpoint}
 
@@ -313,7 +313,7 @@ The POST request is formatted as the analogous Client-to-AS request in the OSCOR
 
 * 'salt_input', defined in {{salt_input}} of this document. This parameter includes the Sender ID that the client has in the OSCORE group whose GID is specified in the 'context_id' parameter above.
 
-* 'req_cnf', defined in {{Section 3.1 of RFC9201}}. This parameter follows the syntax from {{Section 3.1 of RFC8747}}, and its inner confirmation value specifies the authentication credential that the client uses in the OSCORE group. The public key included in the authentication credential will be used as the pop-key bound to the access token.
+* 'req_cnf', defined in {{Section 3.1 of RFC9201}}. This parameter follows the syntax from {{Section 3.1 of RFC8747}}, and its inner confirmation value specifies the authentication credential that the client uses in the OSCORE group. The public key included in the authentication credential will be used as the PoP key bound to the access token.
 
    At the time of writing this specification, acceptable formats of authentication credentials in Group OSCORE are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) {{RFC8392}}, X.509 certificates {{RFC5280}}, and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}.
 
@@ -552,7 +552,7 @@ Payload:
 ~~~~~~~~~~~
 {: #fig-example-AS-to-C title="Example AS-to-C Access Token Response with the Group OSCORE Profile."}
 
-{{fig-example-AS-to-C-CWT}} shows an example CWT Claims Set, containing the client's public key in the group (as pop-key), as specified by the inner confirmation value in the 'cnf' claim.
+{{fig-example-AS-to-C-CWT}} shows an example CWT Claims Set, containing the client's public key in the group (as PoP key), as specified by the inner confirmation value in the 'cnf' claim.
 
 ~~~~~~~~~~~
 {
@@ -691,7 +691,7 @@ In particular, the RS uses the client's public key bound to the access token, ei
 
 Similarly, when receiving a protected response from the RS, the client uses the RS's public key either when verifying the signature of the response (if protected with the group mode), or when verifying the response as integrity-protected with pairwise keying material derived from the two peers' authentication credentials and asymmetric keys (if protected with the pairwise mode). In either case, the client also authenticates the RS. Mutual authentication is only achieved after the client has successfully verified the protected response from the RS.
 
-Therefore, an attacker using a stolen access token cannot generate a valid Group OSCORE message as protected through the client's private key, and thus cannot prove possession of the pop-key bound to the access token. Also, if a client legitimately owns an access token but has not joined the OSCORE group, it cannot generate a valid Group OSCORE message, as it does not store the necessary keying material shared among the group members.
+Therefore, an attacker using a stolen access token cannot generate a valid Group OSCORE message as protected through the client's private key, and thus cannot prove possession of the PoP key bound to the access token. Also, if a client legitimately owns an access token but has not joined the OSCORE group, it cannot generate a valid Group OSCORE message, as it does not store the necessary keying material shared among the group members.
 
 Furthermore, a client C1 is supposed to obtain a valid access token from the AS, as specifying its own authentication credential (and the public key included thereof) associated with its own private key used in the OSCORE group, together with its own Sender ID in that OSCORE group (see {{sec-c-as-token-endpoint}}). This allows the RS receiving the access token to verify with the Group Manager of that OSCORE group whether such a client indeed has that Sender ID and uses that authentication credential in the OSCORE group.
 
@@ -775,11 +775,11 @@ If the RS has an access token for the client but no actions are authorized on th
 
 If the RS has an access token for the client but the requested action is not authorized, the RS MUST reject the request and MUST reply to the client with a 4.05 (Method Not Allowed) error response.
 
-## Storing Multiple Access Tokens per PoP-Key
+## Storing Multiple Access Tokens per PoP Key
 
-According to {{Section 5.10.1 of RFC9200}}, an RS is recommended to store only one access token per proof-of-possession key (pop-key), and to supersede such an access token when receiving and successfully validating a new one bound to the same pop-key.
+According to {{Section 5.10.1 of RFC9200}}, an RS is recommended to store only one access token per proof-of-possession (PoP) key, and to supersede such an access token when receiving and successfully validating a new one bound to the same PoP key.
 
-However, when using the profile specified in this document, an RS might practically have to deviate from that recommendation and store multiple access tokens bound to the same pop-key, i.e., to the same public authentication credential of a client.
+However, when using the profile specified in this document, an RS might practically have to deviate from that recommendation and store multiple access tokens bound to the same PoP key, i.e., to the same public authentication credential of a client.
 
 For example, this can occur in the following cases.
 
@@ -791,9 +791,9 @@ For example, this can occur in the following cases.
 
   - T2 targets AUD2 and has scope SCOPE2 different from SCOPE1.
 
-  Both T1 and T2 are going to be bound to the same pop-key specified by AUTH_CRED_C.
+  Both T1 and T2 are going to be bound to the same PoP key specified by AUTH_CRED_C.
 
-  In fact, if the AS issues access tokens targeting a group-audience, then the above can possibly be the case when using any transport profile of ACE that supports asymmetric pop-keys. If so, the RS should be ready to store at minimum one access token per pop-key per audience it belongs to.
+  In fact, if the AS issues access tokens targeting a group-audience, then the above can possibly be the case when using any transport profile of ACE that supports asymmetric PoP keys. If so, the RS should be ready to store at minimum one access token per PoP key per audience it belongs to.
 
 * The RS is a member of two OSCORE groups G1 and G2. In particular, the same format of public authentication credentials is used in both OSCORE groups.
 
@@ -803,11 +803,11 @@ For example, this can occur in the following cases.
 
   - T2 targets RS and reflects the membership of C in G2, as per its claims "context_id" and "salt_input".
 
-  Both T1 and T2 are going to be bound to the same pop-key specified by AUTH_CRED_C.
+  Both T1 and T2 are going to be bound to the same PoP key specified by AUTH_CRED_C.
 
-  When using the profile specified in this document, the RS should be ready to store at minimum one access token per pop-key per OSCORE group it is a member of (although, per the previous point, even this can be limiting).
+  When using the profile specified in this document, the RS should be ready to store at minimum one access token per PoP key per OSCORE group it is a member of (although, per the previous point, even this can be limiting).
 
-* The RS uses both the profile specified in this document and a different transport profile of ACE that also relies on asymmetric pop-keys, e.g., the EDHOC and OSCORE profile defined in {{I-D.ietf-ace-edhoc-oscore-profile}}.
+* The RS uses both the profile specified in this document and a different transport profile of ACE that also relies on asymmetric PoP keys, e.g., the EDHOC and OSCORE profile defined in {{I-D.ietf-ace-edhoc-oscore-profile}}.
 
   In such a case, a client C with public authentication credential AUTH_CRED_C can request two access tokens T1 and T2 from the AS, such that:
 
@@ -815,9 +815,28 @@ For example, this can occur in the following cases.
 
   - T2 targets RS and is meant to be used according to the EDHOC and OSCORE profile defined in {{I-D.ietf-ace-edhoc-oscore-profile}}.
 
-  Both T1 and T2 are going to be bound to the same pop-key specified by AUTH_CRED_C.
+  Both T1 and T2 are going to be bound to the same PoP key specified by AUTH_CRED_C.
 
-  When using multiple transport profiles of ACE that rely on asymmetric pop-keys, it is reasonable that the RS is capable to store at minimum one access token per pop-key per used profile (although, per the previous points, even this can be limiting).
+  When using multiple transport profiles of ACE that rely on asymmetric PoP keys, it is reasonable that the RS is capable to store at minimum one access token per PoP key per used profile (although, per the previous points, even this can be limiting).
+
+In order to keep the same spirit of the recommendation in {{Section 5.10.1 of RFC9200}} without impeding cases such as those outlined in the examples above, the following defines a more fine-grained recommendations for the storage of access tokens at an RS when this profile is used.
+
+* As to access tokens issued in accordance with this profile (i.e., specifying the profile "coap_group_oscore"), it is RECOMMENDED that an RS stores only one access token that:
+
+  - is bound to a specific PoP key; and
+  - targets a specific audience; and
+  - is related to a specific OSCORE group.
+
+* As to access tokens issued in accordance with a different profile P that an RS may use in parallel with the profile defined in this document, it is RECOMMENDED that an RS stores only one access token that:
+
+  - is issued in accordance with the profile P; and
+  - is bound to a specific PoP key; and
+  - targets a specific audience; and
+  - is related with a specific secure association used by the client to protect communications with the RS.
+
+In accordance with these recommendations, if an access token T_NEW does not differ in any of the respects above from an existing access token T_OLD stored at the RS, then T_NEW will supersede T_OLD by replacing the corresponding authorization information.
+
+Not complying with these recommendations can additionally complicate (constrained) implementations of RSs, with respect to required storage and the validation of a protected request against the applicable, stored access tokens associated with the same client. That is, it increases the strain on an RS in determining the actual permissions of a client, e.g., if access tokens contradict each other and thus might lead the RS to enforce wrong permissions. Moreover, if one of the access tokens expires earlier than others, the resulting permissions may offer insufficient protection.
 
 # Change of Client's Authentication Credential in the Group ## {#sec-client-public-key-change}
 
@@ -1076,6 +1095,8 @@ kccs = 14
 
 * Clarified that the client may ask for a new access token after the old one becomes invalid.
 
+* Added fine-grained recommendations on storing multiple access tokens bound to the same PoP key.
+
 * Fixes in the IANA considerations.
 
 * Editorial fixes and improvements.
@@ -1090,7 +1111,7 @@ kccs = 14
 
 * Placeholders and early direction for dynamic update of access rights.
 
-* Added text on storing multiple access tokens per PoP-Key on the RS.
+* Added text on storing multiple access tokens per PoP key on the RS.
 
 * Fixes in the IANA considerations.
 
