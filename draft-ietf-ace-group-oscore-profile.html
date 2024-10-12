@@ -1622,7 +1622,7 @@ Alternatively, the client can alter its current group memberships, in order to e
                 <p id="section-3.1-3.3.3.1.1">The client leaves some of the OSCORE groups that could be determined as groups like G1 and G2 (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-16#section-9.11" class="relref">Section 9.11</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>).<a href="#section-3.1-3.3.3.1.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-3.1-3.3.3.2">
-                <p id="section-3.1-3.3.3.2.1">The client obtains a new Sender ID in some of the OSCORE groups that could be determined as groups like G1 and G2. To this end, the client can request a new Sender ID in a group to the Group Manager responsible for that group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-16#section-9.2" class="relref">Section 9.2</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>), or re-join a group thereby obtaining a new Sender ID in that group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-16#section-6.1" class="relref">Section 6.1</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>).<a href="#section-3.1-3.3.3.2.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-3.3.3.2.1">The client obtains a new Sender ID in some of the OSCORE groups that could be determined as groups like G1 and G2. To this end, the client can request a new Sender ID in a group to the Group Manager responsible for that group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-16#section-9.2" class="relref">Section 9.2</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>), or re-join a group thereby obtaining a new Sender ID in that group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-16#section-6" class="relref">Section 6</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>).<a href="#section-3.1-3.3.3.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 <p id="section-3.1-3.3.4">
@@ -2152,38 +2152,74 @@ This parameter is meant to specify the unique identifier of a token series. In p
 <p id="section-4.2-1">The RS <span class="bcp14">MUST</span> verify the validity of the access token as defined in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10.1" class="relref">Section 5.10.1</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>, with the following additions.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.2-2.1">
-            <p id="section-4.2-2.1.1">The RS <span class="bcp14">MUST</span> check that the claims 'salt_input', 'context_id', and 'cnf' are included in the access token.<a href="#section-4.2-2.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-4.2-2.2">
-            <p id="section-4.2-2.2.1">The RS considers: the content of the 'context_id' claim as the GID of the OSCORE group; the content of the 'salt_input' claim as the Sender ID that the client has in the group; and the inner confirmation value of the 'cnf' claim as the authentication credential that the client uses in the group.<a href="#section-4.2-2.2.1" class="pilcrow">¶</a></p>
-<p id="section-4.2-2.2.2">
-The RS <span class="bcp14">MUST</span> check whether it already stores the authentication credential specified in the inner confirmation value of the 'cnf' claim as associated with the pair (GID, Sender ID) above.<a href="#section-4.2-2.2.2" class="pilcrow">¶</a></p>
-<p id="section-4.2-2.2.3">
-If this is not the case, the RS <span class="bcp14">MUST</span> request the client's authentication credential to the Group Manager of the OSCORE group as described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-16#section-9.3" class="relref">Section 9.3</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>, specifying the client's Sender ID in the OSCORE group, i.e., the value of the 'salt_input' claim. Then, the RS performs the following actions.<a href="#section-4.2-2.2.3" class="pilcrow">¶</a></p>
+            <p id="section-4.2-2.1.1">The RS checks that the claims 'context_id', 'salt_input', and 'cnf' are included in the access token.<a href="#section-4.2-2.1.1" class="pilcrow">¶</a></p>
+<p id="section-4.2-2.1.2">
+If any of these claims are missing or malformed, the RS <span class="bcp14">MUST</span> consider the access token invalid, and <span class="bcp14">MUST</span> reply to the client with an error response code equivalent to the CoAP code 4.00 (Bad Request).<a href="#section-4.2-2.1.2" class="pilcrow">¶</a></p>
+<p id="section-4.2-2.1.3">
+Otherwise, the RS retrieves:<a href="#section-4.2-2.1.3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.2-2.2.4.1">
-                <p id="section-4.2-2.2.4.1.1">The RS <span class="bcp14">MUST</span> check whether the client's authentication credential retrieved from the Group Manager matches the one retrieved from the inner confirmation value of the 'cnf' claim of the access token.<a href="#section-4.2-2.2.4.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.2-2.1.4.1">
+                <p id="section-4.2-2.1.4.1.1">GID* as the GID of the OSCORE group, specified in the 'context_id' claim.<a href="#section-4.2-2.1.4.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-4.2-2.2.4.2">
-                <p id="section-4.2-2.2.4.2.1">The RS <span class="bcp14">MUST</span> check whether the client's Sender ID provided by the Group Manager together with the client's authentication credential matches the one retrieved from the 'salt_input' claim of the access token.<a href="#section-4.2-2.2.4.2.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-4.2-2.1.4.2">
+                <p id="section-4.2-2.1.4.2.1">SID* as the Sender ID that the client has in the group, specified in the 'salt_input' claim.<a href="#section-4.2-2.1.4.2.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-4.2-2.1.4.3">
+                <p id="section-4.2-2.1.4.3.1">AUTH_CRED_C* as the authentication credential that the client uses in the group, specified in the inner confirmation value of the 'cnf' claim.<a href="#section-4.2-2.1.4.3.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-        </ul>
-<p id="section-4.2-3">If any of the checks above fails, the RS <span class="bcp14">MUST</span> consider the access token invalid, and <span class="bcp14">MUST</span> reply to the client with an error response code equivalent to the CoAP code 4.00 (Bad Request).<a href="#section-4.2-3" class="pilcrow">¶</a></p>
-<p id="section-4.2-4">If the access token is valid and further checks on its content are successful, the RS associates the authorization information from the access token with the Group OSCORE Security Context.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
-<p id="section-4.2-5">In particular, the RS associates the authorization information from the access token with the triple (GID, SaltInput, AuthCred), where GID is the Group Identifier of the OSCORE group, while SaltInput and AuthCred are the Sender ID and the authentication credential that the client uses in that OSCORE group, respectively.<a href="#section-4.2-5" class="pilcrow">¶</a></p>
-<p id="section-4.2-6">The RS <span class="bcp14">MUST</span> keep this association up-to-date over time, as the triple (GID, SaltInput, AuthCred) associated with the access token might change. In particular:<a href="#section-4.2-6" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-4.2-2.2">
+            <p id="section-4.2-2.2.1">The RS builds GROUPS as the set of OSCORE groups such that all the following conditions hold, for each group G in the set.<a href="#section-4.2-2.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.2-7.1">
-            <p id="section-4.2-7.1.1">If the OSCORE group is rekeyed (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-12.2" class="relref">Section 12.2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span> and <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-16#section-11" class="relref">Section 11</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>), the Group Identifier also changes in the group, and the new one replaces the current 'GID' value in the triple (GID, SaltInput, AuthCred).<a href="#section-4.2-7.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.2-2.2.2.1">
+                <p id="section-4.2-2.2.2.1.1">The RS is a member of the group G.<a href="#section-4.2-2.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.2-7.2">
-            <p id="section-4.2-7.2.1">If the client requests and obtains a new OSCORE Sender ID from the Group Manager (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-2.6.3.1" class="relref">Section 2.6.3.1</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span> and <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-16#section-9.2" class="relref">Section 9.2</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>), the new Sender ID replaces the current 'SaltInput' value in the triple (GID, SaltInput, AuthCred).<a href="#section-4.2-7.2.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-4.2-2.2.2.2">
+                <p id="section-4.2-2.2.2.2.1">The group G has GID* as current GID.<a href="#section-4.2-2.2.2.2.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-4.2-2.2.2.3">
+                <p id="section-4.2-2.2.2.3.1">The audience targeted by the access token is consistent with using the group G for accessing protected resources hosted by the RS.<a href="#section-4.2-2.2.2.3.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+<p id="section-4.2-2.2.3">
+If no such group is found, the RS <span class="bcp14">MUST</span> consider the access token invalid, and <span class="bcp14">MUST</span> reply to the client with an error response code equivalent to the CoAP code 4.00 (Bad Request).<a href="#section-4.2-2.2.3" class="pilcrow">¶</a></p>
+<p id="section-4.2-2.2.4">
+Otherwise, for each of the N &gt;= 1 groups G in the set GROUPS, the RS <span class="bcp14">MUST</span> request to the corresponding Group Manager the authentication credential that the client uses in G, specifying SID* in the request sent to the Group Manager (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-16#section-9.3" class="relref">Section 9.3</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>).<a href="#section-4.2-2.2.4" class="pilcrow">¶</a></p>
+<p id="section-4.2-2.2.5">
+When receiving a successful response from each of the Group Managers, the RS <span class="bcp14">MUST</span> check whether the client's authentication credential AUTH_CRED_C retrieved from the Group Manager is equal to AUTH_CRED_C* retrieved from the access token.<a href="#section-4.2-2.2.5" class="pilcrow">¶</a></p>
+<p id="section-4.2-2.2.6">
+If any of the following conditions hold, the RS <span class="bcp14">MUST</span> consider the access token invalid, and <span class="bcp14">MUST</span> reply to the client with an error response code equivalent to the CoAP code 5.03 (Service Unavailable).<a href="#section-4.2-2.2.6" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.2-2.2.7.1">
+                <p id="section-4.2-2.2.7.1.1">None or more than one of the Group Managers provide the RS with a successful response where the conveyed AUTH_CRED_C is equal to AUTH_CRED_C*.<a href="#section-4.2-2.2.7.1.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-4.2-2.2.7.2">
+                <p id="section-4.2-2.2.7.2.1">After having performed a maximum, pre-configured amount of attempts, or after a maximum, pre-configured amount of time has elapsed, less than N Group Managers have sent a successful response to the RS.<a href="#section-4.2-2.2.7.2.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+<p id="section-4.2-2.2.8">
+That is, the process above is successful if and only if the RS receives a successful response from all the N Group Managers, and exactly one of such responses conveys AUTH_CRED_C equal to AUTH_CRED_C*. This ensures that there is only one OSCORE group G* such that: the client and the RS are both its members; it has GID* as current GID; and the client uses SID* as Sender ID in the group. In turn, this will ensure that the RS can bound the access token to such single OSCORE group G*.<a href="#section-4.2-2.2.8" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-4.2-8">As defined in <a href="#sec-client-public-key-change" class="auto internal xref">Section 5</a>, a possible change of the client's authentication credential requires the client to upload to the RS a new access token bound to the new authentication credential.<a href="#section-4.2-8" class="pilcrow">¶</a></p>
-<p id="section-4.2-9">Finally, the RS <span class="bcp14">MUST</span> send a 2.01 (Created) response to the client, as defined in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10.1" class="relref">Section 5.10.1</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>.<a href="#section-4.2-9" class="pilcrow">¶</a></p>
+<p id="section-4.2-3">If the operations above are successful, the access token is valid, and further checks on its content are successful, the RS associates the authorization information from the access token with the Group OSCORE Security Context of the OSCORE group G*.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
+<p id="section-4.2-4">In particular, the RS associates the authorization information from the access token with the quartet (GID, SaltInput, AuthCred, AuthCredGM), where GID is the Group Identifier of G* (i.e.,  GID*), SaltInput is the Sender ID that the client uses in G* (i.e., SID*), AuthCred is the authentication credential that the client uses in G* (i.e., AUTH_CRED_C*), and AuthCredGM is the authentication credential of the Group Manager of G* (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-2.1.6" class="relref">Section 2.1.6</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+<p id="section-4.2-5">The RS <span class="bcp14">MUST</span> keep this association up-to-date over time, as the quartet (GID, SaltInput, AuthCred, AuthCredGM) associated with the access token might change. In particular:<a href="#section-4.2-5" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.2-6.1">
+            <p id="section-4.2-6.1.1">If the OSCORE group is rekeyed (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-12.2" class="relref">Section 12.2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span> and <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-16#section-11" class="relref">Section 11</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>), the Group Identifier also changes in the group, and the new one replaces the current 'GID' value in the quartet (GID, SaltInput, AuthCred, AuthCredGM).<a href="#section-4.2-6.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-6.2">
+            <p id="section-4.2-6.2.1">If the client requests and obtains a new OSCORE Sender ID from the Group Manager (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-2.6.3.1" class="relref">Section 2.6.3.1</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span> and <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-16#section-9.2" class="relref">Section 9.2</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>), the new Sender ID replaces the current 'SaltInput' value in the quartet (GID, SaltInput, AuthCred, AuthCredGM).<a href="#section-4.2-6.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-6.3">
+            <p id="section-4.2-6.3.1">If the Group Manager of the OSCORE group changes its authentication credential, the new authentication credential of the Group Manager replaces the current 'AuthCredGM' value in the quartet (GID, SaltInput, AuthCred, AuthCredGM).<a href="#section-4.2-6.3.1" class="pilcrow">¶</a></p>
+<p id="section-4.2-6.3.2">
+In order to obtain the latest authentication credential of the Group Manager, the RS can re-join the group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-16#section-6" class="relref">Section 6</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>) or send a dedicated request to the Group Manager (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-16#section-9.3" class="relref">Section 9.3</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>).<a href="#section-4.2-6.3.2" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.2-7">As defined in <a href="#sec-client-public-key-change" class="auto internal xref">Section 5</a>, a possible change of the client's authentication credential requires the client to upload to the RS a new access token bound to the new authentication credential.<a href="#section-4.2-7" class="pilcrow">¶</a></p>
+<p id="section-4.2-8">Finally, the RS <span class="bcp14">MUST</span> send a 2.01 (Created) response to the client, as defined in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10.1" class="relref">Section 5.10.1</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>.<a href="#section-4.2-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-client-rs-secure-communication">
@@ -2231,10 +2267,26 @@ If this is not the case, the RS <span class="bcp14">MUST</span> request the clie
 <a href="#section-4.5" class="section-number selfRef">4.5. </a><a href="#name-access-rights-verification" class="section-name selfRef">Access Rights Verification</a>
         </h3>
 <p id="section-4.5-1">The RS <span class="bcp14">MUST</span> follow the procedures defined in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10.2" class="relref">Section 5.10.2</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>. If an RS receives a request protected with Group OSCORE from a client, the RS processes the request according to <span>[<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>.<a href="#section-4.5-1" class="pilcrow">¶</a></p>
-<p id="section-4.5-2">If the Group OSCORE verification succeeds and the target resource requires authorization, the RS retrieves the authorization information from the access token associated with the Group OSCORE Security Context. Then, the RS <span class="bcp14">MUST</span> verify that the action requested on the resource is authorized.<a href="#section-4.5-2" class="pilcrow">¶</a></p>
-<p id="section-4.5-3">If the RS has no valid access token for the client, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the client with a 4.01 (Unauthorized) error response.<a href="#section-4.5-3" class="pilcrow">¶</a></p>
-<p id="section-4.5-4">If the RS has an access token for the client but no actions are authorized on the target resource, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the client with a 4.03 (Forbidden) error response.<a href="#section-4.5-4" class="pilcrow">¶</a></p>
-<p id="section-4.5-5">If the RS has an access token for the client but the requested action is not authorized, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the client with a 4.05 (Method Not Allowed) error response.<a href="#section-4.5-5" class="pilcrow">¶</a></p>
+<p id="section-4.5-2">If the Group OSCORE verification succeeds and the target resource requires authorization, the RS retrieves the authorization information from the access token associated with the Group OSCORE Security Context.<a href="#section-4.5-2" class="pilcrow">¶</a></p>
+<p id="section-4.5-3">In particular, the RS retrieves the access token associated with the quartet (GID, SaltInput, AuthCred, AuthCredGM), where:<a href="#section-4.5-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.5-4.1">
+            <p id="section-4.5-4.1.1">GID is the Group Identifier of the OSCORE group, which is specified in the 'kid context' parameter of the CoAP OSCORE option in the received request. The RS maintains GID in its Common Context within the Group OSCORE Security Context associated with the OSCORE group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-2" class="relref">Section 2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-4.5-4.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.5-4.2">
+            <p id="section-4.5-4.2.1">SaltInput is the Sender ID that the client has in the OSCORE group, which is specified in the 'kid' parameter of the CoAP OSCORE option in the received request. The RS maintains SaltInput in its Recipient Context associated with the client, within the Group OSCORE Security Context associated with the OSCORE group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-2" class="relref">Section 2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-4.5-4.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.5-4.3">
+            <p id="section-4.5-4.3.1">AuthCred is the authentication credential that the client uses in the OSCORE group. The RS typically maintains AuthCred in its Recipient Context associated with the client, within the Group OSCORE Security Context associated with the OSCORE group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-2" class="relref">Section 2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-4.5-4.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.5-4.4">
+            <p id="section-4.5-4.4.1">AuthCredGM is the authentication credential of the Group Manager responsible for the OSCORE group. The RS typically maintains AuthCredGM in its Common Context within the Group OSCORE Security Context associated with the OSCORE group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-23#section-2" class="relref">Section 2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-4.5-4.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.5-5">Then, the RS <span class="bcp14">MUST</span> verify that the action requested on the resource is authorized.<a href="#section-4.5-5" class="pilcrow">¶</a></p>
+<p id="section-4.5-6">If the RS has no valid access token for the client, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the client with a 4.01 (Unauthorized) error response.<a href="#section-4.5-6" class="pilcrow">¶</a></p>
+<p id="section-4.5-7">If the RS has an access token for the client but no actions are authorized on the target resource, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the client with a 4.03 (Forbidden) error response.<a href="#section-4.5-7" class="pilcrow">¶</a></p>
+<p id="section-4.5-8">If the RS has an access token for the client but the requested action is not authorized, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the client with a 4.05 (Method Not Allowed) error response.<a href="#section-4.5-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="storing-multiple-access-tokens-per-pop-key">
@@ -2347,7 +2399,7 @@ When using multiple transport profiles of ACE that rely on asymmetric PoP keys, 
 <p id="section-5-2">After that, and in order to continue communicating with the RS, the client <span class="bcp14">MUST</span> perform the following actions.<a href="#section-5-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-5-3">
 <li id="section-5-3.1">
-          <p id="section-5-3.1.1">The client requests a new access token to the AS, as defined in <a href="#sec-c-as-comm" class="auto internal xref">Section 3</a>. In particular, when sending the Access Token Request as defined in <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>, the client specifies:<a href="#section-5-3.1.1" class="pilcrow">¶</a></p>
+          <p id="section-5-3.1.1">The client requests a new access token T_NEW to the AS, as defined in <a href="#sec-c-as-comm" class="auto internal xref">Section 3</a>. In particular, when sending the Access Token Request as defined in <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>, the client specifies:<a href="#section-5-3.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5-3.1.2.1">
               <p id="section-5-3.1.2.1.1">The current Group Identifier of the OSCORE group, as value of the 'context_id' parameter.<a href="#section-5-3.1.2.1.1" class="pilcrow">¶</a></p>
@@ -2367,10 +2419,10 @@ When using multiple transport profiles of ACE that rely on asymmetric PoP keys, 
           <p id="section-5-3.2.1">After receiving the Access Token Response from the AS (see <a href="#sec-as-c-token" class="auto internal xref">Section 3.3</a>), the client performs the same exchanges with the RS as defined in <a href="#sec-c-rs-comm" class="auto internal xref">Section 4</a>.<a href="#section-5-3.2.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
-<p id="section-5-4">When receiving the new access token, the RS performs the same steps defined in <a href="#sec-rs-c-created" class="auto internal xref">Section 4.2</a>, with the following addition in case the new access token is successfully verified and stored:<a href="#section-5-4" class="pilcrow">¶</a></p>
+<p id="section-5-4">When receiving the new access token T_NEW, the RS performs the same steps defined in <a href="#sec-rs-c-created" class="auto internal xref">Section 4.2</a>, with the following addition in case the new access token is successfully verified and stored:<a href="#section-5-4" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5-5.1">
-          <p id="section-5-5.1.1">The RS also deletes the old access token, i.e., the one whose associated triple (GID, SaltInput, AuthCred) has the same GID and SaltInput values as in the triple that is associated with the new access token and that includes the new authentication credential of the client.<a href="#section-5-5.1.1" class="pilcrow">¶</a></p>
+          <p id="section-5-5.1.1">The RS deletes any stored access token T_OLD such that the associated quartet (GID, SaltInput, AuthCred, AuthCredGM) differs from the same quartet associated with T_NEW only as to the value of AuthCred.<a href="#section-5-5.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
@@ -3015,13 +3067,19 @@ kccs = 14
             <p id="appendix-C.1-1.5.1">Enforced uniqueness pre-requirements on the client's group membership before requesting an access token.<a href="#appendix-C.1-1.5.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-C.1-1.6">
-            <p id="appendix-C.1-1.6.1">Added fine-grained recommendations on storing multiple access tokens bound to the same PoP key.<a href="#appendix-C.1-1.6.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.6.1">Added checks on uniqueness of clients' group membership at the RS.<a href="#appendix-C.1-1.6.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-C.1-1.7">
-            <p id="appendix-C.1-1.7.1">Fixes in the IANA considerations.<a href="#appendix-C.1-1.7.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.7.1">Clarified the process of access right verification.<a href="#appendix-C.1-1.7.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-C.1-1.8">
-            <p id="appendix-C.1-1.8.1">Editorial fixes and improvements.<a href="#appendix-C.1-1.8.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.8.1">Added fine-grained recommendations on storing multiple access tokens bound to the same PoP key.<a href="#appendix-C.1-1.8.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.1-1.9">
+            <p id="appendix-C.1-1.9.1">Fixes in the IANA considerations.<a href="#appendix-C.1-1.9.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.1-1.10">
+            <p id="appendix-C.1-1.10.1">Editorial fixes and improvements.<a href="#appendix-C.1-1.10.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
