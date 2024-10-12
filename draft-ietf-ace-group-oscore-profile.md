@@ -323,7 +323,7 @@ The client MUST perform the following steps, before requesting an access token t
 
    - The client leaves some of the OSCORE groups that could be determined as groups like G1 and G2 (see {{Section 9.11 of I-D.ietf-ace-key-groupcomm-oscore}}).
 
-   - The client obtains a new Sender ID in some of the OSCORE groups that could be determined as groups like G1 and G2. To this end, the client can request a new Sender ID in a group to the Group Manager responsible for that group (see {{Section 9.2 of I-D.ietf-ace-key-groupcomm-oscore}}), or re-join a group thereby obtaining a new Sender ID in that group (see {{Section 6.1 of I-D.ietf-ace-key-groupcomm-oscore}}).
+   - The client obtains a new Sender ID in some of the OSCORE groups that could be determined as groups like G1 and G2. To this end, the client can request a new Sender ID in a group to the Group Manager responsible for that group (see {{Section 9.2 of I-D.ietf-ace-key-groupcomm-oscore}}), or re-join a group thereby obtaining a new Sender ID in that group (see {{Section 6 of I-D.ietf-ace-key-groupcomm-oscore}}).
 
    Finally, the client moves to Step 1.
 
@@ -729,29 +729,51 @@ The client uploads the access token to the /authz-info endpoint of the RS, as de
 
 The RS MUST verify the validity of the access token as defined in {{Section 5.10.1 of RFC9200}}, with the following additions.
 
-* The RS MUST check that the claims 'salt_input', 'context_id', and 'cnf' are included in the access token.
+* The RS checks that the claims 'context_id', 'salt_input', and 'cnf' are included in the access token.
 
-* The RS considers: the content of the 'context_id' claim as the GID of the OSCORE group; the content of the 'salt_input' claim as the Sender ID that the client has in the group; and the inner confirmation value of the 'cnf' claim as the authentication credential that the client uses in the group.
+  If any of these claims are missing or malformed, the RS MUST consider the access token invalid, and MUST reply to the client with an error response code equivalent to the CoAP code 4.00 (Bad Request).
 
-   The RS MUST check whether it already stores the authentication credential specified in the inner confirmation value of the 'cnf' claim as associated with the pair (GID, Sender ID) above.
+  Otherwise, the RS retrieves:
 
-   If this is not the case, the RS MUST request the client's authentication credential to the Group Manager of the OSCORE group as described in {{Section 9.3 of I-D.ietf-ace-key-groupcomm-oscore}}, specifying the client's Sender ID in the OSCORE group, i.e., the value of the 'salt_input' claim. Then, the RS performs the following actions.
+  - GID\* as the GID of the OSCORE group, specified in the 'context_id' claim.
 
-     - The RS MUST check whether the client's authentication credential retrieved from the Group Manager matches the one retrieved from the inner confirmation value of the 'cnf' claim of the access token.
+  - SID\* as the Sender ID that the client has in the group, specified in the 'salt_input' claim.
 
-     - The RS MUST check whether the client's Sender ID provided by the Group Manager together with the client's authentication credential matches the one retrieved from the 'salt_input' claim of the access token.
+  - AUTH_CRED_C\* as the authentication credential that the client uses in the group, specified in the inner confirmation value of the 'cnf' claim.
 
-If any of the checks above fails, the RS MUST consider the access token invalid, and MUST reply to the client with an error response code equivalent to the CoAP code 4.00 (Bad Request).
+* The RS builds GROUPS as the set of OSCORE groups such that all the following conditions hold, for each group G in the set.
 
-If the access token is valid and further checks on its content are successful, the RS associates the authorization information from the access token with the Group OSCORE Security Context.
+  - The RS is a member of the group G.
+  - The group G has GID\* as current GID.
+  - The audience targeted by the access token is consistent with using the group G for accessing protected resources hosted by the RS.
 
-In particular, the RS associates the authorization information from the access token with the triple (GID, SaltInput, AuthCred), where GID is the Group Identifier of the OSCORE group, while SaltInput and AuthCred are the Sender ID and the authentication credential that the client uses in that OSCORE group, respectively.
+  If no such group is found, the RS MUST consider the access token invalid, and MUST reply to the client with an error response code equivalent to the CoAP code 4.00 (Bad Request).
 
-The RS MUST keep this association up-to-date over time, as the triple (GID, SaltInput, AuthCred) associated with the access token might change. In particular:
+  Otherwise, for each of the N >= 1 groups G in the set GROUPS, the RS MUST request to the corresponding Group Manager the authentication credential that the client uses in G, specifying SID\* in the request sent to the Group Manager (see {{Section 9.3 of I-D.ietf-ace-key-groupcomm-oscore}}).
 
-* If the OSCORE group is rekeyed (see {{Section 12.2 of I-D.ietf-core-oscore-groupcomm}} and {{Section 11 of I-D.ietf-ace-key-groupcomm-oscore}}), the Group Identifier also changes in the group, and the new one replaces the current 'GID' value in the triple (GID, SaltInput, AuthCred).
+  When receiving a successful response from each of the Group Managers, the RS MUST check whether the client's authentication credential AUTH_CRED_C retrieved from the Group Manager is equal to AUTH_CRED_C\* retrieved from the access token.
 
-* If the client requests and obtains a new OSCORE Sender ID from the Group Manager (see {{Section 2.6.3.1 of I-D.ietf-core-oscore-groupcomm}} and {{Section 9.2 of I-D.ietf-ace-key-groupcomm-oscore}}), the new Sender ID replaces the current 'SaltInput' value in the triple (GID, SaltInput, AuthCred).
+  If any of the following conditions hold, the RS MUST consider the access token invalid, and MUST reply to the client with an error response code equivalent to the CoAP code 5.03 (Service Unavailable).
+
+  * None or more than one of the Group Managers provide the RS with a successful response where the conveyed AUTH_CRED_C is equal to AUTH_CRED_C\*.
+
+  * After having performed a maximum, pre-configured amount of attempts, or after a maximum, pre-configured amount of time has elapsed, less than N Group Managers have sent a successful response to the RS.
+
+  That is, the process above is successful if and only if the RS receives a successful response from all the N Group Managers, and exactly one of such responses conveys AUTH_CRED_C equal to AUTH_CRED_C\*. This ensures that there is only one OSCORE group G\* such that: the client and the RS are both its members; it has GID\* as current GID; and the client uses SID\* as Sender ID in the group. In turn, this will ensure that the RS can bound the access token to such single OSCORE group G\*.
+
+If the operations above are successful, the access token is valid, and further checks on its content are successful, the RS associates the authorization information from the access token with the Group OSCORE Security Context of the OSCORE group G\*.
+
+In particular, the RS associates the authorization information from the access token with the quartet (GID, SaltInput, AuthCred, AuthCredGM), where GID is the Group Identifier of G\* (i.e.,  GID\*), SaltInput is the Sender ID that the client uses in G\* (i.e., SID\*), AuthCred is the authentication credential that the client uses in G\* (i.e., AUTH_CRED_C\*), and AuthCredGM is the authentication credential of the Group Manager of G\* (see {{Section 2.1.6 of I-D.ietf-core-oscore-groupcomm}}).
+
+The RS MUST keep this association up-to-date over time, as the quartet (GID, SaltInput, AuthCred, AuthCredGM) associated with the access token might change. In particular:
+
+* If the OSCORE group is rekeyed (see {{Section 12.2 of I-D.ietf-core-oscore-groupcomm}} and {{Section 11 of I-D.ietf-ace-key-groupcomm-oscore}}), the Group Identifier also changes in the group, and the new one replaces the current 'GID' value in the quartet (GID, SaltInput, AuthCred, AuthCredGM).
+
+* If the client requests and obtains a new OSCORE Sender ID from the Group Manager (see {{Section 2.6.3.1 of I-D.ietf-core-oscore-groupcomm}} and {{Section 9.2 of I-D.ietf-ace-key-groupcomm-oscore}}), the new Sender ID replaces the current 'SaltInput' value in the quartet (GID, SaltInput, AuthCred, AuthCredGM).
+
+* If the Group Manager of the OSCORE group changes its authentication credential, the new authentication credential of the Group Manager replaces the current 'AuthCredGM' value in the quartet (GID, SaltInput, AuthCred, AuthCredGM).
+
+  In order to obtain the latest authentication credential of the Group Manager, the RS can re-join the group (see {{Section 6 of I-D.ietf-ace-key-groupcomm-oscore}}) or send a dedicated request to the Group Manager (see {{Section 9.3 of I-D.ietf-ace-key-groupcomm-oscore}}).
 
 As defined in {{sec-client-public-key-change}}, a possible change of the client's authentication credential requires the client to upload to the RS a new access token bound to the new authentication credential.
 
@@ -791,7 +813,19 @@ TODO: Specify the processing on the RS when receiving an access token that dynam
 
 The RS MUST follow the procedures defined in {{Section 5.10.2 of RFC9200}}. If an RS receives a request protected with Group OSCORE from a client, the RS processes the request according to {{I-D.ietf-core-oscore-groupcomm}}.
 
-If the Group OSCORE verification succeeds and the target resource requires authorization, the RS retrieves the authorization information from the access token associated with the Group OSCORE Security Context. Then, the RS MUST verify that the action requested on the resource is authorized.
+If the Group OSCORE verification succeeds and the target resource requires authorization, the RS retrieves the authorization information from the access token associated with the Group OSCORE Security Context.
+
+In particular, the RS retrieves the access token associated with the quartet (GID, SaltInput, AuthCred, AuthCredGM), where:
+
+* GID is the Group Identifier of the OSCORE group, which is specified in the 'kid context' parameter of the CoAP OSCORE option in the received request. The RS maintains GID in its Common Context within the Group OSCORE Security Context associated with the OSCORE group (see {{Section 2 of I-D.ietf-core-oscore-groupcomm}}).
+
+* SaltInput is the Sender ID that the client has in the OSCORE group, which is specified in the 'kid' parameter of the CoAP OSCORE option in the received request. The RS maintains SaltInput in its Recipient Context associated with the client, within the Group OSCORE Security Context associated with the OSCORE group (see {{Section 2 of I-D.ietf-core-oscore-groupcomm}}).
+
+* AuthCred is the authentication credential that the client uses in the OSCORE group. The RS typically maintains AuthCred in its Recipient Context associated with the client, within the Group OSCORE Security Context associated with the OSCORE group (see {{Section 2 of I-D.ietf-core-oscore-groupcomm}}).
+
+* AuthCredGM is the authentication credential of the Group Manager responsible for the OSCORE group. The RS typically maintains AuthCredGM in its Common Context within the Group OSCORE Security Context associated with the OSCORE group (see {{Section 2 of I-D.ietf-core-oscore-groupcomm}}).
+
+Then, the RS MUST verify that the action requested on the resource is authorized.
 
 If the RS has no valid access token for the client, the RS MUST reject the request and MUST reply to the client with a 4.01 (Unauthorized) error response.
 
@@ -868,7 +902,7 @@ During its membership in the OSCORE group, the client might change the authentic
 
 After that, and in order to continue communicating with the RS, the client MUST perform the following actions.
 
-1. The client requests a new access token to the AS, as defined in {{sec-c-as-comm}}. In particular, when sending the Access Token Request as defined in {{sec-c-as-token-endpoint}}, the client specifies:
+1. The client requests a new access token T_NEW to the AS, as defined in {{sec-c-as-comm}}. In particular, when sending the Access Token Request as defined in {{sec-c-as-token-endpoint}}, the client specifies:
 
    * The current Group Identifier of the OSCORE group, as value of the 'context_id' parameter.
 
@@ -880,9 +914,9 @@ After that, and in order to continue communicating with the RS, the client MUST 
 
 2. After receiving the Access Token Response from the AS (see {{sec-as-c-token}}), the client performs the same exchanges with the RS as defined in {{sec-c-rs-comm}}.
 
-When receiving the new access token, the RS performs the same steps defined in {{sec-rs-c-created}}, with the following addition in case the new access token is successfully verified and stored:
+When receiving the new access token T_NEW, the RS performs the same steps defined in {{sec-rs-c-created}}, with the following addition in case the new access token is successfully verified and stored:
 
-* The RS also deletes the old access token, i.e., the one whose associated triple (GID, SaltInput, AuthCred) has the same GID and SaltInput values as in the triple that is associated with the new access token and that includes the new authentication credential of the client.
+* The RS deletes any stored access token T_OLD such that the associated quartet (GID, SaltInput, AuthCred, AuthCredGM) differs from the same quartet associated with T_NEW only as to the value of AuthCred.
 
 # Secure Communication with the AS # {#sec-comm-as}
 
@@ -1120,6 +1154,10 @@ kccs = 14
 * Clarified that the client may ask for a new access token after the old one becomes invalid.
 
 * Enforced uniqueness pre-requirements on the client's group membership before requesting an access token.
+
+* Added checks on uniqueness of clients' group membership at the RS.
+
+* Clarified the process of access right verification.
 
 * Added fine-grained recommendations on storing multiple access tokens bound to the same PoP key.
 
