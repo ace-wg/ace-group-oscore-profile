@@ -301,7 +301,7 @@ The client can send a request protected with Group OSCORE {{I-D.ietf-core-oscore
 
 This section details the Access Token POST Request that the client sends to the /token endpoint of the AS, as well as the related Access Token Response.
 
-The access token MUST be bound to the public key of the client as proof-of-possession key (PoP key), which is included in the client's authentication credential specified in the 'cnf' claim of the access token.
+The access token MUST be bound to the public key of the client as proof-of-possession key (PoP) key, which is included in the client's authentication credential specified in the 'cnf' claim of the access token.
 
 ## C-to-AS: POST to Token Endpoint ## {#sec-c-as-token-endpoint}
 
