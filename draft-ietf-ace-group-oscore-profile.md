@@ -737,9 +737,9 @@ The RS MUST verify the validity of the access token as defined in {{Section 5.10
 
   - GID\* as the GID of the OSCORE group, specified in the 'context_id' claim.
 
-  - SID\* as the Sender ID that the client has in the group, specified in the 'salt_input' claim.
+  - SID\* as the Sender ID that the client has in the OSCORE group, specified in the 'salt_input' claim.
 
-  - AUTH_CRED_C\* as the authentication credential that the client uses in the group, specified in the inner confirmation value of the 'cnf' claim.
+  - AUTH_CRED_C\* as the authentication credential that the client uses in the OSCORE group, specified in the inner confirmation value of the 'cnf' claim.
 
 * The RS builds GROUPS as the set of OSCORE groups such that all the following conditions hold, for each group G in the set.
 
@@ -759,11 +759,19 @@ The RS MUST verify the validity of the access token as defined in {{Section 5.10
 
   * After having performed a maximum, pre-configured amount of attempts, or after a maximum, pre-configured amount of time has elapsed, less than N Group Managers have sent a successful response to the RS.
 
-  That is, the process above is successful if and only if the RS receives a successful response from all the N Group Managers, and exactly one of such responses conveys AUTH_CRED_C equal to AUTH_CRED_C\*. This ensures that there is only one OSCORE group G\* such that: the client and the RS are both its members; it has GID\* as current GID; and the client uses SID\* as Sender ID in the group. In turn, this will ensure that the RS can bound the access token to such single OSCORE group G\*.
+  The process above is successful if and only if the RS receives a successful response from all the N Group Managers, and exactly one of such responses conveys AUTH_CRED_C equal to AUTH_CRED_C\*. This ensures that there is only one OSCORE group G\* such that: the client and the RS are both its members; it has GID\* as current GID; and the client uses SID\* as Sender ID in the group. In turn, this will ensure that the RS can bound the access token to such single OSCORE group G\*.
 
-If the operations above are successful, the access token is valid, and further checks on its content are successful, the RS associates the authorization information from the access token with the Group OSCORE Security Context of the OSCORE group G\*.
+If the operations above are successful, the access token is valid, and further checks on its content are successful, then the RS associates the authorization information from the access token with the Group OSCORE Security Context of the OSCORE group G\*.
 
-In particular, the RS associates the authorization information from the access token with the quartet (GID, SaltInput, AuthCred, AuthCredGM), where GID is the Group Identifier of G\* (i.e.,  GID\*), SaltInput is the Sender ID that the client uses in G\* (i.e., SID\*), AuthCred is the authentication credential that the client uses in G\* (i.e., AUTH_CRED_C\*), and AuthCredGM is the authentication credential of the Group Manager of G\* (see {{Section 2.1.6 of I-D.ietf-core-oscore-groupcomm}}).
+In particular, the RS associates the authorization information from the access token with the quartet (GID, SaltInput, AuthCred, AuthCredGM), where:
+
+* GID is the Group Identifier of G\* (i.e.,  GID\*).
+
+* SaltInput is the Sender ID that the client uses in G\* (i.e., SID\*).
+
+* AuthCred is the authentication credential that the client uses in G\* (i.e., AUTH_CRED_C\*).
+
+* AuthCredGM is the authentication credential of the Group Manager responsible for G\* (see {{Section 2.1.6 of I-D.ietf-core-oscore-groupcomm}}).
 
 The RS MUST keep this association up-to-date over time, as the quartet (GID, SaltInput, AuthCred, AuthCredGM) associated with the access token might change. In particular:
 
@@ -821,9 +829,9 @@ In particular, the RS retrieves the access token associated with the quartet (GI
 
 * SaltInput is the Sender ID that the client has in the OSCORE group, which is specified in the 'kid' parameter of the CoAP OSCORE option in the received request. The RS maintains SaltInput in its Recipient Context associated with the client, within the Group OSCORE Security Context associated with the OSCORE group (see {{Section 2 of I-D.ietf-core-oscore-groupcomm}}).
 
-* AuthCred is the authentication credential that the client uses in the OSCORE group. The RS typically maintains AuthCred in its Recipient Context associated with the client, within the Group OSCORE Security Context associated with the OSCORE group (see {{Section 2 of I-D.ietf-core-oscore-groupcomm}}).
+* AuthCred is the authentication credential that the client uses in the OSCORE group. The RS maintains AuthCred in its Recipient Context associated with the client, within the Group OSCORE Security Context associated with the OSCORE group (see {{Section 2 of I-D.ietf-core-oscore-groupcomm}}).
 
-* AuthCredGM is the authentication credential of the Group Manager responsible for the OSCORE group. The RS typically maintains AuthCredGM in its Common Context within the Group OSCORE Security Context associated with the OSCORE group (see {{Section 2 of I-D.ietf-core-oscore-groupcomm}}).
+* AuthCredGM is the authentication credential of the Group Manager responsible for the OSCORE group. The RS maintains AuthCredGM in its Common Context within the Group OSCORE Security Context associated with the OSCORE group (see {{Section 2 of I-D.ietf-core-oscore-groupcomm}}).
 
 Then, the RS MUST verify that the action requested on the resource is authorized.
 
