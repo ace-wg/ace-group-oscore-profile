@@ -303,13 +303,37 @@ This section details the Access Token POST Request that the client sends to the 
 
 The access token MUST be bound to the public key of the client as proof-of-possession key (PoP) key, which is included in the client's authentication credential specified in the 'cnf' claim of the access token.
 
+## Preliminary Operations # {#sec-c-as-comm-preliminary-ops}
+
+The following considers a client that is a member of an OSCORE group G with GID\* as current Group Identifier (GID), within which the client currently has SID\* as Sender ID and uses a public authentication credential AUTH_CRED_C that specifies the PoP key K.
+
+The client MUST perform the following steps, before requesting an access token to be bound to AUTH_CRED_C (hence to the PoP key K) and to be associated with the client's membership in group G through the values GID\* and SID\*.
+
+1. The client checks whether it is a member of any two OSCORE groups G1 and G2 such that all the following conditions hold.
+
+   - Both groups have GID\* as current GID.
+   - The client uses SID\* as Sender ID in both groups.
+   - The client uses the same AUTH_CRED_C in both groups.
+
+2. If such two groups G1 and G2 are found at Step 2, then the client moves to Step 3. Otherwise, the client terminates this algorithm and proceeds with requesting the access token as defined in {{sec-c-as-token-endpoint}}.
+
+3. The client can choose to terminate this algorithm and perform it again later on.
+
+   Alternatively, the client can alter its current group memberships, in order to ensure that two groups like G1 and G2 cannot be determined. To this end, the client has two available options.
+
+   - The client leaves some of the OSCORE groups that could be determined as groups like G1 and G2 (see {{Section 9.11 of I-D.ietf-ace-key-groupcomm-oscore}}).
+
+   - The client obtains a new Sender ID in some of the OSCORE groups that could be determined as groups like G1 and G2. To this end, the client can request a new Sender ID in a group to the Group Manager responsible for that group (see {{Section 9.2 of I-D.ietf-ace-key-groupcomm-oscore}}), or re-join a group thereby obtaining a new Sender ID in that group (see {{Section 6.1 of I-D.ietf-ace-key-groupcomm-oscore}}).
+
+   Finally, the client moves to Step 1.
+
 ## C-to-AS: POST to Token Endpoint ## {#sec-c-as-token-endpoint}
 
 The Client-to-AS request is specified in {{Section 5.8.1 of RFC9200}}. The client MUST send this POST request to the /token endpoint over a secure channel that guarantees authentication, message integrity, and confidentiality.
 
 The POST request is formatted as the analogous Client-to-AS request in the OSCORE profile of ACE (see {{Section 3.1 of RFC9203}}), with the following additional parameters that MUST be included in the payload.
 
-* 'context_id', defined in {{context_id}} of this document. This parameter specifies the Group Identifier (GID), i.e., the ID Context of an OSCORE group that includes as members both the client and the RS(s) in the audience for which the access token is asked to be issued. In particular, the client wishes to communicate with the RS(s) in that audience using the Group OSCORE Security Context associated with that OSCORE group.
+* 'context_id', defined in {{context_id}} of this document. This parameter specifies the GID, i.e., the ID Context of an OSCORE group that includes as members both the client and the RS(s) in the audience for which the access token is asked to be issued. In particular, the client wishes to communicate with the RS(s) in that audience using the Group OSCORE Security Context associated with that OSCORE group.
 
 * 'salt_input', defined in {{salt_input}} of this document. This parameter includes the Sender ID that the client has in the OSCORE group whose GID is specified in the 'context_id' parameter above.
 
@@ -1094,6 +1118,8 @@ kccs = 14
 * Mentioned that this profile can also use the ACE alternative workflow.
 
 * Clarified that the client may ask for a new access token after the old one becomes invalid.
+
+* Enforced uniqueness pre-requirements on the client's group membership before requesting an access token.
 
 * Added fine-grained recommendations on storing multiple access tokens bound to the same PoP key.
 
