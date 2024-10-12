@@ -109,18 +109,19 @@ Table of Contents
    5.  Change of Client's Authentication Credential in the Group
    6.  Secure Communication with the AS
    7.  Discarding the Security Context
-   8.  CBOR Mappings
-   9.  Security Considerations
-   10. Privacy Considerations
-   11. IANA Considerations
-     11.1.  ACE Profiles Registry
-     11.2.  OAuth Parameters Registry
-     11.3.  OAuth Parameters CBOR Mappings Registry
-     11.4.  CBOR Web Token (CWT) Claims Registry
-     11.5.  TLS Exporter Label Registry
-   12. References
-     12.1.  Normative References
-     12.2.  Informative References
+   8.  Guidelines on Using Multiple Profiles
+   9.  CBOR Mappings
+   10. Security Considerations
+   11. Privacy Considerations
+   12. IANA Considerations
+     12.1.  ACE Profiles Registry
+     12.2.  OAuth Parameters Registry
+     12.3.  OAuth Parameters CBOR Mappings Registry
+     12.4.  CBOR Web Token (CWT) Claims Registry
+     12.5.  TLS Exporter Label Registry
+   13. References
+     13.1.  Normative References
+     13.2.  Informative References
    Appendix A.  Profile Requirements
    Appendix B.  CDDL Model
    Appendix C.  Document Updates
@@ -687,7 +688,7 @@ Table of Contents
       defined in Section 4 of [RFC5705], using the following inputs:
 
       -  The exporter label "EXPORTER-ACE-PoP-Input-Client-AS", defined
-         in Section 11.5 of this document.
+         in Section 12.5 of this document.
 
       -  The empty 'context value', i.e., a 'context value' of zero-
          length.
@@ -699,7 +700,7 @@ Table of Contents
       defined in Section 7.5 of [RFC8446], using the following inputs:
 
       -  The exporter label "EXPORTER-ACE-PoP-Input-Client-AS", defined
-         in Section 11.5 of this document.
+         in Section 12.5 of this document.
 
       -  The empty 'context_value', i.e., a 'context_value' of zero-
          length.
@@ -1721,7 +1722,76 @@ Table of Contents
    [I-D.ietf-ace-key-groupcomm-oscore].  In such a case, the client
    SHOULD request a new access token to be uploaded to the RS.
 
-8.  CBOR Mappings
+8.  Guidelines on Using Multiple Profiles
+
+   When using the profile defined in this document, access tokens are to
+   be bound to a Group OSCORE Security Context, which is used to protect
+   communications between the client and the RS(s) in the targeted
+   audience by using the security protocol Group OSCORE.
+
+   After having obtained an access token T1 for this profile and
+   uploaded it to the RS (RSs) pertaining to the targeted audience, the
+   client might want to establish a separate, pairwise OSCORE
+   association with that RS (with one RS among those RSs).  In order to
+   do that, the client can ask the AS for a different access token T2
+   intended for that RS (for one RS among those RSs), as per the OSCORE
+   profile defined in [RFC9203].
+
+   Since the ACE framework does not allow the client to negotiate with
+   the AS the profile to use, the client has instead to choose the use
+   of the OSCORE profile, and to explicitly indicate it to the AS when
+   requesting T2.
+
+   To this end, the client may indicate its wish for an access token
+   aligned with the Group OSCORE profile or with the OSCORE profile, by
+   specifying one of two different audiences in the 'audience' parameter
+   of the Access Token Request to the AS.  Assuming a proper
+   configuration of the access policies at the AS, this is still
+   conducive to a consistent evaluation of what is specified in the
+   'scope' parameter of the Access Token Request against the access
+   policies at the AS.
+
+   For example, an RS registered at the AS can be associated with two
+   audiences:
+
+   *  "AUD_GP_OSC", which the client can use to request an access token
+      for the Group OSCORE profile and targeting (also) that RS.  That
+      is, the client specifies this audience when requesting the access
+      token T1.
+
+   *  "AUD_OSC", which the client can use to request an access token for
+      the OSCORE profile and targeting only that RS.  That is, the
+      client specifies this audience when requesting the access token
+      T2.
+
+   Note that an RS has to be able to store at least one access token per
+   PoP key.  When specifically considering the Group OSCORE profile and
+   the OSCORE profile, the RS can always store both corresponding access
+   tokens T1 and T2, since they are always bound to different PoP keys.
+   That is:
+
+   *  In the Group OSCORE profile, the PoP key is the client's public
+      key, which is included in the client's authentication credential
+      specified in the 'cnf' claim of the access token.
+
+   *  In the OSCORE profile, the PoP key is fundamentally an OSCORE
+      Master Secret, which is specified within the OSCORE_Input_Material
+      object of the 'cnf' claim of the access token.
+
+   The same approach discussed above can be used in case the profile
+   used for the access token T2 is instead the EDHOC and OSCORE profile
+   defined in [I-D.ietf-ace-edhoc-oscore-profile].  In such a case, the
+   same PoP key might be bound to both T1 and T2, i.e., if the client's
+   public key is included both in the authentication credential that the
+   client uses in the OSCORE group and in the authentication credential
+   that the client uses as CRED_I (CRED_R) when running the EDHOC
+   protocol in the forward (reverse) message flow.
+
+   Section 4.6 provides considerations and recommendations on storing
+   multiple access tokens per PoP key when using the Group OSCORE
+   profile, also in parallel with alternative profiles.
+
+9.  CBOR Mappings
 
    The new parameters defined in this document MUST be mapped to CBOR
    types as specified in Table 1, using the given integer abbreviation
@@ -1755,7 +1825,7 @@ Table of Contents
 
                    Table 2: CBOR Mappings for New Claims.
 
-9.  Security Considerations
+10.  Security Considerations
 
    This document specifies a profile for the Authentication and
    Authorization for Constrained Environments (ACE) framework [RFC9200].
@@ -1803,7 +1873,7 @@ Table of Contents
    of the two peers exchanging the message.  The pairwise mode can be
    used to protect only messages intended for a single recipient.
 
-10.  Privacy Considerations
+11.  Privacy Considerations
 
    This document specifies a profile for the Authentication and
    Authorization for Constrained Environments (ACE) framework [RFC9200].
@@ -1831,14 +1901,14 @@ Table of Contents
    OSCORE, some information might still leak, due to the observable
    size, source address, and destination address of exchanged messages.
 
-11.  IANA Considerations
+12.  IANA Considerations
 
    This document has the following actions for IANA.
 
    Note to RFC Editor: Please replace "[RFC-XXXX]" with the RFC number
    of this document and delete this paragraph.
 
-11.1.  ACE Profiles Registry
+12.1.  ACE Profiles Registry
 
    IANA is asked to add the following entry to the "ACE Profiles"
    registry within the "Authentication and Authorization for Constrained
@@ -1858,7 +1928,7 @@ Table of Contents
 
    *  Reference: [RFC-XXXX]
 
-11.2.  OAuth Parameters Registry
+12.2.  OAuth Parameters Registry
 
    IANA is asked to add the following entries to the "OAuth Parameters"
    registry, following the procedure specified in Section 11.2 of
@@ -1902,7 +1972,7 @@ Table of Contents
 
    *  Reference: Section 3.2.4 of [RFC-XXXX]
 
-11.3.  OAuth Parameters CBOR Mappings Registry
+12.3.  OAuth Parameters CBOR Mappings Registry
 
    IANA is asked to add the following entries to the "OAuth Parameters
    CBOR Mappings" registry within the "Authentication and Authorization
@@ -1955,7 +2025,7 @@ Table of Contents
 
    *  Original Specification: [RFC-XXXX]
 
-11.4.  CBOR Web Token (CWT) Claims Registry
+12.4.  CBOR Web Token (CWT) Claims Registry
 
    IANA is asked to add the following entries to the "CBOR Web Token
    (CWT) Claims" registry, following the procedure specified in
@@ -1991,7 +2061,7 @@ Table of Contents
 
    *  Reference: Section 3.3.3 of [RFC-XXXX]
 
-11.5.  TLS Exporter Label Registry
+12.5.  TLS Exporter Label Registry
 
    IANA is asked to add the following entry to the "TLS Exporter Label"
    registry within the "Transport Layer Security (TLS) Parameters"
@@ -2006,9 +2076,9 @@ Table of Contents
 
    *  Reference: Section 3.2 of [RFC-XXXX]
 
-12.  References
+13.  References
 
-12.1.  Normative References
+13.1.  Normative References
 
    [I-D.ietf-ace-key-groupcomm-oscore]
               Tiloca, M., Park, J., and F. Palombini, "Key Management
@@ -2136,7 +2206,7 @@ Table of Contents
               DOI 10.17487/RFC9203, August 2022,
               <https://www.rfc-editor.org/rfc/rfc9203>.
 
-12.2.  Informative References
+13.2.  Informative References
 
    [I-D.ietf-ace-edhoc-oscore-profile]
               Selander, G., Mattsson, J. P., Tiloca, M., and R. Höglund,
@@ -2311,6 +2381,8 @@ C.1.  Version -02 to -03
 
    *  Added fine-grained recommendations on storing multiple access
       tokens bound to the same PoP key.
+
+   *  Added guidelines on using multiple profiles.
 
    *  Fixes in the IANA considerations.
 
