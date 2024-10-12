@@ -695,7 +695,7 @@ Therefore, an attacker using a stolen access token cannot generate a valid Group
 
 Furthermore, a client C1 is supposed to obtain a valid access token from the AS, as specifying its own authentication credential (and the public key included thereof) associated with its own private key used in the OSCORE group, together with its own Sender ID in that OSCORE group (see {{sec-c-as-token-endpoint}}). This allows the RS receiving the access token to verify with the Group Manager of that OSCORE group whether such a client indeed has that Sender ID and uses that authentication credential in the OSCORE group.
 
-As a consequence, a different client C2, also member of the same OSCORE group, is not able to impersonate C1, by: i) getting a valid access token, specifying the Sender ID of C1 and a different (made-up) authentication credential; ii) successfully posting the access token to the RS; and then iii) attempting to communicate using Group OSCORE and impersonating C1, while also blaming C1 for the consequences of the interactation with the RS.
+As a consequence, a different client C2, also member of the same OSCORE group, is not able to impersonate C1, by: i) getting a valid access token, specifying the Sender ID of C1 and a different (made-up) authentication credential; ii) successfully posting the access token to the RS; and then iii) attempting to communicate using Group OSCORE and impersonating C1, while also blaming C1 for the consequences of the interaction with the RS.
 
 ## C-to-RS POST to /authz-info Endpoint ## {#sec-c-rs-authz}
 
