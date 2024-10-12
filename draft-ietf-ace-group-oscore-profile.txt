@@ -5,9 +5,9 @@
 ACE Working Group                                              M. Tiloca
 Internet-Draft                                                R. Höglund
 Intended status: Standards Track                                 RISE AB
-Expires: 13 April 2025                                      F. Palombini
+Expires: 15 April 2025                                      F. Palombini
                                                              Ericsson AB
-                                                         10 October 2024
+                                                         12 October 2024
 
 
  The Group Object Security for Constrained RESTful Environments (Group
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 April 2025.
+   This Internet-Draft will expire on 15 April 2025.
 
 Copyright Notice
 
@@ -97,7 +97,7 @@ Table of Contents
        3.2.2.  'context_id' Claim
        3.2.3.  'salt_input' Claim
    4.  Client-RS Communication
-     4.1.  C-to-RS POST to authz-info Endpoint
+     4.1.  C-to-RS POST to /authz-info Endpoint
      4.2.  RS-to-C: 2.01 (Created)
      4.3.  Client-RS Secure Communication
        4.3.1.  Client Side
@@ -1206,21 +1206,22 @@ Table of Contents
 
    Furthermore, a client C1 is supposed to obtain a valid access token
    from the AS, as specifying its own authentication credential (and the
-   public key included thereof) associated with the its own private key
-   used in the OSCORE group, together with its own Sender ID in that
-   OSCORE group (see Section 3.1).  This allows the RS receiving the
-   access token to verify with the Group Manager of that OSCORE group
-   whether such a client indeed has that Sender ID and uses that
-   authentication credential in the OSCORE group.
+   public key included thereof) associated with its own private key used
+   in the OSCORE group, together with its own Sender ID in that OSCORE
+   group (see Section 3.1).  This allows the RS receiving the access
+   token to verify with the Group Manager of that OSCORE group whether
+   such a client indeed has that Sender ID and uses that authentication
+   credential in the OSCORE group.
 
    As a consequence, a different client C2, also member of the same
    OSCORE group, is not able to impersonate C1, by: i) getting a valid
    access token, specifying the Sender ID of C1 and a different (made-
    up) authentication credential; ii) successfully posting the access
    token to the RS; and then iii) attempting to communicate using Group
-   OSCORE impersonating C1, while blaming C1 for the consequences.
+   OSCORE and impersonating C1, while also blaming C1 for the
+   consequences of the interactation with the RS.
 
-4.1.  C-to-RS POST to authz-info Endpoint
+4.1.  C-to-RS POST to /authz-info Endpoint
 
    The client uploads the access token to the /authz-info endpoint of
    the RS, as defined in Section 5.10.1 of [RFC9200].
@@ -1306,9 +1307,9 @@ Table of Contents
    securely communicate using Group OSCORE, without deriving any
    additional keying material or security association.
 
-   If the client or the RS delete an access token (e.g., when the access
-   token has expired or has been revoked), it MUST NOT delete the
-   related Group OSCORE Security Context.
+   If either of the client or the RS deletes an access token (e.g., when
+   the access token has expired or has been revoked), it MUST NOT delete
+   the related Group OSCORE Security Context.
 
 4.3.1.  Client Side
 
@@ -1509,9 +1510,9 @@ Table of Contents
 
    As specified in the ACE framework (see Sections 5.8 and 5.9 of
    [RFC9200]), the requesting entity (client and/or RS) and the AS
-   communicate via the /token or /introspection endpoint.  The use of
-   CoAP and OSCORE [RFC8613] for this communication is RECOMMENDED in
-   this profile.  Other protocols fulfilling the security requirements
+   communicate via the /token or /introspect endpoint.  The use of CoAP
+   and OSCORE [RFC8613] for this communication is RECOMMENDED in this
+   profile.  Other protocols fulfilling the security requirements
    defined in Sections 5 and 6 of [RFC9200] (such as HTTP and DTLS or
    TLS) MAY be used instead.
 
@@ -1520,7 +1521,7 @@ Table of Contents
    this Security Context is established is out of the scope of this
    profile.  Furthermore, the requesting entity and the AS communicate
    using OSCORE through the /token endpoint as specified in Section 5.8
-   of [RFC9200], and through the /introspection endpoint as specified in
+   of [RFC9200], and through the /introspect endpoint as specified in
    Section 5.9 of [RFC9200].
 
 7.  Discarding the Security Context
@@ -1543,33 +1544,33 @@ Table of Contents
    types as specified in Table 1, using the given integer abbreviation
    for the map key.
 
-            +========================+==========+============+
-            | Parameter name         | CBOR Key | Value Type |
-            +========================+==========+============+
-            | context_id             | TBD      | bstr       |
-            +------------------------+----------+------------+
-            | salt_input             | TBD      | bstr       |
-            +------------------------+----------+------------+
-            | client_cred_verify     | TBD      | bstr       |
-            +------------------------+----------+------------+
-            | client_cred_verify_mac | TBD      | bstr       |
-            +------------------------+----------+------------+
+            +========================+==========+=============+
+            | Parameter name         | CBOR Key | Value Type  |
+            +========================+==========+=============+
+            | context_id             | TBD      | byte string |
+            +------------------------+----------+-------------+
+            | salt_input             | TBD      | byte string |
+            +------------------------+----------+-------------+
+            | client_cred_verify     | TBD      | byte string |
+            +------------------------+----------+-------------+
+            | client_cred_verify_mac | TBD      | byte string |
+            +------------------------+----------+-------------+
 
-                Table 1: CBOR Mappings for New Parameters.
+                 Table 1: CBOR Mappings for New Parameters.
 
    The new claims defined in this document MUST be mapped to CBOR types
    as specified in Table 2, using the given integer abbreviation for the
    map key.
 
-                  +============+==========+============+
-                  | Claim name | CBOR Key | Value Type |
-                  +============+==========+============+
-                  | context_id | TBD      | bstr       |
-                  +------------+----------+------------+
-                  | salt_input | TBD      | bstr       |
-                  +------------+----------+------------+
+                  +============+==========+=============+
+                  | Claim name | CBOR Key | Value Type  |
+                  +============+==========+=============+
+                  | context_id | TBD      | byte string |
+                  +------------+----------+-------------+
+                  | salt_input | TBD      | byte string |
+                  +------------+----------+-------------+
 
-                  Table 2: CBOR Mappings for New Claims.
+                   Table 2: CBOR Mappings for New Claims.
 
 9.  Security Considerations
 
@@ -2073,11 +2074,11 @@ Appendix A.  Profile Requirements
    *  Specify the communication and security protocol for interactions
       between the client and AS: HTTP/CoAP (+ TLS/DTLS/OSCORE).
 
-   *  Specify if/how the authz-info endpoint is protected, including how
-      error responses are protected: Not protected.
+   *  Specify if/how the /authz-info endpoint is protected, including
+      how error responses are protected: Not protected.
 
    *  Optionally, define other methods of token transport than the
-      authz-info endpoint: Not defined.
+      /authz-info endpoint: Not defined.
 
 Appendix B.  CDDL Model
 
