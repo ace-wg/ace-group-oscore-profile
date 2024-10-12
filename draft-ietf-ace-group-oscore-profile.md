@@ -737,7 +737,7 @@ Finally, the RS MUST send a 2.01 (Created) response to the client, as defined in
 
 When previously joining the OSCORE group, both the client and the RS have already established the related Group OSCORE Security Context to communicate as group members. Therefore, they can simply start to securely communicate using Group OSCORE, without deriving any additional keying material or security association.
 
-If either of the client or the RS deletes an access token (e.g., when the access token has expired or has been revoked), it MUST NOT delete the related Group OSCORE Security Context.
+If either of the client or the RS deletes an access token (e.g., when the access token has expired or has been revoked), it MUST NOT delete the related Group OSCORE Security Context. The client MAY request a new access token from the AS, to be uploaded to the RS for re-enabling access to protected resources for the client.
 
 ### Client Side
 
@@ -1073,6 +1073,8 @@ kccs = 14
 * Consistent update of section numbers for external references.
 
 * Mentioned that this profile can also use the ACE alternative workflow.
+
+* Clarified that the client may ask for a new access token after the old one becomes invalid.
 
 * Fixes in the IANA considerations.
 
