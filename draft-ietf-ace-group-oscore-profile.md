@@ -832,7 +832,7 @@ In order to keep the same spirit of the recommendation in {{Section 5.10.1 of RF
   - is issued in accordance with the profile P; and
   - is bound to a specific PoP key; and
   - targets a specific audience; and
-  - is related with a specific secure association used by the client to protect communications with the RS.
+  - is related to a specific secure association used by the client to protect communications with the RS.
 
 In accordance with these recommendations, if an access token T_NEW does not differ in any of the respects above from an existing access token T_OLD stored at the RS, then T_NEW will supersede T_OLD by replacing the corresponding authorization information.
 
