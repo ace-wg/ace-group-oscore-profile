@@ -1932,7 +1932,7 @@ Table of Contents
       pre-established Group OSCORE Security Context to communicate with
       Group OSCORE.
 
-   *  CBOR Value: TBD (value between 1 and 255)
+   *  CBOR Value: TBD (value between 1 and 23)
 
    *  Reference: [RFC-XXXX]
 
@@ -1989,7 +1989,7 @@ Table of Contents
 
    *  Name: context_id
 
-   *  CBOR Key: TBD
+   *  CBOR Key: TBD (value between 1 and 255)
 
    *  Value Type: byte string
 
@@ -2001,7 +2001,7 @@ Table of Contents
 
    *  Name: salt_input
 
-   *  CBOR Key: TBD
+   *  CBOR Key: TBD (value between 1 and 255)
 
    *  Value Type: byte string
 
@@ -2013,7 +2013,7 @@ Table of Contents
 
    *  Name: client_cred_verify
 
-   *  CBOR Key: TBD
+   *  CBOR Key: TBD (value between 1 and 255)
 
    *  Value Type: byte string
 
@@ -2025,7 +2025,7 @@ Table of Contents
 
    *  Name: client_cred_verify_mac
 
-   *  CBOR Key: TBD
+   *  CBOR Key: TBD (value between 1 and 255)
 
    *  Value Type: byte string
 
@@ -2045,7 +2045,7 @@ Table of Contents
 
    *  JWT Claim Name: N/A
 
-   *  Claim Key: TBD
+   *  Claim Key: TBD (value between 1 and 255)
 
    *  Claim Value Type: byte string
 
@@ -2061,7 +2061,7 @@ Table of Contents
 
    *  JWT Claim Name: N/A
 
-   *  Claim Key: TBD
+   *  Claim Key: TBD (value between 1 and 255)
 
    *  Claim Value Type: byte string
 
@@ -2375,6 +2375,8 @@ C.1.  Version -03 to -04
 
    *  Placeholder: possible use of the 'ace_profile' parameter with
       extended semantics, for C to select the right profile.
+
+   *  Suggested value ranges for codepoints to register.
 
    *  Aligned CBOR abbreviations to those used in other documents.
 
