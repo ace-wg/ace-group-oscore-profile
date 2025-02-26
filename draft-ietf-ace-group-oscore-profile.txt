@@ -5,9 +5,9 @@
 ACE Working Group                                              M. Tiloca
 Internet-Draft                                                R. Höglund
 Intended status: Standards Track                                 RISE AB
-Expires: 6 August 2025                                      F. Palombini
+Expires: 30 August 2025                                     F. Palombini
                                                              Ericsson AB
-                                                         2 February 2025
+                                                        26 February 2025
 
 
  The Group Object Security for Constrained RESTful Environments (Group
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 August 2025.
+   This Internet-Draft will expire on 30 August 2025.
 
 Copyright Notice
 
@@ -125,9 +125,10 @@ Table of Contents
    Appendix A.  Profile Requirements
    Appendix B.  CDDL Model
    Appendix C.  Document Updates
-     C.1.  Version -02 to -03
-     C.2.  Version -01 to -02
-     C.3.  Version -00 to -01
+     C.1.  Version -03 to -04
+     C.2.  Version -02 to -03
+     C.3.  Version -01 to -02
+     C.4.  Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -2088,20 +2089,20 @@ Table of Contents
               ace-key-groupcomm-oscore-16>.
 
    [I-D.ietf-core-groupcomm-bis]
-              Dijk, E., Wang, C., and M. Tiloca, "Group Communication
-              for the Constrained Application Protocol (CoAP)", Work in
+              Dijk, E. and M. Tiloca, "Group Communication for the
+              Constrained Application Protocol (CoAP)", Work in
               Progress, Internet-Draft, draft-ietf-core-groupcomm-bis-
-              12, 21 October 2024,
+              13, 24 February 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-core-
-              groupcomm-bis-12>.
+              groupcomm-bis-13>.
 
    [I-D.ietf-core-oscore-groupcomm]
               Tiloca, M., Selander, G., Palombini, F., Mattsson, J. P.,
               and R. Höglund, "Group Object Security for Constrained
               RESTful Environments (Group OSCORE)", Work in Progress,
-              Internet-Draft, draft-ietf-core-oscore-groupcomm-23, 26
-              September 2024, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-core-oscore-groupcomm-23>.
+              Internet-Draft, draft-ietf-core-oscore-groupcomm-24, 8
+              February 2025, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-core-oscore-groupcomm-24>.
 
    [NIST-800-56A]
               Barker, E., Chen, L., Roginsky, A., Vassilev, A., and R.
@@ -2352,7 +2353,7 @@ Appendix B.  CDDL Model
    salt_input_claim = 52
 
    ; CWT Confirmation Methods
-   kccs = 14
+   kccs = 11
 
                             Figure 7: CDDL model
 
@@ -2360,7 +2361,13 @@ Appendix C.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-C.1.  Version -02 to -03
+C.1.  Version -03 to -04
+
+   *  Aligned CBOR abbreviations to those used in other documents.
+
+   *  Editorial fixes and improvements.
+
+C.2.  Version -02 to -03
 
    *  Lowercase "client", "resource server", "authorization server", and
       "access token".
@@ -2389,7 +2396,7 @@ C.1.  Version -02 to -03
 
    *  Editorial fixes and improvements.
 
-C.2.  Version -01 to -02
+C.3.  Version -01 to -02
 
    *  CBOR diagnostic notation uses placeholders from a CDDL model.
 
@@ -2407,7 +2414,7 @@ C.2.  Version -01 to -02
 
    *  Editorial fixes and improvements.
 
-C.3.  Version -00 to -01
+C.4.  Version -00 to -01
 
    *  Deleting an access token does not delete the Group OSCORE Security
       Context.
