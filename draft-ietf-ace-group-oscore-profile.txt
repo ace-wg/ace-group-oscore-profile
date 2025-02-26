@@ -471,12 +471,12 @@ Table of Contents
    particular group-audience might be defined as including all the RSs
    in the OSCORE group.
 
-   In the Access Token Request to the AS, the client MUST include the
+   In the access token request to the AS, the client MUST include the
    Group Identifier of the OSCORE group and its own Sender ID in that
    group.  The AS MUST specify these pieces of information in the access
    token.
 
-   Furthermore, in the Access Token Request to the AS, the client MUST
+   Furthermore, in the access token request to the AS, the client MUST
    also include: its own authentication credential used in the OSCORE
    group; and a proof-of-possession (PoP) evidence to prove possession
    of the corresponding private key to the AS.  The PoP evidence is
@@ -486,14 +486,14 @@ Table of Contents
    the access token.
 
    If the request from the client is granted, then the AS can send back
-   the issued access token in the Access Token Response to the client,
+   the issued access token in the access token response to the client,
    or instead upload the access token directly to the RS as described in
    the alternative workflow defined in
    [I-D.ietf-ace-workflow-and-params].  This document focuses on the
    former option (also shown in the example in Figure 1), while the
    latter option is not detailed further here.
 
-   The Access Token Request and Response exchanged between the client
+   The access token request and Response exchanged between the client
    and the AS MUST be confidentiality-protected and ensure authenticity.
    In this profile, it is RECOMMENDED to use OSCORE [RFC8613] between
    the client and the AS, to reduce the number of libraries that the
@@ -560,8 +560,8 @@ Table of Contents
 3.  Client-AS Communication
 
    This section details the Access Token POST Request that the client
-   sends to the /token endpoint of the AS, as well as the related Access
-   Token Response.
+   sends to the /token endpoint of the AS, as well as the related access
+   token response.
 
    The access token MUST be bound to the public key of the client as
    proof-of-possession key (PoP) key, which is included in the client's
@@ -878,16 +878,16 @@ Table of Contents
 
 3.2.1.  'context_id' Parameter
 
-   The 'context_id' parameter is an OPTIONAL parameter of the Access
-   Token Request message defined in Section 5.8.1 of [RFC9200].  This
+   The 'context_id' parameter is an OPTIONAL parameter of the access
+   token request message defined in Section 5.8.1 of [RFC9200].  This
    parameter provides a value that the client wishes to use with the RS
    as a hint for a security context.  Its exact content is profile
    specific.
 
 3.2.2.  'salt_input' Parameter
 
-   The 'salt_input' parameter is an OPTIONAL parameter of the Access
-   Token Request message defined in Section 5.8.1 of [RFC9200].  This
+   The 'salt_input' parameter is an OPTIONAL parameter of the access
+   token request message defined in Section 5.8.1 of [RFC9200].  This
    parameter provides a value that the client wishes to use as part of a
    salt with the RS, for deriving cryptographic keying material.  Its
    exact content is profile specific.
@@ -895,14 +895,14 @@ Table of Contents
 3.2.3.  'client_cred_verify' Parameter
 
    The 'client_cred_verify' parameter is an OPTIONAL parameter of the
-   Access Token Request message defined in Section 5.8.1. of [RFC9200].
+   access token request message defined in Section 5.8.1. of [RFC9200].
    This parameter provides a signature computed by the client to prove
    the possession of its own private key.
 
 3.2.4.  'client_cred_verify_mac' Parameter
 
    The 'client_cred_verify_mac' parameter is an OPTIONAL parameter of
-   the Access Token Request message defined in Section 5.8.1. of
+   the access token request message defined in Section 5.8.1. of
    [RFC9200].  This parameter provides a Message Authentication Code
    (MAC) computed by the client to prove the possession of its own
    private key.
@@ -911,7 +911,7 @@ Table of Contents
 
    After having verified the POST request to the /token endpoint and
    that the client is authorized to obtain an access token corresponding
-   to its Access Token Request, the AS MUST verify the proof-of-
+   to its access token request, the AS MUST verify the proof-of-
    possession (PoP) evidence.  In particular, the AS proceeds as
    follows.
 
@@ -920,7 +920,7 @@ Table of Contents
 
    *  As public key of the client, the AS uses the one included in the
       authentication credential specified in the 'req_cnf' parameter of
-      the Access Token Request.
+      the access token request.
 
       This requires the AS to support the format of the authentication
       credential specified in the 'req_cnf' parameter, i.e., the format
@@ -930,7 +930,7 @@ Table of Contents
       profile is expected to be registered only at an AS that supports
       the formats of authentication credential that the RS supports.
 
-   *  If the Access Token Request includes the 'client_cred_verify'
+   *  If the access token request includes the 'client_cred_verify'
       parameter, this specifies the PoP evidence as a signature.  Then,
       the AS verifies the signature by using the public key of the
       client.
@@ -938,13 +938,13 @@ Table of Contents
       This requires the AS to support the signature algorithm and curve
       (when applicable) that are used in the OSCORE group where the
       client uses the authentication credential specified in the
-      'req_cnf' parameter of the Access Token Request.  Practically,
+      'req_cnf' parameter of the access token request.  Practically,
       this is not an issue, since an RS supporting this profile is
       expected to be registered only at an AS that supports the
       signature algorithms and curves (when applicable) that the RS
       supports.
 
-   *  If the Access Token Request includes the 'client_cred_verify_mac'
+   *  If the access token request includes the 'client_cred_verify_mac'
       parameter, this specifies the PoP evidence as a Message
       Authentication Code (MAC).
 
@@ -954,13 +954,13 @@ Table of Contents
       Section 3.2), with the difference that the AS uses its own Diffie-
       Hellman private key and the Diffie-Hellman public key of the
       client.  The verification succeeds if and only if the recomputed
-      MAC is equal to the MAC conveyed as PoP evidence in the Access
-      Token Request.
+      MAC is equal to the MAC conveyed as PoP evidence in the access
+      token request.
 
       This requires the AS to support the ECDH algorithm that is used as
       Pairwise Key Agreement Algorithm in the OSCORE group where the
       client uses the authentication credential specified in the
-      'req_cnf' parameter of the Access Token Request.  Practically,
+      'req_cnf' parameter of the access token request.  Practically,
       this is not an issue, since an RS supporting this profile is
       expected to be registered only at an AS that supports the ECDH
       algorithms that the RS supports.
@@ -977,7 +977,7 @@ Table of Contents
 
    *  The AS can signal that the use of Group OSCORE is REQUIRED for a
       specific access token by including the 'ace_profile' parameter
-      with the value "coap_group_oscore" in the Access Token Response.
+      with the value "coap_group_oscore" in the access token response.
       The client MUST use Group OSCORE towards all the resource servers
       for which this access token is valid.  Usually, it is assumed that
       constrained devices will be pre-configured with the necessary
@@ -993,8 +993,8 @@ Table of Contents
       [I-D.ietf-ace-key-groupcomm-oscore].
 
    *  According to this document, the AS includes the 'access_token'
-      parameter specifying the issued access token in the Access Token
-      Response.  An alternative workflow where the access token is
+      parameter specifying the issued access token in the access token
+      response.  An alternative workflow where the access token is
       uploaded by the AS directly to the RS is described in
       [I-D.ietf-ace-workflow-and-params].
 
@@ -1007,26 +1007,26 @@ Table of Contents
       as per Section 5.10 of [RFC9200].
 
    *  The salt input specified in the 'salt_input' parameter of the
-      Access Token Request.  If the access token is a CWT, the content
+      access token request.  If the access token is a CWT, the content
       of the 'salt_input' parameter MUST be specified in the
       'salt_input' claim of the access token, defined in Section 3.3.3
       of this document.
 
    *  The Context ID input specified in the 'context_id' parameter of
-      the Access Token Request.  If the access token is a CWT, the
+      the access token request.  If the access token is a CWT, the
       content of the 'context_id' parameter MUST be specified in the
       'context_id' claim of the access token, defined in Section 3.3.2
       of this document.
 
    *  The authentication credential that the client uses in the OSCORE
-      group and specified in the 'req_cnf' parameter of the Access Token
-      Request.
+      group and specified in the 'req_cnf' parameter of the access token
+      request.
 
       If the access token is a CWT, the client's authentication
       credential MUST be specified in the 'cnf' claim, which follows the
       syntax from Section 3.1 of [RFC8747].  In particular, the 'cnf'
       claim includes the same authentication credential specified in the
-      'req_cnf' parameter of the Access Token Request (see Section 3.2).
+      'req_cnf' parameter of the access token request (see Section 3.2).
 
    Figure 4 shows an example of such an AS response.  The access token
    has been truncated for readability.
@@ -1155,7 +1155,7 @@ Table of Contents
    *  "token_series_id" - At the time of writing,
       [I-D.ietf-ace-workflow-and-params] describes the intended
       direction for defining this new prospective parameter, to be used
-      in the Access Token Request/Response exchange between C and the
+      in the access token request/response exchange between C and the
       AS.
 
       This parameter is meant to specify the unique identifier of a
@@ -1170,13 +1170,13 @@ Table of Contents
       that the access token belongs to.
 
    *  When issuing the first access token in a token series, the AS
-      includes the parameter "token_series_id" in the Access Token
-      Response to the client, with value the identifier of the token
+      includes the parameter "token_series_id" in the access token
+      response to the client, with value the identifier of the token
       series that the access token belongs to.
 
    *  When C requests from the AS an access token that dynamically
       updates its current access rights to access protected resources at
-      the same audience, C sends to the AS an Access Token Request such
+      the same audience, C sends to the AS an access token request such
       that:
 
       -  It includes the parameter "token_series_id", with value the
@@ -1432,7 +1432,7 @@ Table of Contents
    When communicating with the RS to access the resources as specified
    by the authorization information, the client MUST use the Group
    OSCORE Security Context of the pertinent OSCORE group, whose GID was
-   specified in the 'context_id' parameter of the Access Token Request.
+   specified in the 'context_id' parameter of the access token request.
 
 4.3.2.  Resource Server Side
 
@@ -1661,8 +1661,8 @@ Table of Contents
    client MUST perform the following actions.
 
    1.  The client requests a new access token T_NEW to the AS, as
-       defined in Section 3.  In particular, when sending the Access
-       Token Request as defined in Section 3.2, the client specifies:
+       defined in Section 3.  In particular, when sending the access
+       token request as defined in Section 3.2, the client specifies:
 
        *  The current Group Identifier of the OSCORE group, as value of
           the 'context_id' parameter.
@@ -1678,7 +1678,7 @@ Table of Contents
           the 'client_cred_verify' or 'client_cred_verify_mac'
           parameter.
 
-   2.  After receiving the Access Token Response from the AS (see
+   2.  After receiving the access token response from the AS (see
        Section 3.3), the client performs the same exchanges with the RS
        as defined in Section 4.
 
@@ -1746,10 +1746,10 @@ Table of Contents
    To this end, the client may indicate its wish for an access token
    aligned with the Group OSCORE profile or with the OSCORE profile, by
    specifying one of two different audiences in the 'audience' parameter
-   of the Access Token Request to the AS.  Assuming a proper
+   of the access token request to the AS.  Assuming a proper
    configuration of the access policies at the AS, this is still
    conducive to a consistent evaluation of what is specified in the
-   'scope' parameter of the Access Token Request against the access
+   'scope' parameter of the access token request against the access
    policies at the AS.
 
    For example, an RS registered as "rs1" at the AS can be associated
@@ -1768,8 +1768,8 @@ Table of Contents
    Editor's note: the approach above is provisional and intended to
    simply be an informative example.  In future versions of this
    Internet Draft, such an approach might be complemented or replaced by
-   the use of the 'ace_profile' parameter, as included in the Access
-   Token Request per its extended semantics defined in
+   the use of the 'ace_profile' parameter, as included in the access
+   token request per its extended semantics defined in
    [I-D.ietf-ace-workflow-and-params].
 
    Note that an RS has to be able to store at least one access token per
