@@ -1170,12 +1170,18 @@ context_id_claim = 51
 salt_input_claim = 52
 
 ; CWT Confirmation Methods
-kccs = 14
+kccs = 11
 ~~~~~~~~~~~~~~~~~~~~
 {: #fig-cddl-model title="CDDL model" artwork-align="left"}
 
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
+
+## Version -03 to -04 ## {#sec-03-04}
+
+* Aligned CBOR abbreviations to those used in other documents.
+
+* Editorial fixes and improvements.
 
 ## Version -02 to -03 ## {#sec-02-03}
 
