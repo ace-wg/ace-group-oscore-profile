@@ -2503,17 +2503,18 @@ When using multiple transport profiles of ACE that rely on asymmetric PoP keys, 
           <p id="section-8-6.2.1">"rs1_osc", which the client can use to request an access token for the OSCORE profile and targeting only that RS. That is, the client specifies this audience when requesting the access token T2.<a href="#section-8-6.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-8-7">Note that an RS has to be able to store at least one access token per PoP key. When specifically considering the Group OSCORE profile and the OSCORE profile, the RS can always store both corresponding access tokens T1 and T2, since they are always bound to different PoP keys. That is:<a href="#section-8-7" class="pilcrow">¶</a></p>
+<p id="section-8-7">Editor's note: the approach above is provisional and intended to simply be an informative example. In future versions of this Internet Draft, such an approach might be complemented or replaced by the use of the 'ace_profile' parameter, as included in the Access Token Request per its extended semantics defined in <span>[<a href="#I-D.ietf-ace-workflow-and-params" class="cite xref">I-D.ietf-ace-workflow-and-params</a>]</span>.<a href="#section-8-7" class="pilcrow">¶</a></p>
+<p id="section-8-8">Note that an RS has to be able to store at least one access token per PoP key. When specifically considering the Group OSCORE profile and the OSCORE profile, the RS can always store both corresponding access tokens T1 and T2, since they are always bound to different PoP keys. That is:<a href="#section-8-8" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-8-8.1">
-          <p id="section-8-8.1.1">In the Group OSCORE profile, the PoP key is the client's public key, which is included in the client's authentication credential specified in the 'cnf' claim of the access token.<a href="#section-8-8.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-8-9.1">
+          <p id="section-8-9.1.1">In the Group OSCORE profile, the PoP key is the client's public key, which is included in the client's authentication credential specified in the 'cnf' claim of the access token.<a href="#section-8-9.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-8-8.2">
-          <p id="section-8-8.2.1">In the OSCORE profile, the PoP key is fundamentally an OSCORE Master Secret, which is specified within the OSCORE_Input_Material object of the 'cnf' claim of the access token.<a href="#section-8-8.2.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-8-9.2">
+          <p id="section-8-9.2.1">In the OSCORE profile, the PoP key is fundamentally an OSCORE Master Secret, which is specified within the OSCORE_Input_Material object of the 'cnf' claim of the access token.<a href="#section-8-9.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-8-9">The same approach discussed above can be used in case the profile used for the access token T2 is instead the EDHOC and OSCORE profile defined in <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>. In such a case, the same PoP key might be bound to both T1 and T2, i.e., if the client's public key is included both in the authentication credential that the client uses in the OSCORE group and in the authentication credential that the client uses as CRED_I (CRED_R) when running the EDHOC protocol in the forward (reverse) message flow.<a href="#section-8-9" class="pilcrow">¶</a></p>
-<p id="section-8-10"><a href="#sec-multiple-pop-keys" class="auto internal xref">Section 4.6</a> provides considerations and recommendations on storing multiple access tokens per PoP key when using the Group OSCORE profile, also in parallel with alternative profiles.<a href="#section-8-10" class="pilcrow">¶</a></p>
+<p id="section-8-10">The same approach discussed above can be used in case the profile used for the access token T2 is instead the EDHOC and OSCORE profile defined in <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>. In such a case, the same PoP key might be bound to both T1 and T2, i.e., if the client's public key is included both in the authentication credential that the client uses in the OSCORE group and in the authentication credential that the client uses as CRED_I (CRED_R) when running the EDHOC protocol in the forward (reverse) message flow.<a href="#section-8-10" class="pilcrow">¶</a></p>
+<p id="section-8-11"><a href="#sec-multiple-pop-keys" class="auto internal xref">Section 4.6</a> provides considerations and recommendations on storing multiple access tokens per PoP key when using the Group OSCORE profile, also in parallel with alternative profiles.<a href="#section-8-11" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-cbor-mappings">
@@ -3126,10 +3127,13 @@ kccs = 11
             <p id="appendix-C.1-1.1.1">Better example value for audience, when indicating the profile to use.<a href="#appendix-C.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-C.1-1.2">
-            <p id="appendix-C.1-1.2.1">Aligned CBOR abbreviations to those used in other documents.<a href="#appendix-C.1-1.2.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.2.1">Placeholder: possible use of the 'ace_profile' parameter with extended semantics, for C to select the right profile.<a href="#appendix-C.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-C.1-1.3">
-            <p id="appendix-C.1-1.3.1">Editorial fixes and improvements.<a href="#appendix-C.1-1.3.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.3.1">Aligned CBOR abbreviations to those used in other documents.<a href="#appendix-C.1-1.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.1-1.4">
+            <p id="appendix-C.1-1.4.1">Editorial fixes and improvements.<a href="#appendix-C.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
