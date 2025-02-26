@@ -1752,15 +1752,15 @@ Table of Contents
    'scope' parameter of the Access Token Request against the access
    policies at the AS.
 
-   For example, an RS registered at the AS can be associated with two
-   audiences:
+   For example, an RS registered as "rs1" at the AS can be associated
+   with two audiences:
 
-   *  "AUD_GP_OSC", which the client can use to request an access token
+   *  "rs1_gp_osc", which the client can use to request an access token
       for the Group OSCORE profile and targeting (also) that RS.  That
       is, the client specifies this audience when requesting the access
       token T1.
 
-   *  "AUD_OSC", which the client can use to request an access token for
+   *  "rs1_osc", which the client can use to request an access token for
       the OSCORE profile and targeting only that RS.  That is, the
       client specifies this audience when requesting the access token
       T2.
@@ -2362,6 +2362,9 @@ Appendix C.  Document Updates
    This section is to be removed before publishing as an RFC.
 
 C.1.  Version -03 to -04
+
+   *  Better example value for audience, when indicating the profile to
+      use.
 
    *  Aligned CBOR abbreviations to those used in other documents.
 
