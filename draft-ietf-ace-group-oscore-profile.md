@@ -1026,7 +1026,7 @@ IANA is asked to add the following entry to the "ACE Profiles" registry within t
 
 * Name: coap_group_oscore
 * Description: Profile to secure communications between constrained nodes using the Authentication and Authorization for Constrained Environments framework, by enabling authentication and fine-grained authorization of members of an OSCORE group that use a pre-established Group OSCORE Security Context to communicate with Group OSCORE.
-* CBOR Value: TBD (value between 1 and 255)
+* CBOR Value: TBD (value between 1 and 23)
 * Reference: {{&SELF}}
 
 ## OAuth Parameters Registry ## {#iana-oauth-params}
@@ -1064,7 +1064,7 @@ IANA is asked to add the following entries to the "OAuth Parameters" registry, f
 IANA is asked to add the following entries to the "OAuth Parameters CBOR Mappings" registry within the "Authentication and Authorization for Constrained Environments (ACE)" registry group, following the procedure specified in {{Section 8.10 of RFC9200}}.
 
 * Name: context_id
-* CBOR Key: TBD
+* CBOR Key: TBD (value between 1 and 255)
 * Value Type: byte string
 * Reference: {{context_id}} of {{&SELF}}
 * Original Specification: {{&SELF}}
@@ -1072,7 +1072,7 @@ IANA is asked to add the following entries to the "OAuth Parameters CBOR Mapping
 <br>
 
 * Name: salt_input
-* CBOR Key: TBD
+* CBOR Key: TBD (value between 1 and 255)
 * Value Type: byte string
 * Reference: {{salt_input}} of {{&SELF}}
 * Original Specification: {{&SELF}}
@@ -1080,7 +1080,7 @@ IANA is asked to add the following entries to the "OAuth Parameters CBOR Mapping
 <br>
 
 * Name: client_cred_verify
-* CBOR Key: TBD
+* CBOR Key: TBD (value between 1 and 255)
 * Value Type: byte string
 * Reference: {{client_cred_verify}} of {{&SELF}}
 * Original Specification: {{&SELF}}
@@ -1088,7 +1088,7 @@ IANA is asked to add the following entries to the "OAuth Parameters CBOR Mapping
 <br>
 
 * Name: client_cred_verify_mac
-* CBOR Key: TBD
+* CBOR Key: TBD (value between 1 and 255)
 * Value Type: byte string
 * Reference: {{client_cred_verify_mac}} of {{&SELF}}
 * Original Specification: {{&SELF}}
@@ -1100,7 +1100,7 @@ IANA is asked to add the following entries to the "CBOR Web Token (CWT) Claims" 
 * Claim Name: context_id
 * Claim Description: Client provided Context ID
 * JWT Claim Name: N/A
-* Claim Key: TBD
+* Claim Key: TBD (value between 1 and 255)
 * Claim Value Type: byte string
 * Change Controller: IETF
 * Reference: {{context_id_claim}} of {{&SELF}}
@@ -1110,7 +1110,7 @@ IANA is asked to add the following entries to the "CBOR Web Token (CWT) Claims" 
 * Claim Name: salt_input
 * Claim Description: Client provided salt input
 * JWT Claim Name: N/A
-* Claim Key: TBD
+* Claim Key: TBD (value between 1 and 255)
 * Claim Value Type: byte string
 * Change Controller: IETF
 * Reference: {{salt_input_claim}} of {{&SELF}}
@@ -1184,6 +1184,8 @@ kccs = 11
 * Better example value for audience, when indicating the profile to use.
 
 * Placeholder: possible use of the 'ace_profile' parameter with extended semantics, for C to select the right profile.
+
+* Suggested value ranges for codepoints to register.
 
 * Aligned CBOR abbreviations to those used in other documents.
 
