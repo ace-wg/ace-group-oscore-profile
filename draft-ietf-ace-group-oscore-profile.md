@@ -948,11 +948,11 @@ Since the ACE framework does not allow the client to negotiate with the AS the p
 
 To this end, the client may indicate its wish for an access token aligned with the Group OSCORE profile or with the OSCORE profile, by specifying one of two different audiences in the 'audience' parameter of the Access Token Request to the AS. Assuming a proper configuration of the access policies at the AS, this is still conducive to a consistent evaluation of what is specified in the 'scope' parameter of the Access Token Request against the access policies at the AS.
 
-For example, an RS registered at the AS can be associated with two audiences:
+For example, an RS registered as "rs1" at the AS can be associated with two audiences:
 
-- "AUD_GP_OSC", which the client can use to request an access token for the Group OSCORE profile and targeting (also) that RS. That is, the client specifies this audience when requesting the access token T1.
+- "rs1_gp_osc", which the client can use to request an access token for the Group OSCORE profile and targeting (also) that RS. That is, the client specifies this audience when requesting the access token T1.
 
-- "AUD_OSC", which the client can use to request an access token for the OSCORE profile and targeting only that RS. That is, the client specifies this audience when requesting the access token T2.
+- "rs1_osc", which the client can use to request an access token for the OSCORE profile and targeting only that RS. That is, the client specifies this audience when requesting the access token T2.
 
 Note that an RS has to be able to store at least one access token per PoP key. When specifically considering the Group OSCORE profile and the OSCORE profile, the RS can always store both corresponding access tokens T1 and T2, since they are always bound to different PoP keys. That is:
 
@@ -1178,6 +1178,8 @@ kccs = 11
 {:removeinrfc}
 
 ## Version -03 to -04 ## {#sec-03-04}
+
+* Better example value for audience, when indicating the profile to use.
 
 * Aligned CBOR abbreviations to those used in other documents.
 
