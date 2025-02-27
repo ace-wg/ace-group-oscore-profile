@@ -682,8 +682,8 @@ Table of Contents
       'c5c' are under pending registration requested by draft-ietf-ace-
       edhoc-oscore-profile. ]
 
-   Furthermore, the paylod of the request MAY include exactly one of the
-   two following parameters, specifying a proof-of-possession (PoP)
+   Furthermore, the payload of the request MAY include exactly one of
+   the two following parameters, specifying a proof-of-possession (PoP)
    evidence computed by the client.
 
    *  'client_cred_verify', defined in Section 3.2.3 of this document,
