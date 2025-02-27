@@ -337,11 +337,13 @@ The POST request is formatted as the analogous Client-to-AS request in the OSCOR
 
 * 'salt_input', defined in {{salt_input}} of this document. This parameter includes the Sender ID that the client has in the OSCORE group whose GID is specified in the 'context_id' parameter above.
 
-* 'req_cnf', defined in {{Section 3.1 of RFC9201}}. This parameter follows the syntax from {{Section 3.1 of RFC8747}}, and its inner confirmation value specifies the authentication credential that the client uses in the OSCORE group. The public key included in the authentication credential will be used as the PoP key bound to the access token.
+* 'req_cnf', defined in {{Section 3.1 of RFC9201}}. This parameter follows the syntax from {{Section 3.1 of RFC8747}}, and its inner confirmation value specifies the authentication credential AUTH_CRED_C that the client uses in the OSCORE group. The public key included in the authentication credential will be used as the PoP key bound to the access token.
 
    At the time of writing this specification, acceptable formats of authentication credentials in Group OSCORE are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) {{RFC8392}}, X.509 certificates {{RFC5280}}, and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}.
 
    Further formats may be available in the future, and would be acceptable to use as long as they comply with the criteria compiled in {{Section 2.4 of I-D.ietf-core-oscore-groupcomm}}. In particular, an authentication credential has to explicitly include the public key as well as the comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).
+
+   Note that C might have previously uploaded AUTH_CRED_C to the Group Manager as provided within a chain or a bag (e.g., as the end-entity certificate in a chain of certificates), by specifying it in the 'client_cred' parameter of a Join Request or of an Authentication Credential Update Request sent to the Group Manager (see {{Sections 6.1 and 9.4 of I-D.ietf-ace-key-groupcomm-oscore}}). In such a case, the inner confirmation value of the 'req_cnf' parameter MUST specify AUTH_CRED_C as provided within the same chain or bag.
 
    \[ As to CWTs and CCSs, the CWT Confirmation Methods 'kcwt' and 'kccs' are under pending registration requested by draft-ietf-ace-edhoc-oscore-profile. \]
 
@@ -560,7 +562,7 @@ The AS MUST include the following information as metadata of the issued access t
 
 * The authentication credential that the client uses in the OSCORE group and specified in the 'req_cnf' parameter of the access token request.
 
-   If the access token is a CWT, the client's authentication credential MUST be specified in the 'cnf' claim, which follows the syntax from {{Section 3.1 of RFC8747}}. In particular, the 'cnf' claim includes the same authentication credential specified in the 'req_cnf' parameter of the access token request (see {{sec-c-as-token-endpoint}}).
+   If the access token is a CWT, the client's authentication credential MUST be specified in the 'cnf' claim, which follows the syntax from {{Section 3.1 of RFC8747}}. In particular, the 'cnf' claim includes the client's authentication credential as specified in the 'req_cnf' parameter of the access token request (see {{sec-c-as-token-endpoint}}).
 
 {{fig-example-AS-to-C}} shows an example of such an AS response. The access token has been truncated for readability.
 
@@ -751,7 +753,7 @@ The RS MUST verify the validity of the access token as defined in {{Section 5.10
 
   Otherwise, for each of the N >= 1 groups G in the set GROUPS, the RS MUST request to the corresponding Group Manager the authentication credential that the client uses in G, specifying SID\* in the request sent to the Group Manager (see {{Section 9.3 of I-D.ietf-ace-key-groupcomm-oscore}}).
 
-  When receiving a successful response from each of the Group Managers, the RS MUST check whether the client's authentication credential AUTH_CRED_C retrieved from the Group Manager is equal to AUTH_CRED_C\* retrieved from the access token.
+  When receiving a successful response from each of the Group Managers, the RS MUST check whether the client's authentication credential AUTH_CRED_C retrieved from the Group Manager is equal to AUTH_CRED_C\* retrieved from the access token. In case AUTH_CRED_C\* is provided within a chain or a bag, but AUTH_CRED_C is not provided within the same chain or bag, then the Group Manager MUST NOT determine AUTH_CRED_C\* and AUTH_CRED_C to be equal.
 
   If any of the following conditions hold, the RS MUST consider the access token invalid, and MUST reply to the client with an error response code equivalent to the CoAP code 5.03 (Service Unavailable).
 
@@ -1180,6 +1182,8 @@ kccs = 11
 {:removeinrfc}
 
 ## Version -03 to -04 ## {#sec-03-04}
+
+* Required that 'cnf' in the access token includes exactly what C uploaded to the Group Manager.
 
 * Better example value for audience, when indicating the profile to use.
 
