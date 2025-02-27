@@ -1687,76 +1687,87 @@ Note that C might have previously uploaded AUTH_CRED_C to the Group Manager as p
 [ As to C509 certificates, the CWT Confirmation Methods 'c5b'and 'c5c' are under pending registration requested by draft-ietf-ace-edhoc-oscore-profile. ]<a href="#section-3.2-3.3.7" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-3.2-4">In addition, the client computes its proof-of-possession (PoP) evidence, in order to prove to the AS the possession of its own private key used in the OSCORE group. This allows the AS to verify that the client indeed owns the private key associated with the public key of the authentication credential that the client allegedly uses in the OSCORE group.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
-<p id="section-3.2-5">To this end, the client <span class="bcp14">MUST</span> use as PoP input the byte representation of an information that uniquely represents the secure communication association between the client and the AS. It is <span class="bcp14">RECOMMENDED</span> that the client uses the following as PoP input.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
+<p id="section-3.2-4">Furthermore, the paylod of the request <span class="bcp14">MAY</span> include exactly one of the two following parameters, specifying a proof-of-possession (PoP) evidence computed by the client.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.2-6.1">
-            <p id="section-3.2-6.1.1">If the client and the AS communicate over TLS 1.2 <span>[<a href="#RFC5246" class="cite xref">RFC5246</a>]</span> or DTLS 1.2 <span>[<a href="#RFC6347" class="cite xref">RFC6347</a>]</span>, the PoP input is an exporter value computed as defined in <span><a href="https://rfc-editor.org/rfc/rfc5705#section-4" class="relref">Section 4</a> of [<a href="#RFC5705" class="cite xref">RFC5705</a>]</span>, using the following inputs:<a href="#section-3.2-6.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.2-5.1">
+            <p id="section-3.2-5.1.1">'client_cred_verify', defined in <a href="#client_cred_verify" class="auto internal xref">Section 3.2.3</a> of this document, specifying the client's PoP evidence as a signature, which is computed as defined later in this section. This parameter <span class="bcp14">MUST NOT</span> be included if the OSCORE group is a pairwise-only group.<a href="#section-3.2-5.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.2-5.2">
+            <p id="section-3.2-5.2.1">'client_cred_verify_mac', defined in <a href="#client_cred_verify_mac" class="auto internal xref">Section 3.2.4</a> of this document, specifying the client's PoP evidence as a MAC, which is computed as defined later in this section. This parameter <span class="bcp14">MUST NOT</span> be included if the OSCORE group is not a pairwise-only group.<a href="#section-3.2-5.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-3.2-6">The PoP evidence can be used by the AS to achieve proof-of-possession of the client's private key, i.e., to verify that the client indeed owns the private key associated with the public key of AUTH_CRED_C.<a href="#section-3.2-6" class="pilcrow">¶</a></p>
+<p id="section-3.2-7">When preparing the POST request, the client might know that the AS has previously achieved proof-of-possession of the private key in question. In such a case, it is <span class="bcp14">OPTIONAL</span> for the client to compute the PoP evidence and to specify it in the 'client_cred_verify' or 'client_cred_verify_mac' parameter of the POST request.<a href="#section-3.2-7" class="pilcrow">¶</a></p>
+<p id="section-3.2-8">Instead, if the client has no knowledge that the AS has previously achieved proof-of-possession of the private key in question, then the client <span class="bcp14">MUST</span> compute the PoP evidence as defined below and <span class="bcp14">MUST</span> specify it in the 'client_cred_verify' or 'client_cred_verify_mac' parameter of the POST request.<a href="#section-3.2-8" class="pilcrow">¶</a></p>
+<p id="section-3.2-9">In order to compute the PoP evidence, the client <span class="bcp14">MUST</span> use as PoP input the byte representation of an information that uniquely represents the secure communication association between the client and the AS. It is <span class="bcp14">RECOMMENDED</span> that the client uses the following as PoP input.<a href="#section-3.2-9" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.2-6.1.2.1">
-                <p id="section-3.2-6.1.2.1.1">The exporter label "EXPORTER-ACE-PoP-Input-Client-AS", defined in <a href="#iana-tls-exporter-label" class="auto internal xref">Section 12.5</a> of this document.<a href="#section-3.2-6.1.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.2-10.1">
+            <p id="section-3.2-10.1.1">If the client and the AS communicate over TLS 1.2 <span>[<a href="#RFC5246" class="cite xref">RFC5246</a>]</span> or DTLS 1.2 <span>[<a href="#RFC6347" class="cite xref">RFC6347</a>]</span>, the PoP input is an exporter value computed as defined in <span><a href="https://rfc-editor.org/rfc/rfc5705#section-4" class="relref">Section 4</a> of [<a href="#RFC5705" class="cite xref">RFC5705</a>]</span>, using the following inputs:<a href="#section-3.2-10.1.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.2-10.1.2.1">
+                <p id="section-3.2-10.1.2.1.1">The exporter label "EXPORTER-ACE-PoP-Input-Client-AS", defined in <a href="#iana-tls-exporter-label" class="auto internal xref">Section 12.5</a> of this document.<a href="#section-3.2-10.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-3.2-6.1.2.2">
-                <p id="section-3.2-6.1.2.2.1">The empty 'context value', i.e., a 'context value' of zero-length.<a href="#section-3.2-6.1.2.2.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-3.2-10.1.2.2">
+                <p id="section-3.2-10.1.2.2.1">The empty 'context value', i.e., a 'context value' of zero-length.<a href="#section-3.2-10.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-3.2-6.1.2.3">
-                <p id="section-3.2-6.1.2.3.1">32 as length value in bytes.<a href="#section-3.2-6.1.2.3.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-3.2-10.1.2.3">
+                <p id="section-3.2-10.1.2.3.1">32 as length value in bytes.<a href="#section-3.2-10.1.2.3.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="normal" id="section-3.2-6.2">
-            <p id="section-3.2-6.2.1">If the client and the AS communicate over TLS 1.3 <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> or DTLS 1.3 <span>[<a href="#RFC9147" class="cite xref">RFC9147</a>]</span>, the PoP input is an exporter value computed as defined in <span><a href="https://rfc-editor.org/rfc/rfc8446#section-7.5" class="relref">Section 7.5</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>, using the following inputs:<a href="#section-3.2-6.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.2-10.2">
+            <p id="section-3.2-10.2.1">If the client and the AS communicate over TLS 1.3 <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> or DTLS 1.3 <span>[<a href="#RFC9147" class="cite xref">RFC9147</a>]</span>, the PoP input is an exporter value computed as defined in <span><a href="https://rfc-editor.org/rfc/rfc8446#section-7.5" class="relref">Section 7.5</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>, using the following inputs:<a href="#section-3.2-10.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.2-6.2.2.1">
-                <p id="section-3.2-6.2.2.1.1">The exporter label "EXPORTER-ACE-PoP-Input-Client-AS", defined in <a href="#iana-tls-exporter-label" class="auto internal xref">Section 12.5</a> of this document.<a href="#section-3.2-6.2.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.2-10.2.2.1">
+                <p id="section-3.2-10.2.2.1.1">The exporter label "EXPORTER-ACE-PoP-Input-Client-AS", defined in <a href="#iana-tls-exporter-label" class="auto internal xref">Section 12.5</a> of this document.<a href="#section-3.2-10.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-3.2-6.2.2.2">
-                <p id="section-3.2-6.2.2.2.1">The empty 'context_value', i.e., a 'context_value' of zero-length.<a href="#section-3.2-6.2.2.2.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-3.2-10.2.2.2">
+                <p id="section-3.2-10.2.2.2.1">The empty 'context_value', i.e., a 'context_value' of zero-length.<a href="#section-3.2-10.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-3.2-6.2.2.3">
-                <p id="section-3.2-6.2.2.3.1">32 as 'key_length' in bytes.<a href="#section-3.2-6.2.2.3.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-3.2-10.2.2.3">
+                <p id="section-3.2-10.2.2.3.1">32 as 'key_length' in bytes.<a href="#section-3.2-10.2.2.3.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="normal" id="section-3.2-6.3">
-            <p id="section-3.2-6.3.1">If the client and the AS communicate over OSCORE <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, the PoP input is the output PRK of an HKDF-Extract step <span>[<a href="#RFC5869" class="cite xref">RFC5869</a>]</span>, i.e., PRK = HMAC-Hash(salt, IKM).<a href="#section-3.2-6.3.1" class="pilcrow">¶</a></p>
-<p id="section-3.2-6.3.2">
-In particular, given the OSCORE Security Context CTX shared between the client and the AS, then the following applies.<a href="#section-3.2-6.3.2" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.2-10.3">
+            <p id="section-3.2-10.3.1">If the client and the AS communicate over OSCORE <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, the PoP input is the output PRK of an HKDF-Extract step <span>[<a href="#RFC5869" class="cite xref">RFC5869</a>]</span>, i.e., PRK = HMAC-Hash(salt, IKM).<a href="#section-3.2-10.3.1" class="pilcrow">¶</a></p>
+<p id="section-3.2-10.3.2">
+In particular, given the OSCORE Security Context CTX shared between the client and the AS, then the following applies.<a href="#section-3.2-10.3.2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.2-6.3.3.1">
-                <p id="section-3.2-6.3.3.1.1">'salt' takes (x1 | x2), where | denotes byte string concatenation, while x1 and x2 are defined as follows.<a href="#section-3.2-6.3.3.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.2-10.3.3.1">
+                <p id="section-3.2-10.3.3.1.1">'salt' takes (x1 | x2), where | denotes byte string concatenation, while x1 and x2 are defined as follows.<a href="#section-3.2-10.3.3.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.2-6.3.3.1.2.1">
-                    <p id="section-3.2-6.3.3.1.2.1.1">x1 is the binary representation of a CBOR data item. If CTX does not specify an OSCORE ID Context, the CBOR data item is the CBOR simple value <code>null</code> (0xf6). Otherwise, the CBOR data item is a CBOR byte string, with value the OSCORE ID Context specified in CTX.<a href="#section-3.2-6.3.3.1.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.2-10.3.3.1.2.1">
+                    <p id="section-3.2-10.3.3.1.2.1.1">x1 is the binary representation of a CBOR data item. If CTX does not specify an OSCORE ID Context, the CBOR data item is the CBOR simple value <code>null</code> (0xf6). Otherwise, the CBOR data item is a CBOR byte string, with value the OSCORE ID Context specified in CTX.<a href="#section-3.2-10.3.3.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="normal" id="section-3.2-6.3.3.1.2.2">
-                    <p id="section-3.2-6.3.3.1.2.2.1">x2 is the binary representation of a CBOR byte string. The value of the CBOR byte string is the OSCORE Sender ID of the client, which the client stores in its Sender Context of CTX and the AS stores in its Recipient Context of CTX.<a href="#section-3.2-6.3.3.1.2.2.1" class="pilcrow">¶</a></p>
+                  <li class="normal" id="section-3.2-10.3.3.1.2.2">
+                    <p id="section-3.2-10.3.3.1.2.2.1">x2 is the binary representation of a CBOR byte string. The value of the CBOR byte string is the OSCORE Sender ID of the client, which the client stores in its Sender Context of CTX and the AS stores in its Recipient Context of CTX.<a href="#section-3.2-10.3.3.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 </ul>
 </li>
-              <li class="normal" id="section-3.2-6.3.3.2">
-                <p id="section-3.2-6.3.3.2.1">'IKM' is the OSCORE Master Secret specified in CTX.<a href="#section-3.2-6.3.3.2.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-3.2-10.3.3.2">
+                <p id="section-3.2-10.3.3.2.1">'IKM' is the OSCORE Master Secret specified in CTX.<a href="#section-3.2-10.3.3.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-3.2-6.3.3.3">
-                <p id="section-3.2-6.3.3.3.1">The used HKDF is the HKDF Algorithm specified in CTX.<a href="#section-3.2-6.3.3.3.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-3.2-10.3.3.3">
+                <p id="section-3.2-10.3.3.3.1">The used HKDF is the HKDF Algorithm specified in CTX.<a href="#section-3.2-10.3.3.3.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
-<p id="section-3.2-6.3.4">
-The following shows an example of input to the HMAC-Hash() function.<a href="#section-3.2-6.3.4" class="pilcrow">¶</a></p>
-<p id="section-3.2-6.3.5">
-On the client side, the OSCORE Security Context shared with the AS includes:<a href="#section-3.2-6.3.5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2-6.3.6">
+<p id="section-3.2-10.3.4">
+The following shows an example of input to the HMAC-Hash() function.<a href="#section-3.2-10.3.4" class="pilcrow">¶</a></p>
+<p id="section-3.2-10.3.5">
+On the client side, the OSCORE Security Context shared with the AS includes:<a href="#section-3.2-10.3.5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2-10.3.6">
 <pre>
 ID Context: 0x37cbf3210017a2d3 (8 bytes)
 
 Sender ID: 0x01 (1 byte)
 
 Master Secret: 0x0102030405060708090a0b0c0d0e0f10 (16 bytes)
-</pre><a href="#section-3.2-6.3.6" class="pilcrow">¶</a>
+</pre><a href="#section-3.2-10.3.6" class="pilcrow">¶</a>
 </div>
-<p id="section-3.2-6.3.7">
-Then, the following holds.<a href="#section-3.2-6.3.7" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2-6.3.8">
+<p id="section-3.2-10.3.7">
+Then, the following holds.<a href="#section-3.2-10.3.7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2-10.3.8">
 <pre>
 x1 (Raw value) (8 bytes)
 0x37cbf3210017a2d3
@@ -1775,52 +1786,43 @@ salt (11 bytes)
 
 IKM (16 bytes)
 0x0102030405060708090a0b0c0d0e0f10
-</pre><a href="#section-3.2-6.3.8" class="pilcrow">¶</a>
+</pre><a href="#section-3.2-10.3.8" class="pilcrow">¶</a>
 </div>
 </li>
         </ul>
-<p id="section-3.2-7">After that, the client computes the PoP evidence as follows.<a href="#section-3.2-7" class="pilcrow">¶</a></p>
+<p id="section-3.2-11">After that, the client computes the PoP evidence as follows.<a href="#section-3.2-11" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.2-8.1">
-            <p id="section-3.2-8.1.1">If the OSCORE group is not a pairwise-only group, the PoP evidence <span class="bcp14">MUST</span> be a signature. The client computes the signature by using the same private key and signature algorithm it uses for signing messages in the OSCORE group. The client's private key is the one associated with the client's authentication credential used in the OSCORE group and specified in the 'req_cnf' parameter above.<a href="#section-3.2-8.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.2-12.1">
+            <p id="section-3.2-12.1.1">If the OSCORE group is not a pairwise-only group, the PoP evidence <span class="bcp14">MUST</span> be a signature. The client computes the signature by using the same private key and signature algorithm it uses for signing messages in the OSCORE group. The client's private key is the one associated with the client's authentication credential used in the OSCORE group and specified in the 'req_cnf' parameter above.<a href="#section-3.2-12.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-3.2-8.2">
-            <p id="section-3.2-8.2.1">If the OSCORE group is a pairwise-only group, the PoP evidence <span class="bcp14">MUST</span> be a MAC computed as follows, by using the HKDF Algorithm HKDF SHA-256, which consists of composing the HKDF-Extract and HKDF-Expand steps <span>[<a href="#RFC5869" class="cite xref">RFC5869</a>]</span>.<a href="#section-3.2-8.2.1" class="pilcrow">¶</a></p>
-<p id="section-3.2-8.2.2">
-MAC = HKDF(salt, IKM, info, L)<a href="#section-3.2-8.2.2" class="pilcrow">¶</a></p>
-<p id="section-3.2-8.2.3">
-The input parameters of HKDF are as follows.<a href="#section-3.2-8.2.3" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.2-12.2">
+            <p id="section-3.2-12.2.1">If the OSCORE group is a pairwise-only group, the PoP evidence <span class="bcp14">MUST</span> be a MAC computed as follows, by using the HKDF Algorithm HKDF SHA-256, which consists of composing the HKDF-Extract and HKDF-Expand steps <span>[<a href="#RFC5869" class="cite xref">RFC5869</a>]</span>.<a href="#section-3.2-12.2.1" class="pilcrow">¶</a></p>
+<p id="section-3.2-12.2.2">
+MAC = HKDF(salt, IKM, info, L)<a href="#section-3.2-12.2.2" class="pilcrow">¶</a></p>
+<p id="section-3.2-12.2.3">
+The input parameters of HKDF are as follows.<a href="#section-3.2-12.2.3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.2-8.2.4.1">
-                <p id="section-3.2-8.2.4.1.1">salt takes as value the empty byte string.<a href="#section-3.2-8.2.4.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.2-12.2.4.1">
+                <p id="section-3.2-12.2.4.1.1">salt takes as value the empty byte string.<a href="#section-3.2-12.2.4.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-3.2-8.2.4.2">
-                <p id="section-3.2-8.2.4.2.1">IKM is computed as a cofactor Diffie-Hellman shared secret (see Section 5.7.1.2 of <span>[<a href="#NIST-800-56A" class="cite xref">NIST-800-56A</a>]</span>), using the ECDH algorithm that is used as Pairwise Key Agreement Algorithm in the OSCORE group. The client uses its own Diffie-Hellman private key and the Diffie-Hellman public key of the AS. For X25519 and X448, the procedure is described in <span><a href="https://rfc-editor.org/rfc/rfc7748#section-5" class="relref">Section 5</a> of [<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>.<a href="#section-3.2-8.2.4.2.1" class="pilcrow">¶</a></p>
-<p id="section-3.2-8.2.4.2.2">
-The client's private key is the one associated with the client's authentication credential used in the OSCORE group and specified in the 'req_cnf' parameter above. The client may obtain the Diffie-Hellman public key of the AS during its registration process at the AS.<a href="#section-3.2-8.2.4.2.2" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-3.2-12.2.4.2">
+                <p id="section-3.2-12.2.4.2.1">IKM is computed as a cofactor Diffie-Hellman shared secret (see Section 5.7.1.2 of <span>[<a href="#NIST-800-56A" class="cite xref">NIST-800-56A</a>]</span>), using the ECDH algorithm that is used as Pairwise Key Agreement Algorithm in the OSCORE group. The client uses its own Diffie-Hellman private key and the Diffie-Hellman public key of the AS. For X25519 and X448, the procedure is described in <span><a href="https://rfc-editor.org/rfc/rfc7748#section-5" class="relref">Section 5</a> of [<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>.<a href="#section-3.2-12.2.4.2.1" class="pilcrow">¶</a></p>
+<p id="section-3.2-12.2.4.2.2">
+The client's private key is the one associated with the client's authentication credential used in the OSCORE group and specified in the 'req_cnf' parameter above. The client may obtain the Diffie-Hellman public key of the AS during its registration process at the AS.<a href="#section-3.2-12.2.4.2.2" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-3.2-8.2.4.3">
-                <p id="section-3.2-8.2.4.3.1">info takes as value the PoP input.<a href="#section-3.2-8.2.4.3.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-3.2-12.2.4.3">
+                <p id="section-3.2-12.2.4.3.1">info takes as value the PoP input.<a href="#section-3.2-12.2.4.3.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-3.2-8.2.4.4">
-                <p id="section-3.2-8.2.4.4.1">L is equal to 8, i.e., the size of the MAC, in bytes.<a href="#section-3.2-8.2.4.4.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-3.2-12.2.4.4">
+                <p id="section-3.2-12.2.4.4.1">L is equal to 8, i.e., the size of the MAC, in bytes.<a href="#section-3.2-12.2.4.4.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
         </ul>
-<p id="section-3.2-9">Finally, the client <span class="bcp14">MUST</span> include one of the two following parameters in the payload of the POST request to the AS.<a href="#section-3.2-9" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-3.2-10.1">
-            <p id="section-3.2-10.1.1">'client_cred_verify', defined in <a href="#client_cred_verify" class="auto internal xref">Section 3.2.3</a> of this document, specifying the client's PoP evidence as a signature, which is computed as defined above. This parameter <span class="bcp14">MUST</span> be included if and only if the OSCORE group is not a pairwise-only group.<a href="#section-3.2-10.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-3.2-10.2">
-            <p id="section-3.2-10.2.1">'client_cred_verify_mac', defined in <a href="#client_cred_verify_mac" class="auto internal xref">Section 3.2.4</a> of this document, specifying the client's PoP evidence as a MAC, which is computed as defined above. This parameter <span class="bcp14">MUST</span> be included if and only if the OSCORE group is a pairwise-only group.<a href="#section-3.2-10.2.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-<p id="section-3.2-11">An example of such a request is shown in <a href="#fig-example-C-to-AS-symm" class="auto internal xref">Figure 2</a>.<a href="#section-3.2-11" class="pilcrow">¶</a></p>
+<p id="section-3.2-13">An example of the POST request is shown in <a href="#fig-example-C-to-AS-symm" class="auto internal xref">Figure 2</a>.<a href="#section-3.2-13" class="pilcrow">¶</a></p>
 <span id="name-example-c-to-as-post-token-"></span><div id="fig-example-C-to-AS-symm">
 <figure id="figure-2">
-          <div class="alignLeft art-text artwork" id="section-3.2-12.1">
+          <div class="alignLeft art-text artwork" id="section-3.2-14.1">
 <pre>
 Header: POST (Code=0.02)
 Uri-Host: "as.example.com"
@@ -1855,10 +1857,10 @@ Payload:
 <a href="#name-example-c-to-as-post-token-" class="selfRef">Example C-to-AS POST /token Request for an Access Token Bound to an Asymmetric Key.</a>
           </figcaption></figure>
 </div>
-<p id="section-3.2-13">In the example above, the client specifies that its authentication credential in the OSCORE group is the CCS shown in <a href="#fig-client-auth-cred" class="auto internal xref">Figure 3</a>.<a href="#section-3.2-13" class="pilcrow">¶</a></p>
+<p id="section-3.2-15">In the example above, the client specifies that its authentication credential in the OSCORE group is the CCS shown in <a href="#fig-client-auth-cred" class="auto internal xref">Figure 3</a>.<a href="#section-3.2-15" class="pilcrow">¶</a></p>
 <span id="name-example-of-client-authentic"></span><div id="fig-client-auth-cred">
 <figure id="figure-3">
-          <div class="alignLeft art-text artwork" id="section-3.2-14.1">
+          <div class="alignLeft art-text artwork" id="section-3.2-16.1">
 <pre>
 {
   / sub / 2 : "42-50-31-FF-EF-37-32-39",
@@ -1879,9 +1881,9 @@ Payload:
 <a href="#name-example-of-client-authentic" class="selfRef">Example of client Authentication Credential as CWT Claims Set (CCS).</a>
           </figcaption></figure>
 </div>
-<p id="section-3.2-15">[<a href="#section-3.2-15" class="pilcrow">¶</a></p>
-<p id="section-3.2-16">TODO: Specify how C requests a new access token that dynamically updates its access rights. (See <a href="#sec-as-update-access-rights" class="auto internal xref">Section 3.3.1</a> for pre-requirements and a high-level direction)<a href="#section-3.2-16" class="pilcrow">¶</a></p>
-<p id="section-3.2-17">]<a href="#section-3.2-17" class="pilcrow">¶</a></p>
+<p id="section-3.2-17">[<a href="#section-3.2-17" class="pilcrow">¶</a></p>
+<p id="section-3.2-18">TODO: Specify how C requests a new access token that dynamically updates its access rights. (See <a href="#sec-as-update-access-rights" class="auto internal xref">Section 3.3.1</a> for pre-requirements and a high-level direction)<a href="#section-3.2-18" class="pilcrow">¶</a></p>
+<p id="section-3.2-19">]<a href="#section-3.2-19" class="pilcrow">¶</a></p>
 <div id="context_id">
 <section id="section-3.2.1">
           <h4 id="name-context_id-parameter">
@@ -1921,64 +1923,84 @@ Payload:
         <h3 id="name-as-to-c-response">
 <a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-as-to-c-response" class="section-name selfRef">AS-to-C: Response</a>
         </h3>
-<p id="section-3.3-1">After having verified the POST request to the /token endpoint and that the client is authorized to obtain an access token corresponding to its access token request, the AS <span class="bcp14">MUST</span> verify the proof-of-possession (PoP) evidence. In particular, the AS proceeds as follows.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3-1">After having verified the POST request to the /token endpoint and that the client is authorized to obtain an access token corresponding to its access token request, the AS proceeds as defined below.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3-2">The following denotes an authentication credential as "confirmed" or "non confirmed", in case the AS has or has not achieved proof-of-possession of the private key associated with the public key of that authentication credential, respectively.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
+<p id="section-3.3-3">If the access token request specifies neither the 'client_cred_verify' parameter nor the 'client_cred_verify_mac' parameter, then the AS performs the following steps.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.3-2.1">
-            <p id="section-3.3-2.1.1">As PoP input, the AS uses the same value used by the client in <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>.<a href="#section-3.3-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.3-4.1">
+            <p id="section-3.3-4.1.1">The AS considers the authentication credential AUTH_CRED_C specified in the 'req_cnf' parameter of the access token request.<a href="#section-3.3-4.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-3.3-2.2">
-            <p id="section-3.3-2.2.1">As public key of the client, the AS uses the one included in the authentication credential specified in the 'req_cnf' parameter of the access token request.<a href="#section-3.3-2.2.1" class="pilcrow">¶</a></p>
-<p id="section-3.3-2.2.2">
-This requires the AS to support the format of the authentication credential specified in the 'req_cnf' parameter, i.e., the format of authentication credential that is used in the OSCORE group where the client uses that authentication credential. Practically, this is not an issue, since an RS supporting this profile is expected to be registered only at an AS that supports the formats of authentication credential that the RS supports.<a href="#section-3.3-2.2.2" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.3-4.2">
+            <p id="section-3.3-4.2.1">If the AS currently knows AUTH_CRED_C as "confirmed", then the AS considers proof-of-possession for the client's private key to be achieved, and it takes no further actions in this respect.<a href="#section-3.3-4.2.1" class="pilcrow">¶</a></p>
+<p id="section-3.3-4.2.2">
+The AS might already have achieved proof-of-possession when establishing a secure communication association with the client, or when processing a previous access token request conveying the same AUTH_CRED_C.<a href="#section-3.3-4.2.2" class="pilcrow">¶</a></p>
+<p id="section-3.3-4.2.3">
+Alternatively, a further entity in a trust relationship with the AS might have already achieved proof-of-possession of the private key and informed the AS about that. Building on that trust relationship, the AS considered AUTH_CRED_C to be "confirmed" from then on.<a href="#section-3.3-4.2.3" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-3.3-2.3">
-            <p id="section-3.3-2.3.1">If the access token request includes the 'client_cred_verify' parameter, this specifies the PoP evidence as a signature. Then, the AS verifies the signature by using the public key of the client.<a href="#section-3.3-2.3.1" class="pilcrow">¶</a></p>
-<p id="section-3.3-2.3.2">
-This requires the AS to support the signature algorithm and curve (when applicable) that are used in the OSCORE group where the client uses the authentication credential specified in the 'req_cnf' parameter of the access token request. Practically, this is not an issue, since an RS supporting this profile is expected to be registered only at an AS that supports the signature algorithms and curves (when applicable) that the RS supports.<a href="#section-3.3-2.3.2" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-3.3-2.4">
-            <p id="section-3.3-2.4.1">If the access token request includes the 'client_cred_verify_mac' parameter, this specifies the PoP evidence as a Message Authentication Code (MAC).<a href="#section-3.3-2.4.1" class="pilcrow">¶</a></p>
-<p id="section-3.3-2.4.2">
-Then, the AS recomputes the MAC through the same process taken by the client when preparing the value of the 'client_cred_verify_mac' parameter for the access token (see <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>), with the difference that the AS uses its own Diffie-Hellman private key and the Diffie-Hellman public key of the client. The verification succeeds if and only if the recomputed MAC is equal to the MAC conveyed as PoP evidence in the access token request.<a href="#section-3.3-2.4.2" class="pilcrow">¶</a></p>
-<p id="section-3.3-2.4.3">
-This requires the AS to support the ECDH algorithm that is used as Pairwise Key Agreement Algorithm in the OSCORE group where the client uses the authentication credential specified in the 'req_cnf' parameter of the access token request. Practically, this is not an issue, since an RS supporting this profile is expected to be registered only at an AS that supports the ECDH algorithms that the RS supports.<a href="#section-3.3-2.4.3" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.3-4.3">
+            <p id="section-3.3-4.3.1">If the AS does not currently know AUTH_CRED_C as "confirmed", then the AS <span class="bcp14">MUST</span> consider the access token request to be invalid.<a href="#section-3.3-4.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-3.3-3">If both the 'client_cred_verify' and 'client_cred_verify_mac' parameters are present, or if the verification of the PoP evidence fails, the AS considers the client request invalid.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
-<p id="section-3.3-4">If the client request was invalid or not authorized, the AS returns an error response as described in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.8.3" class="relref">Section 5.8.3</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
-<p id="section-3.3-5">If all verifications are successful, the AS responds as defined in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.8.2" class="relref">Section 5.8.2</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>. In particular:<a href="#section-3.3-5" class="pilcrow">¶</a></p>
+<p id="section-3.3-5">If both the 'client_cred_verify' and 'client_cred_verify_mac' parameters are present, then the AS <span class="bcp14">MUST</span> consider the access token request to be invalid.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
+<p id="section-3.3-6">If the access token request specifies either the 'client_cred_verify' parameter or the 'client_cred_verify_mac' parameter, then the AS <span class="bcp14">MUST</span> verify the proof-of-possession (PoP) evidence specified therein. In particular, the AS proceeds as follows.<a href="#section-3.3-6" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.3-6.1">
-            <p id="section-3.3-6.1.1">The AS can signal that the use of Group OSCORE is <span class="bcp14">REQUIRED</span> for a specific access token by including the 'ace_profile' parameter with the value "coap_group_oscore" in the access token response. The client <span class="bcp14">MUST</span> use Group OSCORE towards all the resource servers for which this access token is valid. Usually, it is assumed that constrained devices will be pre-configured with the necessary profile, so that this kind of profile signaling can be omitted.<a href="#section-3.3-6.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.3-7.1">
+            <p id="section-3.3-7.1.1">As PoP input, the AS uses the same value that the client used in <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>.<a href="#section-3.3-7.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-3.3-6.2">
-            <p id="section-3.3-6.2.1">The AS <span class="bcp14">MUST NOT</span> include the 'rs_cnf' parameter defined in <span>[<a href="#RFC9201" class="cite xref">RFC9201</a>]</span>. In general, the AS may not be aware of the authentication credentials (and public keys included thereof) that the RSs use in the OSCORE group. Also, the client is able to retrieve the authentication credentials of other group members from the responsible Group Manager, both upon joining the group or later on as a group member, as defined in <span>[<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>.<a href="#section-3.3-6.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.3-7.2">
+            <p id="section-3.3-7.2.1">As public key of the client, the AS uses the one included in the authentication credential AUTH_CRED_C specified in the 'req_cnf' parameter of the access token request.<a href="#section-3.3-7.2.1" class="pilcrow">¶</a></p>
+<p id="section-3.3-7.2.2">
+This requires the AS to support the format of AUTH_CRED_C, i.e., the format of authentication credential that is used in the OSCORE group where the client uses that authentication credential. Practically, this is not an issue, since an RS supporting this profile is expected to be registered only at an AS that supports the formats of authentication credential that the RS supports.<a href="#section-3.3-7.2.2" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-3.3-6.3">
-            <p id="section-3.3-6.3.1">According to this document, the AS includes the 'access_token' parameter specifying the issued access token in the access token response. An alternative workflow where the access token is uploaded by the AS directly to the RS is described in <span>[<a href="#I-D.ietf-ace-workflow-and-params" class="cite xref">I-D.ietf-ace-workflow-and-params</a>]</span>.<a href="#section-3.3-6.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.3-7.3">
+            <p id="section-3.3-7.3.1">If the access token request includes the 'client_cred_verify' parameter, this specifies the PoP evidence as a signature. Then, the AS verifies the signature by using the public key of the client.<a href="#section-3.3-7.3.1" class="pilcrow">¶</a></p>
+<p id="section-3.3-7.3.2">
+This requires the AS to support the signature algorithm and curve (when applicable) that are used in the OSCORE group where the client uses the authentication credential AUTH_CRED_C specified in the 'req_cnf' parameter of the access token request. Practically, this is not an issue, since an RS supporting this profile is expected to be registered only at an AS that supports the signature algorithms and curves (when applicable) that the RS supports.<a href="#section-3.3-7.3.2" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.3-7.4">
+            <p id="section-3.3-7.4.1">If the access token request includes the 'client_cred_verify_mac' parameter, this specifies the PoP evidence as a Message Authentication Code (MAC).<a href="#section-3.3-7.4.1" class="pilcrow">¶</a></p>
+<p id="section-3.3-7.4.2">
+Then, the AS recomputes the MAC through the same process taken by the client when preparing the value of the 'client_cred_verify_mac' parameter for the access token request (see <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>), with the difference that the AS uses its own Diffie-Hellman private key and the Diffie-Hellman public key of the client. The verification succeeds if and only if the recomputed MAC is equal to the MAC conveyed as PoP evidence in the access token request.<a href="#section-3.3-7.4.2" class="pilcrow">¶</a></p>
+<p id="section-3.3-7.4.3">
+This requires the AS to support the ECDH algorithm that is used as Pairwise Key Agreement Algorithm in the OSCORE group where the client uses the authentication credential AUTH_CRED_C specified in the 'req_cnf' parameter of the access token request. Practically, this is not an issue, since an RS supporting this profile is expected to be registered only at an AS that supports the ECDH algorithms that the RS supports.<a href="#section-3.3-7.4.3" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-3.3-7">The AS <span class="bcp14">MUST</span> include the following information as metadata of the issued access token. The use of CBOR web tokens (CWT) as specified in <span>[<a href="#RFC8392" class="cite xref">RFC8392</a>]</span> is <span class="bcp14">RECOMMENDED</span>.<a href="#section-3.3-7" class="pilcrow">¶</a></p>
+<p id="section-3.3-8">If the verification of the PoP evidence succeeds, then the AS considers AUTH_CRED_C to be "confirmed" from then on.<a href="#section-3.3-8" class="pilcrow">¶</a></p>
+<p id="section-3.3-9">Instead, if the verification of the PoP evidence fails, then the AS <span class="bcp14">MUST</span> consider the access token request to be invalid. Also, the AS <span class="bcp14">MUST</span> consider AUTH_CRED_C to be "non confirmed" from then on, until the AS achieves again proof-of-possession of the client's private key.<a href="#section-3.3-9" class="pilcrow">¶</a></p>
+<p id="section-3.3-10">If the access token request was invalid or not authorized, the AS <span class="bcp14">MUST</span> return an error response as described in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.8.3" class="relref">Section 5.8.3</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>.<a href="#section-3.3-10" class="pilcrow">¶</a></p>
+<p id="section-3.3-11">Instead, if all verifications are successful, the AS responds as defined in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.8.2" class="relref">Section 5.8.2</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>. In particular:<a href="#section-3.3-11" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.3-8.1">
-            <p id="section-3.3-8.1.1">The profile "coap_group_oscore". If the access token is a CWT, this is specified in the 'ace_profile' claim of the access token, as per <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10" class="relref">Section 5.10</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>.<a href="#section-3.3-8.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.3-12.1">
+            <p id="section-3.3-12.1.1">The AS can signal that the use of Group OSCORE is <span class="bcp14">REQUIRED</span> for a specific access token by including the 'ace_profile' parameter with the value "coap_group_oscore" in the access token response. The client <span class="bcp14">MUST</span> use Group OSCORE towards all the resource servers for which this access token is valid. Usually, it is assumed that constrained devices will be pre-configured with the necessary profile, so that this kind of profile signaling can be omitted.<a href="#section-3.3-12.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-3.3-8.2">
-            <p id="section-3.3-8.2.1">The salt input specified in the 'salt_input' parameter of the access token request. If the access token is a CWT, the content of the 'salt_input' parameter <span class="bcp14">MUST</span> be specified in the 'salt_input' claim of the access token, defined in <a href="#salt_input_claim" class="auto internal xref">Section 3.3.3</a> of this document.<a href="#section-3.3-8.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.3-12.2">
+            <p id="section-3.3-12.2.1">The AS <span class="bcp14">MUST NOT</span> include the 'rs_cnf' parameter defined in <span>[<a href="#RFC9201" class="cite xref">RFC9201</a>]</span>. In general, the AS may not be aware of the authentication credentials (and public keys included thereof) that the RSs use in the OSCORE group. Also, the client is able to retrieve the authentication credentials of other group members from the responsible Group Manager, both upon joining the group or later on as a group member, as defined in <span>[<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>.<a href="#section-3.3-12.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-3.3-8.3">
-            <p id="section-3.3-8.3.1">The Context ID input specified in the 'context_id' parameter of the access token request. If the access token is a CWT, the content of the 'context_id' parameter <span class="bcp14">MUST</span> be specified in the 'context_id' claim of the access token, defined in <a href="#context_id_claim" class="auto internal xref">Section 3.3.2</a> of this document.<a href="#section-3.3-8.3.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-3.3-8.4">
-            <p id="section-3.3-8.4.1">The authentication credential that the client uses in the OSCORE group and specified in the 'req_cnf' parameter of the access token request.<a href="#section-3.3-8.4.1" class="pilcrow">¶</a></p>
-<p id="section-3.3-8.4.2">
-If the access token is a CWT, the client's authentication credential <span class="bcp14">MUST</span> be specified in the 'cnf' claim, which follows the syntax from <span><a href="https://rfc-editor.org/rfc/rfc8747#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8747" class="cite xref">RFC8747</a>]</span>. In particular, the 'cnf' claim includes the client's authentication credential as specified in the 'req_cnf' parameter of the access token request (see <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>).<a href="#section-3.3-8.4.2" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.3-12.3">
+            <p id="section-3.3-12.3.1">According to this document, the AS includes the 'access_token' parameter specifying the issued access token in the access token response. An alternative workflow where the access token is uploaded by the AS directly to the RS is described in <span>[<a href="#I-D.ietf-ace-workflow-and-params" class="cite xref">I-D.ietf-ace-workflow-and-params</a>]</span>.<a href="#section-3.3-12.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-3.3-9"><a href="#fig-example-AS-to-C" class="auto internal xref">Figure 4</a> shows an example of such an AS response. The access token has been truncated for readability.<a href="#section-3.3-9" class="pilcrow">¶</a></p>
+<p id="section-3.3-13">The AS <span class="bcp14">MUST</span> include the following information as metadata of the issued access token. The use of CBOR web tokens (CWT) as specified in <span>[<a href="#RFC8392" class="cite xref">RFC8392</a>]</span> is <span class="bcp14">RECOMMENDED</span>.<a href="#section-3.3-13" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.3-14.1">
+            <p id="section-3.3-14.1.1">The profile "coap_group_oscore". If the access token is a CWT, this is specified in the 'ace_profile' claim of the access token, as per <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10" class="relref">Section 5.10</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>.<a href="#section-3.3-14.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.3-14.2">
+            <p id="section-3.3-14.2.1">The salt input specified in the 'salt_input' parameter of the access token request. If the access token is a CWT, the content of the 'salt_input' parameter <span class="bcp14">MUST</span> be specified in the 'salt_input' claim of the access token, defined in <a href="#salt_input_claim" class="auto internal xref">Section 3.3.3</a> of this document.<a href="#section-3.3-14.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.3-14.3">
+            <p id="section-3.3-14.3.1">The Context ID input specified in the 'context_id' parameter of the access token request. If the access token is a CWT, the content of the 'context_id' parameter <span class="bcp14">MUST</span> be specified in the 'context_id' claim of the access token, defined in <a href="#context_id_claim" class="auto internal xref">Section 3.3.2</a> of this document.<a href="#section-3.3-14.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.3-14.4">
+            <p id="section-3.3-14.4.1">The authentication credential that the client uses in the OSCORE group, as specified in the 'req_cnf' parameter of the access token request (see <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>).<a href="#section-3.3-14.4.1" class="pilcrow">¶</a></p>
+<p id="section-3.3-14.4.2">
+If the access token is a CWT, the client's authentication credential <span class="bcp14">MUST</span> be specified in the 'cnf' claim, which follows the syntax from <span><a href="https://rfc-editor.org/rfc/rfc8747#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8747" class="cite xref">RFC8747</a>]</span>.<a href="#section-3.3-14.4.2" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-3.3-15"><a href="#fig-example-AS-to-C" class="auto internal xref">Figure 4</a> shows an example of such an AS response. The access token has been truncated for readability.<a href="#section-3.3-15" class="pilcrow">¶</a></p>
 <span id="name-example-as-to-c-access-toke"></span><div id="fig-example-AS-to-C">
 <figure id="figure-4">
-          <div class="alignLeft art-text artwork" id="section-3.3-10.1">
+          <div class="alignLeft art-text artwork" id="section-3.3-16.1">
 <pre>
 Header: Created (Code=2.01)
 Content-Format: 19 (application/ace+cbor)
@@ -1994,10 +2016,10 @@ Payload:
 <a href="#name-example-as-to-c-access-toke" class="selfRef">Example AS-to-C Access Token Response with the Group OSCORE Profile.</a>
           </figcaption></figure>
 </div>
-<p id="section-3.3-11"><a href="#fig-example-AS-to-C-CWT" class="auto internal xref">Figure 5</a> shows an example CWT Claims Set, containing the client's public key in the group (as PoP key), as specified by the inner confirmation value in the 'cnf' claim.<a href="#section-3.3-11" class="pilcrow">¶</a></p>
+<p id="section-3.3-17"><a href="#fig-example-AS-to-C-CWT" class="auto internal xref">Figure 5</a> shows an example CWT Claims Set, containing the client's public key in the group (as PoP key), as specified by the inner confirmation value in the 'cnf' claim.<a href="#section-3.3-17" class="pilcrow">¶</a></p>
 <span id="name-example-cwt-claims-set"></span><div id="fig-example-AS-to-C-CWT">
 <figure id="figure-5">
-          <div class="alignLeft art-text artwork" id="section-3.3-12.1">
+          <div class="alignLeft art-text artwork" id="section-3.3-18.1">
 <pre>
 {
   / aud /           3 : "tempSensorInLivingRoom",
@@ -2028,11 +2050,11 @@ Payload:
 <a href="#name-example-cwt-claims-set" class="selfRef">Example CWT Claims Set.</a>
           </figcaption></figure>
 </div>
-<p id="section-3.3-13">The same CWT Claims Set as in <a href="#fig-example-AS-to-C-CWT" class="auto internal xref">Figure 5</a> and encoded in CBOR is shown in <a href="#fig-example-AS-to-C-CWT-encoding" class="auto internal xref">Figure 6</a>, using the value abbreviations defined in <span>[<a href="#RFC9200" class="cite xref">RFC9200</a>]</span> and <span>[<a href="#RFC8747" class="cite xref">RFC8747</a>]</span>. The bytes in hexadecimal are reported in the first column, while their corresponding CBOR meaning is reported after the "#" sign on the second column, for easiness of readability.<a href="#section-3.3-13" class="pilcrow">¶</a></p>
-<p id="section-3.3-14">Editor's note: it should be checked (and in case fixed) that the values used below (which are not yet registered) are the final values registered by IANA.<a href="#section-3.3-14" class="pilcrow">¶</a></p>
+<p id="section-3.3-19">The same CWT Claims Set as in <a href="#fig-example-AS-to-C-CWT" class="auto internal xref">Figure 5</a> and encoded in CBOR is shown in <a href="#fig-example-AS-to-C-CWT-encoding" class="auto internal xref">Figure 6</a>, using the value abbreviations defined in <span>[<a href="#RFC9200" class="cite xref">RFC9200</a>]</span> and <span>[<a href="#RFC8747" class="cite xref">RFC8747</a>]</span>. The bytes in hexadecimal are reported in the first column, while their corresponding CBOR meaning is reported after the "#" sign on the second column, for easiness of readability.<a href="#section-3.3-19" class="pilcrow">¶</a></p>
+<p id="section-3.3-20">Editor's note: it should be checked (and in case fixed) that the values used below (which are not yet registered) are the final values registered by IANA.<a href="#section-3.3-20" class="pilcrow">¶</a></p>
 <span id="name-example-cwt-claims-set-usin"></span><div id="fig-example-AS-to-C-CWT-encoding">
 <figure id="figure-6">
-          <div class="alignLeft art-text artwork" id="section-3.3-15.1">
+          <div class="alignLeft art-text artwork" id="section-3.3-21.1">
 <pre>
 A7                                      # map(7)
    03                                   # unsigned(3)
@@ -3129,19 +3151,22 @@ kccs = 11
             <p id="appendix-C.1-1.1.1">Required that 'cnf' in the access token includes exactly what C uploaded to the Group Manager.<a href="#appendix-C.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-C.1-1.2">
-            <p id="appendix-C.1-1.2.1">Better example value for audience, when indicating the profile to use.<a href="#appendix-C.1-1.2.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.2.1">Made the PoP evidence in the access token request optional.<a href="#appendix-C.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-C.1-1.3">
-            <p id="appendix-C.1-1.3.1">Placeholder: possible use of the 'ace_profile' parameter with extended semantics, for C to select the right profile.<a href="#appendix-C.1-1.3.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.3.1">Better example value for audience, when indicating the profile to use.<a href="#appendix-C.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-C.1-1.4">
-            <p id="appendix-C.1-1.4.1">Suggested value ranges for codepoints to register.<a href="#appendix-C.1-1.4.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.4.1">Placeholder: possible use of the 'ace_profile' parameter with extended semantics, for C to select the right profile.<a href="#appendix-C.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-C.1-1.5">
-            <p id="appendix-C.1-1.5.1">Aligned CBOR abbreviations to those used in other documents.<a href="#appendix-C.1-1.5.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.5.1">Suggested value ranges for codepoints to register.<a href="#appendix-C.1-1.5.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-C.1-1.6">
-            <p id="appendix-C.1-1.6.1">Editorial fixes and improvements.<a href="#appendix-C.1-1.6.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.6.1">Aligned CBOR abbreviations to those used in other documents.<a href="#appendix-C.1-1.6.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.1-1.7">
+            <p id="appendix-C.1-1.7.1">Editorial fixes and improvements.<a href="#appendix-C.1-1.7.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
