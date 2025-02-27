@@ -706,11 +706,12 @@ Table of Contents
    the PoP evidence and to specify it in the 'client_cred_verify' or
    'client_cred_verify_mac' parameter of the POST request.
 
-   Instead, if the client has no knowledge that the AS has previously
-   achieved proof-of-possession of the private key in question, then the
-   client MUST compute the PoP evidence as defined below and MUST
-   specify it in the 'client_cred_verify' or 'client_cred_verify_mac'
-   parameter of the POST request.
+   If the client believes that the AS has not previously achieved proof-
+   of-possession of the private key in question or that such proof was
+   achieved but does not hold anymore, then the client MUST compute the
+   PoP evidence as defined below and MUST specify it in the
+   'client_cred_verify' or 'client_cred_verify_mac' parameter of the
+   POST request.
 
    In order to compute the PoP evidence, the client MUST use as PoP
    input the byte representation of an information that uniquely
@@ -934,10 +935,11 @@ Table of Contents
    that the client is authorized to obtain an access token corresponding
    to its access token request, the AS proceeds as defined below.
 
-   The following denotes an authentication credential as "confirmed" or
-   "non confirmed", in case the AS has or has not achieved proof-of-
-   possession of the private key associated with the public key of that
-   authentication credential, respectively.
+   In the following, an authentication credential is denoted as
+   "confirmed" if and only if the AS has achieved proof-of-possession of
+   the private key associated with the public key of that authentication
+   credential and such proof still holds.  Otherwise, an authentication
+   credential is denoted as "non confirmed".
 
    If the access token request specifies neither the
    'client_cred_verify' parameter nor the 'client_cred_verify_mac'
@@ -1031,8 +1033,8 @@ Table of Contents
    the AS achieves again proof-of-possession of the client's private
    key.
 
-   If the access token request was invalid or not authorized, the AS
-   MUST return an error response as described in Section 5.8.3 of
+   If the access token request was invalid or not authorized, then the
+   AS MUST return an error response as described in Section 5.8.3 of
    [RFC9200].
 
    Instead, if all verifications are successful, the AS responds as
