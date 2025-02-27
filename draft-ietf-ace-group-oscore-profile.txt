@@ -1339,9 +1339,8 @@ Table of Contents
       credential AUTH_CRED_C retrieved from the Group Manager is equal
       to AUTH_CRED_C* retrieved from the access token.  In case
       AUTH_CRED_C* is provided within a chain or a bag, but AUTH_CRED_C
-      is not provided within the same chain or bag, then the Group
-      Manager MUST NOT determine AUTH_CRED_C* and AUTH_CRED_C to be
-      equal.
+      is not provided within the same chain or bag, then the RS MUST NOT
+      determine AUTH_CRED_C* and AUTH_CRED_C to be equal.
 
       If any of the following conditions hold, the RS MUST consider the
       access token invalid, and MUST reply to the client with an error
