@@ -361,7 +361,7 @@ The PoP evidence can be used by the AS to achieve proof-of-possession of the cli
 
 When preparing the POST request, the client might know that the AS has previously achieved proof-of-possession of the private key in question. In such a case, it is OPTIONAL for the client to compute the PoP evidence and to specify it in the 'client_cred_verify' or 'client_cred_verify_mac' parameter of the POST request.
 
-Instead, if the client has no knowledge that the AS has previously achieved proof-of-possession of the private key in question, then the client MUST compute the PoP evidence as defined below and MUST specify it in the 'client_cred_verify' or 'client_cred_verify_mac' parameter of the POST request.
+If the client believes that the AS has not previously achieved proof-of-possession of the private key in question or that such proof was achieved but does not hold anymore, then the client MUST compute the PoP evidence as defined below and MUST specify it in the 'client_cred_verify' or 'client_cred_verify_mac' parameter of the POST request.
 
 In order to compute the PoP evidence, the client MUST use as PoP input the byte representation of an information that uniquely represents the secure communication association between the client and the AS. It is RECOMMENDED that the client uses the following as PoP input.
 
@@ -528,7 +528,7 @@ The 'client_cred_verify_mac' parameter is an OPTIONAL parameter of the access to
 
 After having verified the POST request to the /token endpoint and that the client is authorized to obtain an access token corresponding to its access token request, the AS proceeds as defined below.
 
-The following denotes an authentication credential as "confirmed" or "non confirmed", in case the AS has or has not achieved proof-of-possession of the private key associated with the public key of that authentication credential, respectively.
+In the following, an authentication credential is denoted as "confirmed" if and only if the AS has achieved proof-of-possession of the private key associated with the public key of that authentication credential and such proof still holds. Otherwise, an authentication credential is denoted as "non confirmed".
 
 If the access token request specifies neither the 'client_cred_verify' parameter nor the 'client_cred_verify_mac' parameter, then the AS performs the following steps.
 
@@ -566,7 +566,7 @@ If the verification of the PoP evidence succeeds, then the AS considers AUTH_CRE
 
 Instead, if the verification of the PoP evidence fails, then the AS MUST consider the access token request to be invalid. Also, the AS MUST consider AUTH_CRED_C to be "non confirmed" from then on, until the AS achieves again proof-of-possession of the client's private key.
 
-If the access token request was invalid or not authorized, the AS MUST return an error response as described in {{Section 5.8.3 of RFC9200}}.
+If the access token request was invalid or not authorized, then the AS MUST return an error response as described in {{Section 5.8.3 of RFC9200}}.
 
 Instead, if all verifications are successful, the AS responds as defined in {{Section 5.8.2 of RFC9200}}. In particular:
 
