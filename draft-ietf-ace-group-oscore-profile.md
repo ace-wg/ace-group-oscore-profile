@@ -753,7 +753,7 @@ The RS MUST verify the validity of the access token as defined in {{Section 5.10
 
   Otherwise, for each of the N >= 1 groups G in the set GROUPS, the RS MUST request to the corresponding Group Manager the authentication credential that the client uses in G, specifying SID\* in the request sent to the Group Manager (see {{Section 9.3 of I-D.ietf-ace-key-groupcomm-oscore}}).
 
-  When receiving a successful response from each of the Group Managers, the RS MUST check whether the client's authentication credential AUTH_CRED_C retrieved from the Group Manager is equal to AUTH_CRED_C\* retrieved from the access token. In case AUTH_CRED_C\* is provided within a chain or a bag, but AUTH_CRED_C is not provided within the same chain or bag, then the Group Manager MUST NOT determine AUTH_CRED_C\* and AUTH_CRED_C to be equal.
+  When receiving a successful response from each of the Group Managers, the RS MUST check whether the client's authentication credential AUTH_CRED_C retrieved from the Group Manager is equal to AUTH_CRED_C\* retrieved from the access token. In case AUTH_CRED_C\* is provided within a chain or a bag, but AUTH_CRED_C is not provided within the same chain or bag, then the RS MUST NOT determine AUTH_CRED_C\* and AUTH_CRED_C to be equal.
 
   If any of the following conditions hold, the RS MUST consider the access token invalid, and MUST reply to the client with an error response code equivalent to the CoAP code 5.03 (Service Unavailable).
 
