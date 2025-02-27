@@ -5,9 +5,9 @@
 ACE Working Group                                              M. Tiloca
 Internet-Draft                                                R. Höglund
 Intended status: Standards Track                                 RISE AB
-Expires: 30 August 2025                                     F. Palombini
+Expires: 31 August 2025                                     F. Palombini
                                                              Ericsson AB
-                                                        26 February 2025
+                                                        27 February 2025
 
 
  The Group Object Security for Constrained RESTful Environments (Group
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 August 2025.
+   This Internet-Draft will expire on 31 August 2025.
 
 Copyright Notice
 
@@ -641,10 +641,10 @@ Table of Contents
 
    *  'req_cnf', defined in Section 3.1 of [RFC9201].  This parameter
       follows the syntax from Section 3.1 of [RFC8747], and its inner
-      confirmation value specifies the authentication credential that
-      the client uses in the OSCORE group.  The public key included in
-      the authentication credential will be used as the PoP key bound to
-      the access token.
+      confirmation value specifies the authentication credential
+      AUTH_CRED_C that the client uses in the OSCORE group.  The public
+      key included in the authentication credential will be used as the
+      PoP key bound to the access token.
 
       At the time of writing this specification, acceptable formats of
       authentication credentials in Group OSCORE are CBOR Web Tokens
@@ -659,6 +659,16 @@ Table of Contents
       the public key as well as the comprehensive set of information
       related to the public key algorithm, including, e.g., the used
       elliptic curve (when applicable).
+
+      Note that C might have previously uploaded AUTH_CRED_C to the
+      Group Manager as provided within a chain or a bag (e.g., as the
+      end-entity certificate in a chain of certificates), by specifying
+      it in the 'client_cred' parameter of a Join Request or of an
+      Authentication Credential Update Request sent to the Group Manager
+      (see Sections 6.1 and 9.4 of [I-D.ietf-ace-key-groupcomm-oscore]).
+      In such a case, the inner confirmation value of the 'req_cnf'
+      parameter MUST specify AUTH_CRED_C as provided within the same
+      chain or bag.
 
       [ As to CWTs and CCSs, the CWT Confirmation Methods 'kcwt' and
       'kccs' are under pending registration requested by draft-ietf-ace-
@@ -1025,8 +1035,9 @@ Table of Contents
       If the access token is a CWT, the client's authentication
       credential MUST be specified in the 'cnf' claim, which follows the
       syntax from Section 3.1 of [RFC8747].  In particular, the 'cnf'
-      claim includes the same authentication credential specified in the
-      'req_cnf' parameter of the access token request (see Section 3.2).
+      claim includes the client's authentication credential as specified
+      in the 'req_cnf' parameter of the access token request (see
+      Section 3.2).
 
    Figure 4 shows an example of such an AS response.  The access token
    has been truncated for readability.
@@ -1326,7 +1337,11 @@ Table of Contents
       When receiving a successful response from each of the Group
       Managers, the RS MUST check whether the client's authentication
       credential AUTH_CRED_C retrieved from the Group Manager is equal
-      to AUTH_CRED_C* retrieved from the access token.
+      to AUTH_CRED_C* retrieved from the access token.  In case
+      AUTH_CRED_C* is provided within a chain or a bag, but AUTH_CRED_C
+      is not provided within the same chain or bag, then the Group
+      Manager MUST NOT determine AUTH_CRED_C* and AUTH_CRED_C to be
+      equal.
 
       If any of the following conditions hold, the RS MUST consider the
       access token invalid, and MUST reply to the client with an error
@@ -2369,6 +2384,9 @@ Appendix C.  Document Updates
    This section is to be removed before publishing as an RFC.
 
 C.1.  Version -03 to -04
+
+   *  Required that 'cnf' in the access token includes exactly what C
+      uploaded to the Group Manager.
 
    *  Better example value for audience, when indicating the profile to
       use.
