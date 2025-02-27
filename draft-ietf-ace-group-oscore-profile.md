@@ -351,7 +351,7 @@ The POST request is formatted as the analogous Client-to-AS request in the OSCOR
 
    \[ As to C509 certificates, the CWT Confirmation Methods 'c5b'and 'c5c' are under pending registration requested by draft-ietf-ace-edhoc-oscore-profile. \]
 
-Furthermore, the paylod of the request MAY include exactly one of the two following parameters, specifying a proof-of-possession (PoP) evidence computed by the client.
+Furthermore, the payload of the request MAY include exactly one of the two following parameters, specifying a proof-of-possession (PoP) evidence computed by the client.
 
 * 'client_cred_verify', defined in {{client_cred_verify}} of this document, specifying the client's PoP evidence as a signature, which is computed as defined later in this section. This parameter MUST NOT be included if the OSCORE group is a pairwise-only group.
 
