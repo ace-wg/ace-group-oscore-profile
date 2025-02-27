@@ -351,9 +351,19 @@ The POST request is formatted as the analogous Client-to-AS request in the OSCOR
 
    \[ As to C509 certificates, the CWT Confirmation Methods 'c5b'and 'c5c' are under pending registration requested by draft-ietf-ace-edhoc-oscore-profile. \]
 
-In addition, the client computes its proof-of-possession (PoP) evidence, in order to prove to the AS the possession of its own private key used in the OSCORE group. This allows the AS to verify that the client indeed owns the private key associated with the public key of the authentication credential that the client allegedly uses in the OSCORE group.
+Furthermore, the paylod of the request MAY include exactly one of the two following parameters, specifying a proof-of-possession (PoP) evidence computed by the client.
 
-To this end, the client MUST use as PoP input the byte representation of an information that uniquely represents the secure communication association between the client and the AS. It is RECOMMENDED that the client uses the following as PoP input.
+* 'client_cred_verify', defined in {{client_cred_verify}} of this document, specifying the client's PoP evidence as a signature, which is computed as defined later in this section. This parameter MUST NOT be included if the OSCORE group is a pairwise-only group.
+
+* 'client_cred_verify_mac', defined in {{client_cred_verify_mac}} of this document, specifying the client's PoP evidence as a MAC, which is computed as defined later in this section. This parameter MUST NOT be included if the OSCORE group is not a pairwise-only group.
+
+The PoP evidence can be used by the AS to achieve proof-of-possession of the client's private key, i.e., to verify that the client indeed owns the private key associated with the public key of AUTH_CRED_C.
+
+When preparing the POST request, the client might know that the AS has previously achieved proof-of-possession of the private key in question. In such a case, it is OPTIONAL for the client to compute the PoP evidence and to specify it in the 'client_cred_verify' or 'client_cred_verify_mac' parameter of the POST request.
+
+Instead, if the client has no knowledge that the AS has previously achieved proof-of-possession of the private key in question, then the client MUST compute the PoP evidence as defined below and MUST specify it in the 'client_cred_verify' or 'client_cred_verify_mac' parameter of the POST request.
+
+In order to compute the PoP evidence, the client MUST use as PoP input the byte representation of an information that uniquely represents the secure communication association between the client and the AS. It is RECOMMENDED that the client uses the following as PoP input.
 
 * If the client and the AS communicate over TLS 1.2 {{RFC5246}} or DTLS 1.2 {{RFC6347}}, the PoP input is an exporter value computed as defined in {{Section 4 of RFC5705}}, using the following inputs:
 
@@ -439,13 +449,7 @@ After that, the client computes the PoP evidence as follows.
 
     * L is equal to 8, i.e., the size of the MAC, in bytes.
 
-Finally, the client MUST include one of the two following parameters in the payload of the POST request to the AS.
-
-* 'client_cred_verify', defined in {{client_cred_verify}} of this document, specifying the client's PoP evidence as a signature, which is computed as defined above. This parameter MUST be included if and only if the OSCORE group is not a pairwise-only group.
-
-* 'client_cred_verify_mac', defined in {{client_cred_verify_mac}} of this document, specifying the client's PoP evidence as a MAC, which is computed as defined above. This parameter MUST be included if and only if the OSCORE group is a pairwise-only group.
-
-An example of such a request is shown in {{fig-example-C-to-AS-symm}}.
+An example of the POST request is shown in {{fig-example-C-to-AS-symm}}.
 
 ~~~~~~~~~~~
 Header: POST (Code=0.02)
@@ -522,35 +526,55 @@ The 'client_cred_verify_mac' parameter is an OPTIONAL parameter of the access to
 
 ## AS-to-C: Response ## {#sec-as-c-token}
 
-After having verified the POST request to the /token endpoint and that the client is authorized to obtain an access token corresponding to its access token request, the AS MUST verify the proof-of-possession (PoP) evidence. In particular, the AS proceeds as follows.
+After having verified the POST request to the /token endpoint and that the client is authorized to obtain an access token corresponding to its access token request, the AS proceeds as defined below.
 
-* As PoP input, the AS uses the same value used by the client in {{sec-c-as-token-endpoint}}.
+The following denotes an authentication credential as "confirmed" or "non confirmed", in case the AS has or has not achieved proof-of-possession of the private key associated with the public key of that authentication credential, respectively.
 
-* As public key of the client, the AS uses the one included in the authentication credential specified in the 'req_cnf' parameter of the access token request.
+If the access token request specifies neither the 'client_cred_verify' parameter nor the 'client_cred_verify_mac' parameter, then the AS performs the following steps.
 
-   This requires the AS to support the format of the authentication credential specified in the 'req_cnf' parameter, i.e., the format of authentication credential that is used in the OSCORE group where the client uses that authentication credential. Practically, this is not an issue, since an RS supporting this profile is expected to be registered only at an AS that supports the formats of authentication credential that the RS supports.
+* The AS considers the authentication credential AUTH_CRED_C specified in the 'req_cnf' parameter of the access token request.
+
+* If the AS currently knows AUTH_CRED_C as "confirmed", then the AS considers proof-of-possession for the client's private key to be achieved, and it takes no further actions in this respect.
+
+  The AS might already have achieved proof-of-possession when establishing a secure communication association with the client, or when processing a previous access token request conveying the same AUTH_CRED_C.
+
+  Alternatively, a further entity in a trust relationship with the AS might have already achieved proof-of-possession of the private key and informed the AS about that. Building on that trust relationship, the AS considered AUTH_CRED_C to be "confirmed" from then on.
+
+* If the AS does not currently know AUTH_CRED_C as "confirmed", then the AS MUST consider the access token request to be invalid.
+
+If both the 'client_cred_verify' and 'client_cred_verify_mac' parameters are present, then the AS MUST consider the access token request to be invalid.
+
+If the access token request specifies either the 'client_cred_verify' parameter or the 'client_cred_verify_mac' parameter, then the AS MUST verify the proof-of-possession (PoP) evidence specified therein. In particular, the AS proceeds as follows.
+
+* As PoP input, the AS uses the same value that the client used in {{sec-c-as-token-endpoint}}.
+
+* As public key of the client, the AS uses the one included in the authentication credential AUTH_CRED_C specified in the 'req_cnf' parameter of the access token request.
+
+   This requires the AS to support the format of AUTH_CRED_C, i.e., the format of authentication credential that is used in the OSCORE group where the client uses that authentication credential. Practically, this is not an issue, since an RS supporting this profile is expected to be registered only at an AS that supports the formats of authentication credential that the RS supports.
 
 * If the access token request includes the 'client_cred_verify' parameter, this specifies the PoP evidence as a signature. Then, the AS verifies the signature by using the public key of the client.
 
-   This requires the AS to support the signature algorithm and curve (when applicable) that are used in the OSCORE group where the client uses the authentication credential specified in the 'req_cnf' parameter of the access token request. Practically, this is not an issue, since an RS supporting this profile is expected to be registered only at an AS that supports the signature algorithms and curves (when applicable) that the RS supports.
+   This requires the AS to support the signature algorithm and curve (when applicable) that are used in the OSCORE group where the client uses the authentication credential AUTH_CRED_C specified in the 'req_cnf' parameter of the access token request. Practically, this is not an issue, since an RS supporting this profile is expected to be registered only at an AS that supports the signature algorithms and curves (when applicable) that the RS supports.
 
 * If the access token request includes the 'client_cred_verify_mac' parameter, this specifies the PoP evidence as a Message Authentication Code (MAC).
 
-   Then, the AS recomputes the MAC through the same process taken by the client when preparing the value of the 'client_cred_verify_mac' parameter for the access token (see {{sec-c-as-token-endpoint}}), with the difference that the AS uses its own Diffie-Hellman private key and the Diffie-Hellman public key of the client. The verification succeeds if and only if the recomputed MAC is equal to the MAC conveyed as PoP evidence in the access token request.
+   Then, the AS recomputes the MAC through the same process taken by the client when preparing the value of the 'client_cred_verify_mac' parameter for the access token request (see {{sec-c-as-token-endpoint}}), with the difference that the AS uses its own Diffie-Hellman private key and the Diffie-Hellman public key of the client. The verification succeeds if and only if the recomputed MAC is equal to the MAC conveyed as PoP evidence in the access token request.
 
-   This requires the AS to support the ECDH algorithm that is used as Pairwise Key Agreement Algorithm in the OSCORE group where the client uses the authentication credential specified in the 'req_cnf' parameter of the access token request. Practically, this is not an issue, since an RS supporting this profile is expected to be registered only at an AS that supports the ECDH algorithms that the RS supports.
+   This requires the AS to support the ECDH algorithm that is used as Pairwise Key Agreement Algorithm in the OSCORE group where the client uses the authentication credential AUTH_CRED_C specified in the 'req_cnf' parameter of the access token request. Practically, this is not an issue, since an RS supporting this profile is expected to be registered only at an AS that supports the ECDH algorithms that the RS supports.
 
-If both the 'client_cred_verify' and 'client_cred_verify_mac' parameters are present, or if the verification of the PoP evidence fails, the AS considers the client request invalid.
+If the verification of the PoP evidence succeeds, then the AS considers AUTH_CRED_C to be "confirmed" from then on.
 
-If the client request was invalid or not authorized, the AS returns an error response as described in {{Section 5.8.3 of RFC9200}}.
+Instead, if the verification of the PoP evidence fails, then the AS MUST consider the access token request to be invalid. Also, the AS MUST consider AUTH_CRED_C to be "non confirmed" from then on, until the AS achieves again proof-of-possession of the client's private key.
 
-If all verifications are successful, the AS responds as defined in {{Section 5.8.2 of RFC9200}}. In particular:
+If the access token request was invalid or not authorized, the AS MUST return an error response as described in {{Section 5.8.3 of RFC9200}}.
 
-   * The AS can signal that the use of Group OSCORE is REQUIRED for a specific access token by including the 'ace_profile' parameter with the value "coap_group_oscore" in the access token response. The client MUST use Group OSCORE towards all the resource servers for which this access token is valid. Usually, it is assumed that constrained devices will be pre-configured with the necessary profile, so that this kind of profile signaling can be omitted.
+Instead, if all verifications are successful, the AS responds as defined in {{Section 5.8.2 of RFC9200}}. In particular:
 
-   * The AS MUST NOT include the 'rs_cnf' parameter defined in {{RFC9201}}. In general, the AS may not be aware of the authentication credentials (and public keys included thereof) that the RSs use in the OSCORE group. Also, the client is able to retrieve the authentication credentials of other group members from the responsible Group Manager, both upon joining the group or later on as a group member, as defined in {{I-D.ietf-ace-key-groupcomm-oscore}}.
+* The AS can signal that the use of Group OSCORE is REQUIRED for a specific access token by including the 'ace_profile' parameter with the value "coap_group_oscore" in the access token response. The client MUST use Group OSCORE towards all the resource servers for which this access token is valid. Usually, it is assumed that constrained devices will be pre-configured with the necessary profile, so that this kind of profile signaling can be omitted.
 
-   * According to this document, the AS includes the 'access_token' parameter specifying the issued access token in the access token response. An alternative workflow where the access token is uploaded by the AS directly to the RS is described in {{I-D.ietf-ace-workflow-and-params}}.
+* The AS MUST NOT include the 'rs_cnf' parameter defined in {{RFC9201}}. In general, the AS may not be aware of the authentication credentials (and public keys included thereof) that the RSs use in the OSCORE group. Also, the client is able to retrieve the authentication credentials of other group members from the responsible Group Manager, both upon joining the group or later on as a group member, as defined in {{I-D.ietf-ace-key-groupcomm-oscore}}.
+
+* According to this document, the AS includes the 'access_token' parameter specifying the issued access token in the access token response. An alternative workflow where the access token is uploaded by the AS directly to the RS is described in {{I-D.ietf-ace-workflow-and-params}}.
 
 The AS MUST include the following information as metadata of the issued access token. The use of CBOR web tokens (CWT) as specified in {{RFC8392}} is RECOMMENDED.
 
@@ -560,9 +584,9 @@ The AS MUST include the following information as metadata of the issued access t
 
 * The Context ID input specified in the 'context_id' parameter of the access token request. If the access token is a CWT, the content of the 'context_id' parameter MUST be specified in the 'context_id' claim of the access token, defined in {{context_id_claim}} of this document.
 
-* The authentication credential that the client uses in the OSCORE group and specified in the 'req_cnf' parameter of the access token request.
+* The authentication credential that the client uses in the OSCORE group, as specified in the 'req_cnf' parameter of the access token request (see {{sec-c-as-token-endpoint}}).
 
-   If the access token is a CWT, the client's authentication credential MUST be specified in the 'cnf' claim, which follows the syntax from {{Section 3.1 of RFC8747}}. In particular, the 'cnf' claim includes the client's authentication credential as specified in the 'req_cnf' parameter of the access token request (see {{sec-c-as-token-endpoint}}).
+   If the access token is a CWT, the client's authentication credential MUST be specified in the 'cnf' claim, which follows the syntax from {{Section 3.1 of RFC8747}}.
 
 {{fig-example-AS-to-C}} shows an example of such an AS response. The access token has been truncated for readability.
 
@@ -1184,6 +1208,8 @@ kccs = 11
 ## Version -03 to -04 ## {#sec-03-04}
 
 * Required that 'cnf' in the access token includes exactly what C uploaded to the Group Manager.
+
+* Made the PoP evidence in the access token request optional.
 
 * Better example value for audience, when indicating the profile to use.
 
