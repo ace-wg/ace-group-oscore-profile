@@ -5,9 +5,9 @@
 ACE Working Group                                              M. Tiloca
 Internet-Draft                                                R. Höglund
 Intended status: Standards Track                                 RISE AB
-Expires: 31 August 2025                                     F. Palombini
+Expires: 1 March 2026                                       F. Palombini
                                                              Ericsson AB
-                                                        27 February 2025
+                                                          28 August 2025
 
 
  The Group Object Security for Constrained RESTful Environments (Group
@@ -25,14 +25,14 @@ Abstract
    OSCORE group.  The profile securely binds an OAuth 2.0 access token
    to the public key of the client associated with the private key used
    by that client in the OSCORE group.  The profile uses Group OSCORE to
-   achieve server authentication, as well as proof-of-possession for the
-   client's public key.  Also, it provides proof of the client's
-   membership to the OSCORE group by binding the access token to
-   information from the Group OSCORE Security Context, thus allowing the
-   resource server(s) to verify the client's membership upon receiving a
-   message protected with Group OSCORE from the client.  Effectively,
-   the profile enables fine-grained access control paired with secure
-   group communication, in accordance with the Zero Trust principles.
+   achieve server authentication and proof of possession of the client's
+   private key.  Also, it provides proof of the client's membership to
+   the OSCORE group by binding the access token to information from the
+   Group OSCORE Security Context, thus allowing the resource server(s)
+   to verify the client's membership upon receiving a message protected
+   with Group OSCORE from the client.  Effectively, the profile enables
+   fine-grained access control paired with secure group communication,
+   in accordance with the Zero Trust principles.
 
 Discussion Venues
 
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 August 2025.
+   This Internet-Draft will expire on 1 March 2026.
 
 Copyright Notice
 
@@ -98,7 +98,7 @@ Table of Contents
        3.3.2.  'context_id' Claim
        3.3.3.  'salt_input' Claim
    4.  Client-RS Communication
-     4.1.  C-to-RS POST to /authz-info Endpoint
+     4.1.  C-to-RS POST to authz-info Endpoint
      4.2.  RS-to-C: 2.01 (Created)
      4.3.  Client-RS Secure Communication
        4.3.1.  Client Side
@@ -125,10 +125,11 @@ Table of Contents
    Appendix A.  Profile Requirements
    Appendix B.  CDDL Model
    Appendix C.  Document Updates
-     C.1.  Version -03 to -04
-     C.2.  Version -02 to -03
-     C.3.  Version -01 to -02
-     C.4.  Version -00 to -01
+     C.1.  Version -04 to -05
+     C.2.  Version -03 to -04
+     C.3.  Version -02 to -03
+     C.4.  Version -01 to -02
+     C.5.  Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -184,9 +185,9 @@ Table of Contents
    of priority on the servers, so rightly locking out C1 clients if
    needed; and ii) when a server is set to accept only high-priority
    commands, only C2 clients should be able to perform such commands
-   otherwise allowed also to C1 clients.  Given the different maximum
-   authority of different clients, fine-grained access control would
-   effectively limit the execution of high- and emergency-priority
+   that are otherwise allowed also to C1 clients.  Given the different
+   maximum authority of different clients, fine-grained access control
+   would effectively limit the execution of high- and emergency-priority
    commands only to devices that are in fact authorized to perform such
    actions.  Besides, it would prevent a misconfigured or compromised
    device from initiating a high-priority command and lock out normal
@@ -209,8 +210,9 @@ Table of Contents
 
    Furthermore, [NIST-800-207] highlights how the Zero Trust goal is to
    "prevent unauthorized access to data and services coupled with making
-   the access control enforcement as granular as possible", to "enforce
-   least privileges needed to perform the action in the request."
+   the access control enforcement as granular as possible", in order to
+   "enforce least privileges needed to perform the action in the
+   request."
 
    As a step in this direction, one can be tempted to introduce a
    different security group for each different set of access rights.
@@ -227,9 +229,9 @@ Table of Contents
    enforced within the same group, by using the Authentication and
    Authorization for Constrained Environments (ACE) framework [RFC9200].
    That is, a client has to first obtain authorization credentials in
-   the form of an access token, and upload it to the intended resource
-   server(s) in the group before accessing the target resources hosted
-   therein.
+   the form of an access token and then upload it to the intended
+   resource server(s) in the group before accessing the target resources
+   hosted therein.
 
    The ACE framework delegates to separate profile documents how to
    secure communications between the client and the resource servers.
@@ -251,16 +253,16 @@ Table of Contents
 
    That is, this profile describes how access control is enforced for a
    client after it has joined an OSCORE group, to access resources
-   hosted by other members in that group.  The process for joining the
+   hosted by other members of that group.  The process for joining the
    OSCORE group through the respective Group Manager as defined in
    [I-D.ietf-ace-key-groupcomm-oscore] takes place before the process
-   described in this document, and is out of the scope of this profile.
+   described in this document and is out of the scope of this profile.
 
-   The client proves its access to be authorized to the resource
+   The client proves its authorization and access rights to the resource
    server(s) by using an access token bound to a key (the proof-of-
    possession key).  This profile uses Group OSCORE to achieve server
-   authentication and proof-of-possession for the client's public key
-   used in the OSCORE group in question.  Note that proof-of-possession
+   authentication and proof of possession of the client's private key
+   used in the OSCORE group in question.  Note that proof of possession
    is not achieved through a dedicated protocol element, but instead
    after the first message exchange protected with Group OSCORE.
 
@@ -272,13 +274,14 @@ Table of Contents
    verify the client's group membership upon reception of a message
    protected with Group OSCORE from that client.
 
-   OSCORE [RFC8613] specifies how to use COSE [RFC9052][RFC9053] to
-   secure CoAP messages.  Group OSCORE builds on OSCORE to provide
-   secure group communication, and ensures source authentication: by
-   means of digital signatures embedded in the protected message (when
-   using the group mode); or by protecting a message with pairwise
-   keying material derived from the asymmetric keys of the two peers
-   exchanging the message (when using the pairwise mode).
+   OSCORE [RFC8613] specifies how to use CBOR Object Signing and
+   Encryption (COSE) [RFC9052][RFC9053] to secure CoAP messages.  Group
+   OSCORE builds on OSCORE to provide secure group communication and
+   ensures source authentication: by means of digital signatures
+   embedded in the protected message (when using the group mode); or by
+   protecting a message with pairwise keying material derived from the
+   asymmetric keys of the two peers exchanging the message (when using
+   the pairwise mode).
 
 1.1.  Terminology
 
@@ -289,9 +292,10 @@ Table of Contents
    capitals, as shown here.
 
    Readers are expected to be familiar with the terms and concepts
-   related to CBOR [RFC8949], COSE [RFC9052][RFC9053], CoAP [RFC7252],
-   OSCORE [RFC8613], and Group OSCORE [I-D.ietf-core-oscore-groupcomm].
-   These especially include:
+   related to Concise Binary Object Representation (CBOR) [RFC8949],
+   COSE [RFC9052][RFC9053], CoAP [RFC7252], Object Security for
+   Constrained RESTful Environments (OSCORE) [RFC8613], and Group OSCORE
+   [I-D.ietf-core-oscore-groupcomm].  These especially include:
 
    *  Group Manager, as the entity responsible for a set of groups where
       communications among members are secured with Group OSCORE.
@@ -306,9 +310,9 @@ Table of Contents
       Members of an OSCORE group have an associated authentication
       credential in the format used within the group.  As per
       Section 2.4 of [I-D.ietf-core-oscore-groupcomm], an authentication
-      credential provides the public key as well as the comprehensive
-      set of information related to the public key algorithm, including,
-      e.g., the used elliptic curve (when applicable).
+      credential provides the public key as well as a comprehensive set
+      of information related to the public key algorithm, including,
+      e.g., the elliptic curve used (when applicable).
 
    Readers are also expected to be familiar with the terms and concepts
    described in the ACE framework for authentication and authorization
@@ -319,9 +323,9 @@ Table of Contents
 
    Note that the term "endpoint" is used here following its OAuth
    definition [RFC6749], aimed at denoting resources such as /token and
-   /introspect at the AS, and /authz-info at the RS.  This document does
-   not use the CoAP definition of "endpoint", which is "An entity
-   participating in the CoAP protocol".
+   /introspect at the AS, and /authz-info at the RS.  The CoAP
+   definition, which is "[a]n entity participating in the CoAP protocol"
+   [RFC7252], is not used in this document.
 
    Additionally, this document makes use of the following terminology.
 
@@ -337,8 +341,8 @@ Table of Contents
    In the CBOR diagnostic notation used in this document, constructs of
    the form e'SOME_NAME' are replaced by the value assigned to SOME_NAME
    in the CDDL model shown in Figure 7 of Appendix B.  For example,
-   {e'context_id_param': h'abcd0000', e'salt_input_param': h'00} stands
-   for {71: h'abcd0000', 72: h'00}.
+   {e'context_id_param': h'abcd0000', e'salt_input_param': h'00'} stands
+   for {71: h'abcd0000', 72: h'00'}.
 
    Note to RFC Editor: Please delete the paragraph immediately preceding
    this note.  Also, in the CBOR diagnostic notation used in this
@@ -350,8 +354,8 @@ Table of Contents
 
    This section provides an overview of this profile, i.e., of how to
    use the ACE framework for authentication and authorization [RFC9200]
-   to secure communications between a client and one or more resource
-   servers using Group OSCORE [I-D.ietf-core-oscore-groupcomm].
+   when communications between a client and one or more resource servers
+   are secured using Group OSCORE [I-D.ietf-core-oscore-groupcomm].
 
    Note that this profile of ACE describes how access control can be
    enforced for a node after it has joined an OSCORE group, to access
@@ -360,18 +364,17 @@ Table of Contents
    In particular, the process of joining the OSCORE group through the
    respective Group Manager as defined in
    [I-D.ietf-ace-key-groupcomm-oscore] must take place before the
-   process described in this document, and is out of the scope of this
+   process described in this document and is out of the scope of this
    profile.
 
    An overview of the protocol flow for this profile is shown in
    Figure 1, where it is assumed that both the resource servers RS1 and
    RS2 are associated with the same authorization server AS.  It is also
-   assumed that the client C, as well as RS1 and RS2 have previously
-   joined an OSCORE group with Group Identifier (gid) 0xabcd0000, and
+   assumed that the client C as well as RS1 and RS2 have previously
+   joined an OSCORE group with Group Identifier (gid) 0xabcd0000 and
    that they got assigned Sender ID (sid) 0x00, 0x01, and 0x02 in the
    group, respectively.  The names of messages coincide with those of
-   [RFC9200] when applicable, and messages in square brackets are
-   optional.
+   [RFC9200] when applicable.  Messages in square brackets are optional.
 
  C                             RS1         RS2                        AS
  |                              |           |                          |
@@ -409,12 +412,12 @@ Table of Contents
  |     gid: 0xabcd0000)       \ |           |                          |
  |                             `----------->|                          |
  |                              |           |                          |
- |                           /proof-of-possession/                     |
+ |                           /proof of possession/                     |
  |                              |           |                          |
  |<--- Group OSCORE Response ---+           |                          |
  |        (kid: 0x01)           |           |                          |
  |                              |           |                          |
- /proof-of-possession/          |           |                          |
+ /proof of possession/          |           |                          |
  |                              |           |                          |
  |                              |           |                          |
  /Mutual authentication         |           |                          |
@@ -423,7 +426,7 @@ Table of Contents
  |<--- Group OSCORE Response ---------------+                          |
  |        (kid: 0x02)           |           |                          |
  |                              |           |                          |
- /proof-of-possession/          |           |                          |
+ /proof of possession/          |           |                          |
  |                              |           |                          |
  |                              |           |                          |
  /Mutual authentication         |           |                          |
@@ -432,7 +435,7 @@ Table of Contents
  |            ...               |           |                          |
  |                              |           |                          |
 
-                      Figure 1: Protocol Overview.
+                      Figure 1: Protocol Overview
 
 2.1.  Pre-Conditions
 
@@ -459,66 +462,65 @@ Table of Contents
 
    This profile requires that the client requests an access token from
    the AS for the resource(s) that it wants to access at the RS(s), by
-   using the /token endpoint as specified in Section 5.8 of [RFC9200].
+   using the token endpoint as specified in Section 5.8 of [RFC9200].
 
-   In general, different RSs can be associated with different ASs, even
-   if the RSs are members of the same OSCORE group.  However, assuming
-   proper configurations and trust relations, it is possible for
-   multiple RSs associated with the same AS to be part of a single
-   audience (i.e., a group-audience, see Section 6.9 of [RFC9200]).  In
-   such a case, the client can request a single access token intended
-   for the group-audience, hence to all the RSs included therein.  A
-   particular group-audience might be defined as including all the RSs
-   in the OSCORE group.
+   In general, different RSs can be associated with different
+   authorization servers, even if the RSs are members of the same OSCORE
+   group.  However, assuming proper configurations and trust
+   relationships, it is possible for multiple RSs associated with the
+   same AS to be part of a single audience (i.e., a group-audience, see
+   Section 6.9 of [RFC9200]).  In such a case, the client can request a
+   single access token intended for the group-audience, hence to all the
+   RSs included therein.  A particular group-audience might be defined
+   as including all the RSs in the OSCORE group.
 
    In the access token request to the AS, the client MUST include the
-   Group Identifier of the OSCORE group and its own Sender ID in that
-   group.  The AS MUST specify these pieces of information in the access
-   token.
+   Group Identifier of the OSCORE group, as well as its own Sender ID
+   and authentication credential used in that group.  The AS MUST
+   include these pieces of information in the access token.
 
-   Furthermore, in the access token request to the AS, the client MUST
-   also include: its own authentication credential used in the OSCORE
-   group; and a proof-of-possession (PoP) evidence to prove possession
-   of the corresponding private key to the AS.  The PoP evidence is
-   computed over a PoP input uniquely related to the secure
-   communication association between the client and the AS.  The AS MUST
-   include also the authentication credential specified by the client in
-   the access token.
+   In the access token request, the client can also include a proof-of-
+   possession (PoP) evidence to prove possession of the private key
+   corresponding to its own authentication credential to the AS.  The
+   PoP evidence is computed over a PoP input uniquely related to the
+   secure communication association between the client and the AS.
+   Including the PoP evidence is OPTIONAL under particular circumstances
+   and is REQUIRED otherwise (see Section 3.2).
 
    If the request from the client is granted, then the AS can send back
    the issued access token in the access token response to the client,
-   or instead upload the access token directly to the RS as described in
-   the alternative workflow defined in
+   or instead upload the access token directly to the RS as per the
+   Short Distribution Chain (SDC) workflow defined in
    [I-D.ietf-ace-workflow-and-params].  This document focuses on the
    former option (also shown in the example in Figure 1), while the
    latter option is not detailed further here.
 
-   The access token request and Response exchanged between the client
-   and the AS MUST be confidentiality-protected and ensure authenticity.
-   In this profile, it is RECOMMENDED to use OSCORE [RFC8613] between
-   the client and the AS, to reduce the number of libraries that the
-   client has to support.  Other protocols fulfilling the security
-   requirements defined in Sections 5 and 6 of [RFC9200] MAY
-   alternatively be used, such as TLS [RFC8446] or DTLS [RFC9147].
+   The access token request and response exchanged between the client
+   and the AS MUST be confidentiality-protected and MUST ensure
+   authenticity.  In this profile, it is RECOMMENDED to use OSCORE
+   [RFC8613] between the client and the AS, to reduce the number of
+   libraries that the client has to support.  Other protocols fulfilling
+   the security requirements defined in Sections 5 and 6 of [RFC9200]
+   MAY alternatively be used, such as TLS [RFC8446] or DTLS [RFC9147].
 
 2.3.  Access Token Uploading
 
    After having retrieved the access token from the AS, the client
    uploads the access token to the RS, by sending a POST request to the
-   /authz-info endpoint and using the mechanisms specified in
+   authz-info endpoint and using the mechanisms specified in
    Section 5.10 of [RFC9200].  When using this profile, the
-   communication that C has with the /authz-info endpoint is not
+   communication that C has with the authz-info endpoint is not
    protected.
 
    If the access token is valid, the RS replies to the POST request with
    a 2.01 (Created) response.  Also, the RS associates the received
    access token with the Group OSCORE Security Context identified by the
-   Group Identifier specified in the access token (see Section 2.1.3 of
-   [I-D.ietf-core-oscore-groupcomm]).  In practice, the RS maintains a
-   collection of Security Contexts with associated authorization
-   information, for all the clients that it is currently communicating
-   with.  The authorization information is a policy that is used as
-   input when processing requests from those clients.
+   Group Identifier that is specified in the access token (see
+   Section 2.1.3 of [I-D.ietf-core-oscore-groupcomm]).  In practice, the
+   RS maintains a collection of Security Contexts with associated
+   authorization information, for all the clients that it is currently
+   communicating with.  The authorization information is a policy that
+   is used as input when processing requests from those clients.
 
    Finally, the RS stores the association between i) the authorization
    information from the access token; and ii) the Group Identifier of
@@ -551,20 +553,26 @@ Table of Contents
    [I-D.ietf-core-oscore-groupcomm] to the RS.  This can be a unicast
    request targeting the RS, or a one-to-many group request (e.g., over
    IP multicast) targeting the OSCORE group where the RS is also a
-   member.  To this end, the client uses the Group OSCORE Security
-   Context already established upon joining the OSCORE group, e.g., by
-   using the approach defined in [I-D.ietf-ace-key-groupcomm-oscore].
-   The RS may send a response back to the client, protecting it by means
-   of the same Group OSCORE Security Context.
+   member.
+
+   To this end, the client uses the Group OSCORE Security Context
+   already established upon joining the OSCORE group (e.g., by using the
+   approach defined in [I-D.ietf-ace-key-groupcomm-oscore]), unless it
+   maintains a more recent Security Context that has been established in
+   the group as a result of a group rekeying (see Section 12.2 of
+   [I-D.ietf-core-oscore-groupcomm]).
+
+   The RS may send a response back to the client, also protecting it
+   with Group OSCORE.
 
 3.  Client-AS Communication
 
-   This section details the Access Token POST Request that the client
-   sends to the /token endpoint of the AS, as well as the related access
-   token response.
+   This section details the access token request that the client sends
+   to the token endpoint of the AS, as well as the related access token
+   response.
 
    The access token MUST be bound to the public key of the client as
-   proof-of-possession key (PoP) key, which is included in the client's
+   proof-of-possession (PoP) key, which is included in the client's
    authentication credential specified in the 'cnf' claim of the access
    token.
 
@@ -619,7 +627,7 @@ Table of Contents
 3.2.  C-to-AS: POST to Token Endpoint
 
    The Client-to-AS request is specified in Section 5.8.1 of [RFC9200].
-   The client MUST send this POST request to the /token endpoint over a
+   The client MUST send this POST request to the token endpoint over a
    secure channel that guarantees authentication, message integrity, and
    confidentiality.
 
@@ -640,7 +648,7 @@ Table of Contents
       group whose GID is specified in the 'context_id' parameter above.
 
    *  'req_cnf', defined in Section 3.1 of [RFC9201].  This parameter
-      follows the syntax from Section 3.1 of [RFC8747], and its inner
+      follows the syntax from Section 3.1 of [RFC8747] and its inner
       confirmation value specifies the authentication credential
       AUTH_CRED_C that the client uses in the OSCORE group.  The public
       key included in the authentication credential will be used as the
@@ -652,13 +660,13 @@ Table of Contents
       [RFC5280], and C509 certificates
       [I-D.ietf-cose-cbor-encoded-cert].
 
-      Further formats may be available in the future, and would be
+      Further formats may be available in the future and would be
       acceptable to use as long as they comply with the criteria
       compiled in Section 2.4 of [I-D.ietf-core-oscore-groupcomm].  In
       particular, an authentication credential has to explicitly include
-      the public key as well as the comprehensive set of information
-      related to the public key algorithm, including, e.g., the used
-      elliptic curve (when applicable).
+      the public key as well as a comprehensive set of information
+      related to the public key algorithm, including, e.g., the elliptic
+      curve used (when applicable).
 
       Note that C might have previously uploaded AUTH_CRED_C to the
       Group Manager as provided within a chain or a bag (e.g., as the
@@ -682,7 +690,7 @@ Table of Contents
       'c5c' are under pending registration requested by draft-ietf-ace-
       edhoc-oscore-profile. ]
 
-   Furthermore, the payload of the request MAY include exactly one of
+   Furthermore, the payload of the request can include exactly one of
    the two following parameters, specifying a proof-of-possession (PoP)
    evidence computed by the client.
 
@@ -696,18 +704,19 @@ Table of Contents
       computed as defined later in this section.  This parameter MUST
       NOT be included if the OSCORE group is not a pairwise-only group.
 
-   The PoP evidence can be used by the AS to achieve proof-of-possession
+   The PoP evidence can be used by the AS to achieve proof of possession
    of the client's private key, i.e., to verify that the client indeed
-   owns the private key associated with the public key of AUTH_CRED_C.
+   owns the private key associated with the public key within
+   AUTH_CRED_C.
 
    When preparing the POST request, the client might know that the AS
-   has previously achieved proof-of-possession of the private key in
+   has previously achieved proof of possession of the private key in
    question.  In such a case, it is OPTIONAL for the client to compute
    the PoP evidence and to specify it in the 'client_cred_verify' or
    'client_cred_verify_mac' parameter of the POST request.
 
-   If the client believes that the AS has not previously achieved proof-
-   of-possession of the private key in question or that such proof was
+   If the client believes that the AS has not previously achieved proof
+   of possession of the private key in question or that such proof was
    achieved but does not hold anymore, then the client MUST compute the
    PoP evidence as defined below and MUST specify it in the
    'client_cred_verify' or 'client_cred_verify_mac' parameter of the
@@ -723,8 +732,8 @@ Table of Contents
       DTLS 1.2 [RFC6347], the PoP input is an exporter value computed as
       defined in Section 4 of [RFC5705], using the following inputs:
 
-      -  The exporter label "EXPORTER-ACE-PoP-Input-Client-AS", defined
-         in Section 12.5 of this document.
+      -  The exporter label "EXPORTER-ACE-PoP-Input-Client-AS"
+         registered in Section 12.5 of this document.
 
       -  The empty 'context value', i.e., a 'context value' of zero-
          length.
@@ -735,8 +744,8 @@ Table of Contents
       DTLS 1.3 [RFC9147], the PoP input is an exporter value computed as
       defined in Section 7.5 of [RFC8446], using the following inputs:
 
-      -  The exporter label "EXPORTER-ACE-PoP-Input-Client-AS", defined
-         in Section 12.5 of this document.
+      -  The exporter label "EXPORTER-ACE-PoP-Input-Client-AS"
+         registered in Section 12.5 of this document.
 
       -  The empty 'context_value', i.e., a 'context_value' of zero-
          length.
@@ -753,16 +762,16 @@ Table of Contents
       -  'salt' takes (x1 | x2), where | denotes byte string
          concatenation, while x1 and x2 are defined as follows.
 
-         o  x1 is the binary representation of a CBOR data item.  If CTX
-            does not specify an OSCORE ID Context, the CBOR data item is
-            the CBOR simple value null (0xf6).  Otherwise, the CBOR data
-            item is a CBOR byte string, with value the OSCORE ID Context
-            specified in CTX.
+      -  x1 is the binary representation of a CBOR data item.  If CTX
+         does not specify an OSCORE ID Context, the CBOR data item is
+         the CBOR simple value null (0xf6).  Otherwise, the CBOR data
+         item is a CBOR byte string, with value the OSCORE ID Context
+         specified in CTX.
 
-         o  x2 is the binary representation of a CBOR byte string.  The
-            value of the CBOR byte string is the OSCORE Sender ID of the
-            client, which the client stores in its Sender Context of CTX
-            and the AS stores in its Recipient Context of CTX.
+      -  x2 is the binary representation of a CBOR byte string.  The
+         value of the CBOR byte string is the OSCORE Sender ID of the
+         client, which the client stores in its Sender Context of CTX
+         and the AS stores in its Recipient Context of CTX.
 
       -  'IKM' is the OSCORE Master Secret specified in CTX.
 
@@ -804,10 +813,11 @@ Table of Contents
 
    *  If the OSCORE group is not a pairwise-only group, the PoP evidence
       MUST be a signature.  The client computes the signature by using
-      the same private key and signature algorithm it uses for signing
-      messages in the OSCORE group.  The client's private key is the one
-      associated with the client's authentication credential used in the
-      OSCORE group and specified in the 'req_cnf' parameter above.
+      the same private key and signature algorithm that it uses for
+      signing messages in the OSCORE group.  The client's private key is
+      the one associated with the client's authentication credential
+      used in the OSCORE group and specified in the 'req_cnf' parameter
+      above.
 
    *  If the OSCORE group is a pairwise-only group, the PoP evidence
       MUST be a MAC computed as follows, by using the HKDF Algorithm
@@ -868,7 +878,7 @@ Table of Contents
    }
 
      Figure 2: Example C-to-AS POST /token Request for an Access Token
-                        Bound to an Asymmetric Key.
+                         Bound to an Asymmetric Key
 
    In the example above, the client specifies that its authentication
    credential in the OSCORE group is the CCS shown in Figure 3.
@@ -888,7 +898,7 @@ Table of Contents
    }
 
         Figure 3: Example of client Authentication Credential as CWT
-                             Claims Set (CCS).
+                              Claims Set (CCS)
 
    [
 
@@ -931,12 +941,12 @@ Table of Contents
 
 3.3.  AS-to-C: Response
 
-   After having verified the POST request to the /token endpoint and
-   that the client is authorized to obtain an access token corresponding
-   to its access token request, the AS proceeds as defined below.
+   After having verified the POST request to the token endpoint and that
+   the client is authorized to obtain an access token corresponding to
+   its access token request, the AS proceeds as defined below.
 
    In the following, an authentication credential is denoted as
-   "confirmed" if and only if the AS has achieved proof-of-possession of
+   "confirmed" if and only if the AS has achieved proof of possession of
    the private key associated with the public key of that authentication
    credential and such proof still holds.  Otherwise, an authentication
    credential is denoted as "non confirmed".
@@ -949,16 +959,16 @@ Table of Contents
       specified in the 'req_cnf' parameter of the access token request.
 
    *  If the AS currently knows AUTH_CRED_C as "confirmed", then the AS
-      considers proof-of-possession for the client's private key to be
-      achieved, and it takes no further actions in this respect.
+      considers proof of possession of the client's private key to be
+      achieved and it takes no further actions in this respect.
 
-      The AS might already have achieved proof-of-possession when
+      The AS might already have achieved proof of possession when
       establishing a secure communication association with the client,
       or when processing a previous access token request conveying the
       same AUTH_CRED_C.
 
       Alternatively, a further entity in a trust relationship with the
-      AS might have already achieved proof-of-possession of the private
+      AS might have already achieved proof of possession of the private
       key and informed the AS about that.  Building on that trust
       relationship, the AS considered AUTH_CRED_C to be "confirmed" from
       then on.
@@ -975,19 +985,21 @@ Table of Contents
    verify the proof-of-possession (PoP) evidence specified therein.  In
    particular, the AS proceeds as follows.
 
-   *  As PoP input, the AS uses the same value that the client used in
-      Section 3.2.
+   *  As PoP input, the AS uses the same value that the client used (see
+      Section 3.2).
 
    *  As public key of the client, the AS uses the one included in the
-      authentication credential AUTH_CRED_C specified in the 'req_cnf'
-      parameter of the access token request.
+      authentication credential AUTH_CRED_C that is specified in the
+      'req_cnf' parameter of the access token request.
 
       This requires the AS to support the format of AUTH_CRED_C, i.e.,
       the format of authentication credential that is used in the OSCORE
       group where the client uses that authentication credential.
-      Practically, this is not an issue, since an RS supporting this
-      profile is expected to be registered only at an AS that supports
-      the formats of authentication credential that the RS supports.
+
+      Practically, this is not an issue, since the same format is used
+      by RSs in that group and an RS supporting this profile is expected
+      to be registered only at an AS that supports the formats of
+      authentication credential that the RS supports.
 
    *  If the access token request includes the 'client_cred_verify'
       parameter, this specifies the PoP evidence as a signature.  Then,
@@ -996,12 +1008,14 @@ Table of Contents
 
       This requires the AS to support the signature algorithm and curve
       (when applicable) that are used in the OSCORE group where the
-      client uses the authentication credential AUTH_CRED_C specified in
-      the 'req_cnf' parameter of the access token request.  Practically,
-      this is not an issue, since an RS supporting this profile is
-      expected to be registered only at an AS that supports the
-      signature algorithms and curves (when applicable) that the RS
-      supports.
+      client uses the authentication credential AUTH_CRED_C that is
+      specified in the 'req_cnf' parameter of the access token request.
+
+      Practically, this is not an issue, since the same algorithm and
+      curve (when applicable) are used by RSs in that group and an RS
+      supporting this profile is expected to be registered only at an AS
+      that supports the signature algorithms and curves (when
+      applicable) that the RS supports.
 
    *  If the access token request includes the 'client_cred_verify_mac'
       parameter, this specifies the PoP evidence as a Message
@@ -1018,9 +1032,11 @@ Table of Contents
 
       This requires the AS to support the ECDH algorithm that is used as
       Pairwise Key Agreement Algorithm in the OSCORE group where the
-      client uses the authentication credential AUTH_CRED_C specified in
-      the 'req_cnf' parameter of the access token request.  Practically,
-      this is not an issue, since an RS supporting this profile is
+      client uses the authentication credential AUTH_CRED_C that is
+      specified in the 'req_cnf' parameter of the access token request.
+
+      Practically, this is not an issue, since the same ECDH algorithm
+      is used by RSs in that group and an RS supporting this profile is
       expected to be registered only at an AS that supports the ECDH
       algorithms that the RS supports.
 
@@ -1030,7 +1046,7 @@ Table of Contents
    Instead, if the verification of the PoP evidence fails, then the AS
    MUST consider the access token request to be invalid.  Also, the AS
    MUST consider AUTH_CRED_C to be "non confirmed" from then on, until
-   the AS achieves again proof-of-possession of the client's private
+   the AS achieves again proof of possession of the client's private
    key.
 
    If the access token request was invalid or not authorized, then the
@@ -1059,9 +1075,9 @@ Table of Contents
 
    *  According to this document, the AS includes the 'access_token'
       parameter specifying the issued access token in the access token
-      response.  An alternative workflow where the access token is
-      uploaded by the AS directly to the RS is described in
-      [I-D.ietf-ace-workflow-and-params].
+      response.  The alternative Short Distribution Chain (SDC) workflow
+      where the access token is uploaded by the AS directly to the RS is
+      described in [I-D.ietf-ace-workflow-and-params].
 
    The AS MUST include the following information as metadata of the
    issued access token.  The use of CBOR web tokens (CWT) as specified
@@ -1074,8 +1090,8 @@ Table of Contents
    *  The salt input specified in the 'salt_input' parameter of the
       access token request.  If the access token is a CWT, the content
       of the 'salt_input' parameter MUST be specified in the
-      'salt_input' claim of the access token, defined in Section 3.3.3
-      of this document.
+      'salt_input' claim of the access token defined in Section 3.3.3 of
+      this document.
 
    *  The Context ID input specified in the 'context_id' parameter of
       the access token request.  If the access token is a CWT, the
@@ -1104,7 +1120,7 @@ Table of Contents
  }
 
      Figure 4: Example AS-to-C Access Token Response with the Group
-                            OSCORE Profile.
+                             OSCORE Profile
 
    Figure 5 shows an example CWT Claims Set, containing the client's
    public key in the group (as PoP key), as specified by the inner
@@ -1134,7 +1150,7 @@ Table of Contents
      }
    }
 
-                     Figure 5: Example CWT Claims Set.
+                      Figure 5: Example CWT Claims Set
 
    The same CWT Claims Set as in Figure 5 and encoded in CBOR is shown
    in Figure 6, using the value abbreviations defined in [RFC9200] and
@@ -1190,7 +1206,7 @@ Table of Contents
                      F95E1D4B851A2CC80FFF87D8E23F22AF
                      B725D535E515D020731E79A3B4E47120
 
-           Figure 6: Example CWT Claims Set Using CBOR Encoding.
+            Figure 6: Example CWT Claims Set Using CBOR Encoding
 
 3.3.1.  Update of Access Rights
 
@@ -1250,7 +1266,7 @@ Table of Contents
          "salt_input", and "client_cred_verify" or
          "client_cred_verify_mac".
 
-   *  If the AS issues the new access token that dynamically updated the
+   *  If the AS issues the new access token that dynamically updates the
       access rights of C, then the access token includes the claim
       "token_series_id", with value the identifier of the same token
       series for which the access token has been issued.
@@ -1282,10 +1298,10 @@ Table of Contents
 
 4.  Client-RS Communication
 
-   This section details the POST request and response to the /authz-info
+   This section details the POST request and response to the authz-info
    endpoint between the client and the RS.
 
-   The proof-of-possession required to bind the access token to the
+   The proof of possession required to bind the access token to the
    client is explicitly performed when the RS receives and verifies a
    request from the client protected with Group OSCORE, either with the
    group mode (see Section 7 of [I-D.ietf-core-oscore-groupcomm]) or
@@ -1330,15 +1346,15 @@ Table of Contents
    As a consequence, a different client C2, also member of the same
    OSCORE group, is not able to impersonate C1, by: i) getting a valid
    access token, specifying the Sender ID of C1 and a different (made-
-   up) authentication credential; ii) successfully posting the access
+   up) authentication credential; ii) successfully uploading the access
    token to the RS; and then iii) attempting to communicate using Group
    OSCORE and impersonating C1, while also blaming C1 for the
    consequences of the interaction with the RS.
 
-4.1.  C-to-RS POST to /authz-info Endpoint
+4.1.  C-to-RS POST to authz-info Endpoint
 
-   The client uploads the access token to the /authz-info endpoint of
-   the RS, as defined in Section 5.10.1 of [RFC9200].
+   The client uploads the access token to the authz-info endpoint of the
+   RS, as defined in Section 5.10.1 of [RFC9200].
 
 4.2.  RS-to-C: 2.01 (Created)
 
@@ -1349,21 +1365,21 @@ Table of Contents
       'cnf' are included in the access token.
 
       If any of these claims are missing or malformed, the RS MUST
-      consider the access token invalid, and MUST reply to the client
+      consider the access token invalid and MUST reply to the client
       with an error response code equivalent to the CoAP code 4.00 (Bad
       Request).
 
       Otherwise, the RS retrieves:
 
-      -  GID* as the GID of the OSCORE group, specified in the
+      -  GID* as the GID of the OSCORE group, which is specified in the
          'context_id' claim.
 
       -  SID* as the Sender ID that the client has in the OSCORE group,
-         specified in the 'salt_input' claim.
+         which is specified in the 'salt_input' claim.
 
       -  AUTH_CRED_C* as the authentication credential that the client
-         uses in the OSCORE group, specified in the inner confirmation
-         value of the 'cnf' claim.
+         uses in the OSCORE group, which is specified in the inner
+         confirmation value of the 'cnf' claim.
 
    *  The RS builds GROUPS as the set of OSCORE groups such that all the
       following conditions hold, for each group G in the set.
@@ -1377,7 +1393,7 @@ Table of Contents
          the RS.
 
       If no such group is found, the RS MUST consider the access token
-      invalid, and MUST reply to the client with an error response code
+      invalid and MUST reply to the client with an error response code
       equivalent to the CoAP code 4.00 (Bad Request).
 
       Otherwise, for each of the N >= 1 groups G in the set GROUPS, the
@@ -1395,7 +1411,7 @@ Table of Contents
       determine AUTH_CRED_C* and AUTH_CRED_C to be equal.
 
       If any of the following conditions hold, the RS MUST consider the
-      access token invalid, and MUST reply to the client with an error
+      access token invalid and MUST reply to the client with an error
       response code equivalent to the CoAP code 5.03 (Service
       Unavailable).
 
@@ -1404,7 +1420,7 @@ Table of Contents
          to AUTH_CRED_C*.
 
       -  After having performed a maximum, pre-configured amount of
-         attempts, or after a maximum, pre-configured amount of time has
+         attempts or after a maximum, pre-configured amount of time has
          elapsed, less than N Group Managers have sent a successful
          response to the RS.
 
@@ -1445,7 +1461,7 @@ Table of Contents
    *  If the OSCORE group is rekeyed (see Section 12.2 of
       [I-D.ietf-core-oscore-groupcomm] and Section 11 of
       [I-D.ietf-ace-key-groupcomm-oscore]), the Group Identifier also
-      changes in the group, and the new one replaces the current 'GID'
+      changes in the group and the new one replaces the current 'GID'
       value in the quartet (GID, SaltInput, AuthCred, AuthCredGM).
 
    *  If the client requests and obtains a new OSCORE Sender ID from the
@@ -1454,6 +1470,14 @@ Table of Contents
       [I-D.ietf-ace-key-groupcomm-oscore]), the new Sender ID replaces
       the current 'SaltInput' value in the quartet (GID, SaltInput,
       AuthCred, AuthCredGM).
+
+      Among the quartets corresponding to access tokens that are
+      associated with a given Group OSCORE Security Context, the RS can
+      always identify the correct quartet to update.  For example, the
+      RS can leverage the triple (GID, AuthCred, AuthCredGM) that played
+      a role in the successful decryption and verification of a request
+      protected with Group OSCORE and sent by the client with the newly
+      obtained Sender ID.
 
    *  If the Group Manager of the OSCORE group changes its
       authentication credential, the new authentication credential of
@@ -1490,7 +1514,7 @@ Table of Contents
 4.3.1.  Client Side
 
    After having received the 2.01 (Created) response from the RS,
-   following the POST request to the /authz-info endpoint, the client
+   following the POST request to the authz-info endpoint, the client
    starts the communication with the RS, by sending a request protected
    with Group OSCORE using the Group OSCORE Security Context
    [I-D.ietf-core-oscore-groupcomm].
@@ -1603,13 +1627,13 @@ Table of Contents
 
    For example, this can occur in the following cases.
 
-   *  The RS is the single RS associated with an audience AUD1, and also
+   *  The RS is the single RS associated with an audience AUD1 and also
       belongs to a group-audience AUD2 (see Section 6.9 of [RFC9200]).
 
       A client C with public authentication credential AUTH_CRED_C can
       request two access tokens T1 and T2 from the AS, such that:
 
-      -  T1 targets AUD1 and has scope SCOPE1;
+      -  T1 targets AUD1 and has scope SCOPE1; and
 
       -  T2 targets AUD2 and has scope SCOPE2 different from SCOPE1.
 
@@ -1627,13 +1651,13 @@ Table of Contents
       both OSCORE groups.
 
       A client C with public authentication credential AUTH_CRED_C of
-      such format, also member of the two OSCORE group G1 and G2, can
+      such format, also member of the two OSCORE groups G1 and G2, can
       conveniently use AUTH_CRED_C as its public authentication
       credential in both those groups.  Therefore, C can request two
       access tokens T1 and T2 from the AS, such that:
 
       -  T1 targets RS and reflects the membership of C in G1, as per
-         its claims "context_id" and "salt_input";
+         its claims "context_id" and "salt_input"; and
 
       -  T2 targets RS and reflects the membership of C in G2, as per
          its claims "context_id" and "salt_input".
@@ -1644,7 +1668,7 @@ Table of Contents
       When using the profile specified in this document, the RS should
       be ready to store at minimum one access token per PoP key per
       OSCORE group it is a member of (although, per the previous point,
-      even this can be limiting).
+      even this can still be limiting).
 
    *  The RS uses both the profile specified in this document and a
       different transport profile of ACE that also relies on asymmetric
@@ -1656,7 +1680,7 @@ Table of Contents
       such that:
 
       -  T1 targets RS and is meant to be used according to the Group
-         OSCORE profile defined in this document;
+         OSCORE profile defined in this document; and
 
       -  T2 targets RS and is meant to be used according to the EDHOC
          and OSCORE profile defined in
@@ -1668,7 +1692,8 @@ Table of Contents
       When using multiple transport profiles of ACE that rely on
       asymmetric PoP keys, it is reasonable that the RS is capable to
       store at minimum one access token per PoP key per used profile
-      (although, per the previous points, even this can be limiting).
+      (although, per the previous points, even this can still be
+      limiting).
 
    In order to keep the same spirit of the recommendation in
    Section 5.10.1 of [RFC9200] without impeding cases such as those
@@ -1680,7 +1705,7 @@ Table of Contents
       specifying the profile "coap_group_oscore"), it is RECOMMENDED
       that an RS stores only one access token that:
 
-      -  is bound to a specific PoP key; and
+      -  is bound to a specific PoP key;
 
       -  targets a specific audience; and
 
@@ -1691,9 +1716,9 @@ Table of Contents
       document, it is RECOMMENDED that an RS stores only one access
       token that:
 
-      -  is issued in accordance with the profile P; and
+      -  is issued in accordance with the profile P;
 
-      -  is bound to a specific PoP key; and
+      -  is bound to a specific PoP key;
 
       -  targets a specific audience; and
 
@@ -1702,7 +1727,7 @@ Table of Contents
 
    In accordance with these recommendations, if an access token T_NEW
    does not differ in any of the respects above from an existing access
-   token T_OLD stored at the RS, then T_NEW will supersede T_OLD by
+   token T_OLD stored at the RS, then T_NEW ought to supersede T_OLD by
    replacing the corresponding authorization information.
 
    Not complying with these recommendations can additionally complicate
@@ -1730,23 +1755,27 @@ Table of Contents
        defined in Section 3.  In particular, when sending the access
        token request as defined in Section 3.2, the client specifies:
 
-       *  The current Group Identifier of the OSCORE group, as value of
-          the 'context_id' parameter.
+       *  The current Group Identifier of the OSCORE group, as the value
+          of the 'context_id' parameter.
 
-       *  The current Sender ID that it has in the OSCORE group, as
+       *  The current Sender ID that it has in the OSCORE group, as the
           value of the 'salt_input' parameter.
 
        *  The new authentication credential that it uses in the OSCORE
-          group, as inner confirmation value of the 'req_cnf' parameter.
-
-       *  The proof-of-possession (PoP) evidence corresponding to the
-          public key of the new authentication credential, as value of
-          the 'client_cred_verify' or 'client_cred_verify_mac'
+          group, as the inner confirmation value of the 'req_cnf'
           parameter.
 
+       *  Optionally, the proof-of-possession (PoP) evidence
+          corresponding to the public key of the new authentication
+          credential, as the value of the 'client_cred_verify' or
+          'client_cred_verify_mac' parameter.
+
+          The possible omission of the PoP evidence is based on the same
+          criteria that are defined in Section 3.2.
+
    2.  After receiving the access token response from the AS (see
-       Section 3.3), the client performs the same exchanges with the RS
-       as defined in Section 4.
+       Section 3.3), the client performs with the RS the same exchanges
+       that are defined in Section 4.
 
    When receiving the new access token T_NEW, the RS performs the same
    steps defined in Section 4.2, with the following addition in case the
@@ -1761,7 +1790,7 @@ Table of Contents
 
    As specified in the ACE framework (see Sections 5.8 and 5.9 of
    [RFC9200]), the requesting entity (client and/or RS) and the AS
-   communicate via the /token or /introspect endpoint.  The use of CoAP
+   communicate via the token or introspect endpoint.  The use of CoAP
    and OSCORE [RFC8613] for this communication is RECOMMENDED in this
    profile.  Other protocols fulfilling the security requirements
    defined in Sections 5 and 6 of [RFC9200] (such as HTTP and DTLS or
@@ -1771,8 +1800,8 @@ Table of Contents
    expected to have a pre-established Security Context in place.  How
    this Security Context is established is out of the scope of this
    profile.  Furthermore, the requesting entity and the AS communicate
-   using OSCORE through the /token endpoint as specified in Section 5.8
-   of [RFC9200], and through the /introspect endpoint as specified in
+   using OSCORE through the token endpoint as specified in Section 5.8
+   of [RFC9200] and through the introspect endpoint as specified in
    Section 5.9 of [RFC9200].
 
 7.  Discarding the Security Context
@@ -1784,7 +1813,7 @@ Table of Contents
    renewed by the Group Manager through a group rekeying process (see
    Section 12.2 of [I-D.ietf-core-oscore-groupcomm]).
 
-   The client or RS can acquire a new Group OSCORE Security Context, by
+   The client or RS can acquire a new Group OSCORE Security Context by
    re-joining the OSCORE group, e.g., by using the approach defined in
    [I-D.ietf-ace-key-groupcomm-oscore].  In such a case, the client
    SHOULD request a new access token to be uploaded to the RS.
@@ -1859,7 +1888,8 @@ Table of Contents
    public key is included both in the authentication credential that the
    client uses in the OSCORE group and in the authentication credential
    that the client uses as CRED_I (CRED_R) when running the EDHOC
-   protocol in the forward (reverse) message flow.
+   protocol in the forward (reverse) message flow (see Appendix A.2 of
+   [RFC9528]).
 
    Section 4.6 provides considerations and recommendations on storing
    multiple access tokens per PoP key when using the Group OSCORE
@@ -1883,7 +1913,7 @@ Table of Contents
             | client_cred_verify_mac | TBD      | byte string |
             +------------------------+----------+-------------+
 
-                 Table 1: CBOR Mappings for New Parameters.
+                 Table 1: CBOR Mappings for New Parameters
 
    The new claims defined in this document MUST be mapped to CBOR types
    as specified in Table 2, using the given integer abbreviation for the
@@ -1897,7 +1927,7 @@ Table of Contents
                   | salt_input | TBD      | byte string |
                   +------------+----------+-------------+
 
-                   Table 2: CBOR Mappings for New Claims.
+                   Table 2: CBOR Mappings for New Claims
 
 10.  Security Considerations
 
@@ -1918,10 +1948,10 @@ Table of Contents
    the integrity protection of the access token by protecting it through
    an asymmetric signature.  In addition, the used group-audience has to
    correctly identify all the RSs that are intended recipients of the
-   access token, and for which the single scope specified in the access
-   token applies.  As a particular case, the audience can be the name of
-   the OSCORE group, if the access token is intended for all the RSs in
-   that group.
+   access token and for which the single scope specified in the access
+   token applies.  As a particular case, the audience can refer to the
+   OSCORE group as a whole, if the access token is intended for all the
+   RSs in that group.
 
    Furthermore, this document inherits the general security
    considerations about Group OSCORE [I-D.ietf-core-oscore-groupcomm],
@@ -1937,15 +1967,15 @@ Table of Contents
    pairwise mode (see Section 8 of [I-D.ietf-core-oscore-groupcomm]).
 
    When protecting an outgoing message in group mode, the sender uses
-   its private key to compute a digital signature, which is embedded in
+   its private key to compute a digital signature that is embedded in
    the protected message.  The group mode can be used to protect
    messages sent to multiple recipients (e.g., over IP multicast) or to
    a single recipient.
 
    When protecting an outgoing message in pairwise mode, the sender uses
-   a pairwise symmetric key, which is derived from the asymmetric keys
-   of the two peers exchanging the message.  The pairwise mode can be
-   used to protect only messages intended for a single recipient.
+   a pairwise symmetric key that is derived from the asymmetric keys of
+   the two peers exchanging the message.  The pairwise mode can be used
+   to protect only messages intended for a single recipient.
 
 11.  Privacy Considerations
 
@@ -1961,12 +1991,12 @@ Table of Contents
    information about the RS and/or its existing relationship with the
    client.  It is advisable to include as little information as possible
    in an unencrypted response.  However, since both the client and the
-   RS share a Group OSCORE Security Context, unauthorized, yet protected
+   RS share a Group OSCORE Security Context, unauthorized yet protected
    requests are followed by protected responses, which can thus include
    more detailed information.
 
    Although it may be encrypted, the access token is sent in the clear
-   to the /authz-info endpoint at the RS.  Thus, if the client uses the
+   to the authz-info endpoint at the RS.  Thus, if the client uses the
    same single access token from multiple locations with multiple
    resource servers, it can risk being tracked through the access
    token's value.
@@ -2005,8 +2035,8 @@ Table of Contents
 12.2.  OAuth Parameters Registry
 
    IANA is asked to add the following entries to the "OAuth Parameters"
-   registry, following the procedure specified in Section 11.2 of
-   [RFC6749].
+   registry within the "OAuth Parameters" registry group, following the
+   procedure specified in Section 11.2 of [RFC6749].
 
    *  Name: context_id
 
@@ -2102,8 +2132,9 @@ Table of Contents
 12.4.  CBOR Web Token (CWT) Claims Registry
 
    IANA is asked to add the following entries to the "CBOR Web Token
-   (CWT) Claims" registry, following the procedure specified in
-   Section 9.1 of [RFC8392].
+   (CWT) Claims" registry within the "CBOR Web Token (CWT) Claims"
+   registry group, following the procedure specified in Section 9.1 of
+   [RFC8392].
 
    *  Claim Name: context_id
 
@@ -2155,27 +2186,28 @@ Table of Contents
 13.1.  Normative References
 
    [I-D.ietf-ace-key-groupcomm-oscore]
-              Tiloca, M., Park, J., and F. Palombini, "Key Management
-              for OSCORE Groups in ACE", Work in Progress, Internet-
-              Draft, draft-ietf-ace-key-groupcomm-oscore-16, 6 March
-              2023, <https://datatracker.ietf.org/doc/html/draft-ietf-
-              ace-key-groupcomm-oscore-16>.
+              Tiloca, M. and F. Palombini, "Key Management for Group
+              Object Security for Constrained RESTful Environments
+              (Group OSCORE) Using Authentication and Authorization for
+              Constrained Environments (ACE)", Work in Progress,
+              Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-18, 28
+              August 2025, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-ace-key-groupcomm-oscore-18>.
 
    [I-D.ietf-core-groupcomm-bis]
               Dijk, E. and M. Tiloca, "Group Communication for the
               Constrained Application Protocol (CoAP)", Work in
               Progress, Internet-Draft, draft-ietf-core-groupcomm-bis-
-              13, 24 February 2025,
-              <https://datatracker.ietf.org/doc/html/draft-ietf-core-
-              groupcomm-bis-13>.
+              14, 2 July 2025, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-core-groupcomm-bis-14>.
 
    [I-D.ietf-core-oscore-groupcomm]
               Tiloca, M., Selander, G., Palombini, F., Mattsson, J. P.,
               and R. Höglund, "Group Object Security for Constrained
               RESTful Environments (Group OSCORE)", Work in Progress,
-              Internet-Draft, draft-ietf-core-oscore-groupcomm-24, 8
-              February 2025, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-core-oscore-groupcomm-24>.
+              Internet-Draft, draft-ietf-core-oscore-groupcomm-26, 5
+              July 2025, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-core-oscore-groupcomm-26>.
 
    [NIST-800-56A]
               Barker, E., Chen, L., Roginsky, A., Vassilev, A., and R.
@@ -2289,34 +2321,34 @@ Table of Contents
               Security for Constrained Environments (OSCORE) Profile for
               Authentication and Authorization for Constrained
               Environments (ACE)", Work in Progress, Internet-Draft,
-              draft-ietf-ace-edhoc-oscore-profile-06, 21 October 2024,
+              draft-ietf-ace-edhoc-oscore-profile-08, 7 July 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-ace-
-              edhoc-oscore-profile-06>.
+              edhoc-oscore-profile-08>.
 
    [I-D.ietf-ace-workflow-and-params]
-              Tiloca, M. and G. Selander, "Alternative Workflow and
-              OAuth Parameters for the Authentication and Authorization
-              for Constrained Environments (ACE) Framework", Work in
-              Progress, Internet-Draft, draft-ietf-ace-workflow-and-
-              params-03, 21 October 2024,
+              Tiloca, M. and G. Selander, "Short Distribution Chain
+              (SDC) Workflow and New OAuth Parameters for the
+              Authentication and Authorization for Constrained
+              Environments (ACE) Framework", Work in Progress, Internet-
+              Draft, draft-ietf-ace-workflow-and-params-05, 7 July 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-ace-
-              workflow-and-params-03>.
+              workflow-and-params-05>.
 
    [I-D.ietf-cose-cbor-encoded-cert]
               Mattsson, J. P., Selander, G., Raza, S., Höglund, J., and
               M. Furuhed, "CBOR Encoded X.509 Certificates (C509
               Certificates)", Work in Progress, Internet-Draft, draft-
-              ietf-cose-cbor-encoded-cert-12, 8 January 2025,
+              ietf-cose-cbor-encoded-cert-15, 18 August 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-cose-
-              cbor-encoded-cert-12>.
+              cbor-encoded-cert-15>.
 
    [I-D.tiloca-core-oscore-discovery]
               Tiloca, M., Amsüss, C., and P. Van der Stok, "Discovery of
               OSCORE Groups with the CoRE Resource Directory", Work in
               Progress, Internet-Draft, draft-tiloca-core-oscore-
-              discovery-16, 4 September 2024,
+              discovery-17, 3 March 2025,
               <https://datatracker.ietf.org/doc/html/draft-tiloca-core-
-              oscore-discovery-16>.
+              oscore-discovery-17>.
 
    [NIST-800-207]
               Rose, S., Borchert, O., Mitchell, S., and S. Connelly,
@@ -2354,6 +2386,11 @@ Table of Contents
               DOI 10.17487/RFC9431, July 2023,
               <https://www.rfc-editor.org/rfc/rfc9431>.
 
+   [RFC9528]  Selander, G., Preuß Mattsson, J., and F. Palombini,
+              "Ephemeral Diffie-Hellman Over COSE (EDHOC)", RFC 9528,
+              DOI 10.17487/RFC9528, March 2024,
+              <https://www.rfc-editor.org/rfc/rfc9528>.
+
 Appendix A.  Profile Requirements
 
    This appendix lists the specifications of this profile based on the
@@ -2378,7 +2415,7 @@ Appendix A.  Profile Requirements
 
    *  Specify how the client and the RS mutually authenticate:
       Explicitly, by possession of a common Group OSCORE Security
-      Context, and by either: usage of digital signatures embedded in
+      Context and by either: usage of digital signatures embedded in
       messages, if protected with the group mode of Group OSCORE; or
       protection of messages with the pairwise mode of Group OSCORE, by
       using pairwise symmetric keys derived from the asymmetric keys of
@@ -2402,11 +2439,11 @@ Appendix A.  Profile Requirements
    *  Specify the communication and security protocol for interactions
       between the client and AS: HTTP/CoAP (+ TLS/DTLS/OSCORE).
 
-   *  Specify if/how the /authz-info endpoint is protected, including
-      how error responses are protected: Not protected.
+   *  Specify if/how the authz-info endpoint is protected, including how
+      error responses are protected: Not protected.
 
    *  Optionally, define other methods of token transport than the
-      /authz-info endpoint: Not defined.
+      authz-info endpoint: Not defined.
 
 Appendix B.  CDDL Model
 
@@ -2434,7 +2471,17 @@ Appendix C.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-C.1.  Version -03 to -04
+C.1.  Version -04 to -05
+
+   *  Consistent mentioning of the optional presence of the PoP evidence
+      in the access token request.
+
+   *  Guidelines on updating the quartet (GID, SaltInput, AuthCred,
+      AuthCredGM) at the RS when a client obtains a new Sender ID.
+
+   *  Clarifications and editorial improvements.
+
+C.2.  Version -03 to -04
 
    *  Required that 'cnf' in the access token includes exactly what C
       uploaded to the Group Manager.
@@ -2453,7 +2500,7 @@ C.1.  Version -03 to -04
 
    *  Editorial fixes and improvements.
 
-C.2.  Version -02 to -03
+C.3.  Version -02 to -03
 
    *  Lowercase "client", "resource server", "authorization server", and
       "access token".
@@ -2482,7 +2529,7 @@ C.2.  Version -02 to -03
 
    *  Editorial fixes and improvements.
 
-C.3.  Version -01 to -02
+C.4.  Version -01 to -02
 
    *  CBOR diagnostic notation uses placeholders from a CDDL model.
 
@@ -2500,7 +2547,7 @@ C.3.  Version -01 to -02
 
    *  Editorial fixes and improvements.
 
-C.4.  Version -00 to -01
+C.5.  Version -00 to -01
 
    *  Deleting an access token does not delete the Group OSCORE Security
       Context.
@@ -2538,7 +2585,7 @@ Authors' Addresses
    Marco Tiloca
    RISE AB
    Isafjordsgatan 22
-   SE-16440 Stockholm Kista
+   SE-164 40 Kista Kista
    Sweden
    Email: marco.tiloca@ri.se
 
@@ -2546,7 +2593,7 @@ Authors' Addresses
    Rikard Höglund
    RISE AB
    Isafjordsgatan 22
-   SE-16440 Stockholm Kista
+   SE-164 40 Kista Kista
    Sweden
    Email: rikard.hoglund@ri.se
 
@@ -2554,6 +2601,6 @@ Authors' Addresses
    Francesca Palombini
    Ericsson AB
    Torshamnsgatan 23
-   SE-16440 Stockholm Kista
+   SE-164 40 Kista Kista
    Sweden
    Email: francesca.palombini@ericsson.com
