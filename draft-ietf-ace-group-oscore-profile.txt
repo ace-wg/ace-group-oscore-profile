@@ -117,8 +117,9 @@ Table of Contents
      12.1.  ACE Profiles Registry
      12.2.  OAuth Parameters Registry
      12.3.  OAuth Parameters CBOR Mappings Registry
-     12.4.  CBOR Web Token (CWT) Claims Registry
-     12.5.  TLS Exporter Label Registry
+     12.4.  JSON Web Token Claims Registry
+     12.5.  CBOR Web Token (CWT) Claims Registry
+     12.6.  TLS Exporter Label Registry
    13. References
      13.1.  Normative References
      13.2.  Informative References
@@ -742,7 +743,7 @@ Table of Contents
       defined in Section 4 of [RFC5705], using the following inputs:
 
       -  The exporter label "EXPORTER-ACE-PoP-Input-Client-AS"
-         registered in Section 12.5 of this document.
+         registered in Section 12.6 of this document.
 
       -  The empty 'context value', i.e., a 'context value' of zero-
          length.
@@ -754,7 +755,7 @@ Table of Contents
       defined in Section 7.5 of [RFC8446], using the following inputs:
 
       -  The exporter label "EXPORTER-ACE-PoP-Input-Client-AS"
-         registered in Section 12.5 of this document.
+         registered in Section 12.6 of this document.
 
       -  The empty 'context_value', i.e., a 'context_value' of zero-
          length.
@@ -2136,7 +2137,31 @@ Table of Contents
 
    *  Original Specification: [RFC-XXXX]
 
-12.4.  CBOR Web Token (CWT) Claims Registry
+12.4.  JSON Web Token Claims Registry
+
+   IANA is asked to add the following entries to the "JSON Web Token
+   Claims" registry within the "JSON Web Token (JWT)" registry group,
+   following the procedure specified in [RFC7519].
+
+   *  Claim Name: context_id
+
+   *  Claim Description: Client provided Context ID
+
+   *  Change Controller: IETF
+
+   *  Reference: [RFC-XXXX]
+
+
+
+   *  Claim Name: salt_input
+
+   *  Claim Description: Client provided salt input
+
+   *  Change Controller: IETF
+
+   *  Reference: [RFC-XXXX]
+
+12.5.  CBOR Web Token (CWT) Claims Registry
 
    IANA is asked to add the following entries to the "CBOR Web Token
    (CWT) Claims" registry within the "CBOR Web Token (CWT) Claims"
@@ -2173,7 +2198,7 @@ Table of Contents
 
    *  Reference: [RFC-XXXX, Section 3.3.3]
 
-12.5.  TLS Exporter Label Registry
+12.6.  TLS Exporter Label Registry
 
    IANA is asked to add the following entry to the "TLS Exporter Label"
    registry within the "Transport Layer Security (TLS) Parameters"
@@ -2256,6 +2281,10 @@ Table of Contents
               Application Protocol (CoAP)", RFC 7252,
               DOI 10.17487/RFC7252, June 2014,
               <https://www.rfc-editor.org/rfc/rfc7252>.
+
+   [RFC7519]  Jones, M., Bradley, J., and N. Sakimura, "JSON Web Token
+              (JWT)", RFC 7519, DOI 10.17487/RFC7519, May 2015,
+              <https://www.rfc-editor.org/rfc/rfc7519>.
 
    [RFC7748]  Langley, A., Hamburg, M., and S. Turner, "Elliptic Curves
               for Security", RFC 7748, DOI 10.17487/RFC7748, January
@@ -2484,6 +2513,8 @@ C.1.  Version -05 to -06
    *  Replaced "GID" with "Gid".
 
    *  Mentioned revised semantics of the 'ace_profile' parameter.
+
+   *  Added registrations to the "JSON Web Token Claims" IANA registry.
 
    *  Minor clarifications and editorial improvements.
 

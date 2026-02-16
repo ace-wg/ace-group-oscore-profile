@@ -1280,10 +1280,13 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.12.2.3.1"><a href="#section-12.3" class="auto internal xref">12.3</a>.  <a href="#name-oauth-parameters-cbor-mappi" class="internal xref">OAuth Parameters CBOR Mappings Registry</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.4">
-                <p id="section-toc.1-1.12.2.4.1"><a href="#section-12.4" class="auto internal xref">12.4</a>.  <a href="#name-cbor-web-token-cwt-claims-r" class="internal xref">CBOR Web Token (CWT) Claims Registry</a></p>
+                <p id="section-toc.1-1.12.2.4.1"><a href="#section-12.4" class="auto internal xref">12.4</a>.  <a href="#name-json-web-token-claims-regis" class="internal xref">JSON Web Token Claims Registry</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.5">
-                <p id="section-toc.1-1.12.2.5.1"><a href="#section-12.5" class="auto internal xref">12.5</a>.  <a href="#name-tls-exporter-label-registry" class="internal xref">TLS Exporter Label Registry</a></p>
+                <p id="section-toc.1-1.12.2.5.1"><a href="#section-12.5" class="auto internal xref">12.5</a>.  <a href="#name-cbor-web-token-cwt-claims-r" class="internal xref">CBOR Web Token (CWT) Claims Registry</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.6">
+                <p id="section-toc.1-1.12.2.6.1"><a href="#section-12.6" class="auto internal xref">12.6</a>.  <a href="#name-tls-exporter-label-registry" class="internal xref">TLS Exporter Label Registry</a></p>
 </li>
             </ul>
 </li>
@@ -1721,7 +1724,7 @@ Note that C might have previously uploaded AUTH_CRED_C to the Group Manager as p
             <p id="section-3.2-10.1.1">If the client and the AS communicate over TLS 1.2 <span>[<a href="#RFC5246" class="cite xref">RFC5246</a>]</span> or DTLS 1.2 <span>[<a href="#RFC6347" class="cite xref">RFC6347</a>]</span>, the PoP input is an exporter value computed as defined in <span><a href="https://rfc-editor.org/rfc/rfc5705#section-4" class="relref">Section 4</a> of [<a href="#RFC5705" class="cite xref">RFC5705</a>]</span>, using the following inputs:<a href="#section-3.2-10.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.2-10.1.2.1">
-                <p id="section-3.2-10.1.2.1.1">The exporter label "EXPORTER-ACE-PoP-Input-Client-AS" registered in <a href="#iana-tls-exporter-label" class="auto internal xref">Section 12.5</a> of this document.<a href="#section-3.2-10.1.2.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-10.1.2.1.1">The exporter label "EXPORTER-ACE-PoP-Input-Client-AS" registered in <a href="#iana-tls-exporter-label" class="auto internal xref">Section 12.6</a> of this document.<a href="#section-3.2-10.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-3.2-10.1.2.2">
                 <p id="section-3.2-10.1.2.2.1">The empty 'context value', i.e., a 'context value' of zero-length.<a href="#section-3.2-10.1.2.2.1" class="pilcrow">¶</a></p>
@@ -1735,7 +1738,7 @@ Note that C might have previously uploaded AUTH_CRED_C to the Group Manager as p
             <p id="section-3.2-10.2.1">If the client and the AS communicate over TLS 1.3 <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> or DTLS 1.3 <span>[<a href="#RFC9147" class="cite xref">RFC9147</a>]</span>, the PoP input is an exporter value computed as defined in <span><a href="https://rfc-editor.org/rfc/rfc8446#section-7.5" class="relref">Section 7.5</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>, using the following inputs:<a href="#section-3.2-10.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.2-10.2.2.1">
-                <p id="section-3.2-10.2.2.1.1">The exporter label "EXPORTER-ACE-PoP-Input-Client-AS" registered in <a href="#iana-tls-exporter-label" class="auto internal xref">Section 12.5</a> of this document.<a href="#section-3.2-10.2.2.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-10.2.2.1.1">The exporter label "EXPORTER-ACE-PoP-Input-Client-AS" registered in <a href="#iana-tls-exporter-label" class="auto internal xref">Section 12.6</a> of this document.<a href="#section-3.2-10.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-3.2-10.2.2.2">
                 <p id="section-3.2-10.2.2.2.1">The empty 'context_value', i.e., a 'context_value' of zero-length.<a href="#section-3.2-10.2.2.2.1" class="pilcrow">¶</a></p>
@@ -2843,12 +2846,12 @@ The possible omission of the PoP evidence is based on the same criteria that are
         </ul>
 </section>
 </div>
-<div id="iana-token-cwt-claims">
+<div id="iana-token-json-claims">
 <section id="section-12.4">
-        <h3 id="name-cbor-web-token-cwt-claims-r">
-<a href="#section-12.4" class="section-number selfRef">12.4. </a><a href="#name-cbor-web-token-cwt-claims-r" class="section-name selfRef">CBOR Web Token (CWT) Claims Registry</a>
+        <h3 id="name-json-web-token-claims-regis">
+<a href="#section-12.4" class="section-number selfRef">12.4. </a><a href="#name-json-web-token-claims-regis" class="section-name selfRef">JSON Web Token Claims Registry</a>
         </h3>
-<p id="section-12.4-1">IANA is asked to add the following entries to the "CBOR Web Token (CWT) Claims" registry within the "CBOR Web Token (CWT) Claims" registry group, following the procedure specified in <span><a href="https://rfc-editor.org/rfc/rfc8392#section-9.1" class="relref">Section 9.1</a> of [<a href="#RFC8392" class="cite xref">RFC8392</a>]</span>.<a href="#section-12.4-1" class="pilcrow">¶</a></p>
+<p id="section-12.4-1">IANA is asked to add the following entries to the "JSON Web Token Claims" registry within the "JSON Web Token (JWT)" registry group, following the procedure specified in <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-12.4-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-12.4-2.1">
             <p id="section-12.4-2.1.1">Claim Name: context_id<a href="#section-12.4-2.1.1" class="pilcrow">¶</a></p>
@@ -2857,19 +2860,10 @@ The possible omission of the PoP evidence is based on the same criteria that are
             <p id="section-12.4-2.2.1">Claim Description: Client provided Context ID<a href="#section-12.4-2.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-12.4-2.3">
-            <p id="section-12.4-2.3.1">JWT Claim Name: N/A<a href="#section-12.4-2.3.1" class="pilcrow">¶</a></p>
+            <p id="section-12.4-2.3.1">Change Controller: IETF<a href="#section-12.4-2.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-12.4-2.4">
-            <p id="section-12.4-2.4.1">Claim Key: TBD (value between 1 and 255)<a href="#section-12.4-2.4.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-12.4-2.5">
-            <p id="section-12.4-2.5.1">Claim Value Type: byte string<a href="#section-12.4-2.5.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-12.4-2.6">
-            <p id="section-12.4-2.6.1">Change Controller: IETF<a href="#section-12.4-2.6.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-12.4-2.7">
-            <p id="section-12.4-2.7.1">Reference: [RFC-XXXX, <a href="#context_id_claim" class="auto internal xref">Section 3.3.2</a>]<a href="#section-12.4-2.7.1" class="pilcrow">¶</a></p>
+            <p id="section-12.4-2.4.1">Reference: [RFC-XXXX]<a href="#section-12.4-2.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-12.4-3"><br></p>
@@ -2881,41 +2875,87 @@ The possible omission of the PoP evidence is based on the same criteria that are
             <p id="section-12.4-4.2.1">Claim Description: Client provided salt input<a href="#section-12.4-4.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-12.4-4.3">
-            <p id="section-12.4-4.3.1">JWT Claim Name: N/A<a href="#section-12.4-4.3.1" class="pilcrow">¶</a></p>
+            <p id="section-12.4-4.3.1">Change Controller: IETF<a href="#section-12.4-4.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-12.4-4.4">
-            <p id="section-12.4-4.4.1">Claim Key: TBD (value between 1 and 255)<a href="#section-12.4-4.4.1" class="pilcrow">¶</a></p>
+            <p id="section-12.4-4.4.1">Reference: [RFC-XXXX]<a href="#section-12.4-4.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.4-4.5">
-            <p id="section-12.4-4.5.1">Claim Value Type: byte string<a href="#section-12.4-4.5.1" class="pilcrow">¶</a></p>
+        </ul>
+</section>
+</div>
+<div id="iana-token-cwt-claims">
+<section id="section-12.5">
+        <h3 id="name-cbor-web-token-cwt-claims-r">
+<a href="#section-12.5" class="section-number selfRef">12.5. </a><a href="#name-cbor-web-token-cwt-claims-r" class="section-name selfRef">CBOR Web Token (CWT) Claims Registry</a>
+        </h3>
+<p id="section-12.5-1">IANA is asked to add the following entries to the "CBOR Web Token (CWT) Claims" registry within the "CBOR Web Token (CWT) Claims" registry group, following the procedure specified in <span><a href="https://rfc-editor.org/rfc/rfc8392#section-9.1" class="relref">Section 9.1</a> of [<a href="#RFC8392" class="cite xref">RFC8392</a>]</span>.<a href="#section-12.5-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-12.5-2.1">
+            <p id="section-12.5-2.1.1">Claim Name: context_id<a href="#section-12.5-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.4-4.6">
-            <p id="section-12.4-4.6.1">Change Controller: IETF<a href="#section-12.4-4.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-12.5-2.2">
+            <p id="section-12.5-2.2.1">Claim Description: Client provided Context ID<a href="#section-12.5-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.4-4.7">
-            <p id="section-12.4-4.7.1">Reference: [RFC-XXXX, <a href="#salt_input_claim" class="auto internal xref">Section 3.3.3</a>]<a href="#section-12.4-4.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-12.5-2.3">
+            <p id="section-12.5-2.3.1">JWT Claim Name: N/A<a href="#section-12.5-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-12.5-2.4">
+            <p id="section-12.5-2.4.1">Claim Key: TBD (value between 1 and 255)<a href="#section-12.5-2.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-12.5-2.5">
+            <p id="section-12.5-2.5.1">Claim Value Type: byte string<a href="#section-12.5-2.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-12.5-2.6">
+            <p id="section-12.5-2.6.1">Change Controller: IETF<a href="#section-12.5-2.6.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-12.5-2.7">
+            <p id="section-12.5-2.7.1">Reference: [RFC-XXXX, <a href="#context_id_claim" class="auto internal xref">Section 3.3.2</a>]<a href="#section-12.5-2.7.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-12.5-3"><br></p>
+<ul class="normal">
+<li class="normal" id="section-12.5-4.1">
+            <p id="section-12.5-4.1.1">Claim Name: salt_input<a href="#section-12.5-4.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-12.5-4.2">
+            <p id="section-12.5-4.2.1">Claim Description: Client provided salt input<a href="#section-12.5-4.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-12.5-4.3">
+            <p id="section-12.5-4.3.1">JWT Claim Name: N/A<a href="#section-12.5-4.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-12.5-4.4">
+            <p id="section-12.5-4.4.1">Claim Key: TBD (value between 1 and 255)<a href="#section-12.5-4.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-12.5-4.5">
+            <p id="section-12.5-4.5.1">Claim Value Type: byte string<a href="#section-12.5-4.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-12.5-4.6">
+            <p id="section-12.5-4.6.1">Change Controller: IETF<a href="#section-12.5-4.6.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-12.5-4.7">
+            <p id="section-12.5-4.7.1">Reference: [RFC-XXXX, <a href="#salt_input_claim" class="auto internal xref">Section 3.3.3</a>]<a href="#section-12.5-4.7.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="iana-tls-exporter-label">
-<section id="section-12.5">
+<section id="section-12.6">
         <h3 id="name-tls-exporter-label-registry">
-<a href="#section-12.5" class="section-number selfRef">12.5. </a><a href="#name-tls-exporter-label-registry" class="section-name selfRef">TLS Exporter Label Registry</a>
+<a href="#section-12.6" class="section-number selfRef">12.6. </a><a href="#name-tls-exporter-label-registry" class="section-name selfRef">TLS Exporter Label Registry</a>
         </h3>
-<p id="section-12.5-1">IANA is asked to add the following entry to the "TLS Exporter Label" registry within the "Transport Layer Security (TLS) Parameters" registry group, following the procedure specified in <span><a href="https://rfc-editor.org/rfc/rfc5705#section-6" class="relref">Section 6</a> of [<a href="#RFC5705" class="cite xref">RFC5705</a>]</span> and updated in <span><a href="https://rfc-editor.org/rfc/rfc8447#section-12" class="relref">Section 12</a> of [<a href="#RFC8447" class="cite xref">RFC8447</a>]</span>.<a href="#section-12.5-1" class="pilcrow">¶</a></p>
+<p id="section-12.6-1">IANA is asked to add the following entry to the "TLS Exporter Label" registry within the "Transport Layer Security (TLS) Parameters" registry group, following the procedure specified in <span><a href="https://rfc-editor.org/rfc/rfc5705#section-6" class="relref">Section 6</a> of [<a href="#RFC5705" class="cite xref">RFC5705</a>]</span> and updated in <span><a href="https://rfc-editor.org/rfc/rfc8447#section-12" class="relref">Section 12</a> of [<a href="#RFC8447" class="cite xref">RFC8447</a>]</span>.<a href="#section-12.6-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-12.5-2.1">
-            <p id="section-12.5-2.1.1">Value: EXPORTER-ACE-PoP-Input-Client-AS<a href="#section-12.5-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-12.6-2.1">
+            <p id="section-12.6-2.1.1">Value: EXPORTER-ACE-PoP-Input-Client-AS<a href="#section-12.6-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.5-2.2">
-            <p id="section-12.5-2.2.1">DTLS-OK: Y<a href="#section-12.5-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-12.6-2.2">
+            <p id="section-12.6-2.2.1">DTLS-OK: Y<a href="#section-12.6-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.5-2.3">
-            <p id="section-12.5-2.3.1">Recommended: N<a href="#section-12.5-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-12.6-2.3">
+            <p id="section-12.6-2.3.1">Recommended: N<a href="#section-12.6-2.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.5-2.4">
-            <p id="section-12.5-2.4.1">Reference: [RFC-XXXX, <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>]<a href="#section-12.5-2.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-12.6-2.4">
+            <p id="section-12.6-2.4.1">Reference: [RFC-XXXX, <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>]<a href="#section-12.6-2.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -2976,6 +3016,10 @@ The possible omission of the PoP evidence is based on the same criteria that are
 <dt id="RFC7252">[RFC7252]</dt>
         <dd>
 <span class="refAuthor">Shelby, Z.</span>, <span class="refAuthor">Hartke, K.</span>, and <span class="refAuthor">C. Bormann</span>, <span class="refTitle">"The Constrained Application Protocol (CoAP)"</span>, <span class="seriesInfo">RFC 7252</span>, <span class="seriesInfo">DOI 10.17487/RFC7252</span>, <time datetime="2014-06" class="refDate">June 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7252">https://www.rfc-editor.org/rfc/rfc7252</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7519">[RFC7519]</dt>
+        <dd>
+<span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">N. Sakimura</span>, <span class="refTitle">"JSON Web Token (JWT)"</span>, <span class="seriesInfo">RFC 7519</span>, <span class="seriesInfo">DOI 10.17487/RFC7519</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7519">https://www.rfc-editor.org/rfc/rfc7519</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC7748">[RFC7748]</dt>
         <dd>
@@ -3185,7 +3229,10 @@ kccs = 11
             <p id="appendix-C.1-1.2.1">Mentioned revised semantics of the 'ace_profile' parameter.<a href="#appendix-C.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-C.1-1.3">
-            <p id="appendix-C.1-1.3.1">Minor clarifications and editorial improvements.<a href="#appendix-C.1-1.3.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.3.1">Added registrations to the "JSON Web Token Claims" IANA registry.<a href="#appendix-C.1-1.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.1-1.4">
+            <p id="appendix-C.1-1.4.1">Minor clarifications and editorial improvements.<a href="#appendix-C.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
