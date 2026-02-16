@@ -54,6 +54,7 @@ normative:
   RFC6347:
   RFC6749:
   RFC7252:
+  RFC7519:
   RFC7748:
   RFC8392:
   RFC8610:
@@ -1135,6 +1136,22 @@ IANA is asked to add the following entries to the "OAuth Parameters CBOR Mapping
 * Reference: \[RFC-XXXX, {{client_cred_verify_mac}}\]
 * Original Specification: {{&SELF}}
 
+## JSON Web Token Claims Registry ## {#iana-token-json-claims}
+
+IANA is asked to add the following entries to the "JSON Web Token Claims" registry within the "JSON Web Token (JWT)" registry group, following the procedure specified in {{RFC7519}}.
+
+* Claim Name: context_id
+* Claim Description: Client provided Context ID
+* Change Controller: IETF
+* Reference: {{&SELF}}
+
+<br>
+
+* Claim Name: salt_input
+* Claim Description: Client provided salt input
+* Change Controller: IETF
+* Reference: {{&SELF}}
+
 ## CBOR Web Token (CWT) Claims Registry ## {#iana-token-cwt-claims}
 
 IANA is asked to add the following entries to the "CBOR Web Token (CWT) Claims" registry within the "CBOR Web Token (CWT) Claims" registry group, following the procedure specified in {{Section 9.1 of RFC8392}}.
@@ -1226,6 +1243,8 @@ kccs = 11
 * Replaced "GID" with "Gid".
 
 * Mentioned revised semantics of the 'ace_profile' parameter.
+
+* Added registrations to the "JSON Web Token Claims" IANA registry.
 
 * Minor clarifications and editorial improvements.
 
