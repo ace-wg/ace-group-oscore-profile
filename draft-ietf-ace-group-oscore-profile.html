@@ -2554,7 +2554,7 @@ The possible omission of the PoP evidence is based on the same criteria that are
           <p id="section-8-6.2.1">"rs1_osc", which the client can use to request an access token for the OSCORE profile and targeting only that RS. That is, the client specifies this audience when requesting the access token T2.<a href="#section-8-6.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-8-7">Alternatively, the client could provide the AS with an explicit indication of the profile to use, according to which the AS is requested to issue an access token. For example, this can rely on the 'ace_profile' parameter of the access token request, aligned with its revised semantics as specified in <span>[<a href="#I-D.ietf-ace-workflow-and-params" class="cite xref">I-D.ietf-ace-workflow-and-params</a>]</span>.<a href="#section-8-7" class="pilcrow">¶</a></p>
+<p id="section-8-7">Alternatively, the client could provide the AS with an explicit indication of the profile to use, according to which the AS is requested to issue an access token. For example, the client can rely on the 'ace_profile' parameter of the access token request, aligned with its revised semantics as specified in <span>[<a href="#I-D.ietf-ace-workflow-and-params" class="cite xref">I-D.ietf-ace-workflow-and-params</a>]</span>.<a href="#section-8-7" class="pilcrow">¶</a></p>
 <p id="section-8-8">Note that an RS has to be able to store at least one access token per PoP key. When specifically considering the Group OSCORE profile and the OSCORE profile, the RS can always store both corresponding access tokens T1 and T2, since they are always bound to different PoP keys. That is:<a href="#section-8-8" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-8-9.1">

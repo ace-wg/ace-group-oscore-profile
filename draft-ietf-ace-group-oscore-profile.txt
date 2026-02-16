@@ -1869,9 +1869,9 @@ Table of Contents
 
    Alternatively, the client could provide the AS with an explicit
    indication of the profile to use, according to which the AS is
-   requested to issue an access token.  For example, this can rely on
-   the 'ace_profile' parameter of the access token request, aligned with
-   its revised semantics as specified in
+   requested to issue an access token.  For example, the client can rely
+   on the 'ace_profile' parameter of the access token request, aligned
+   with its revised semantics as specified in
    [I-D.ietf-ace-workflow-and-params].
 
    Note that an RS has to be able to store at least one access token per
