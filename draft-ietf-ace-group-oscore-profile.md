@@ -996,7 +996,7 @@ For example, an RS registered as "rs1" at the AS can be associated with two audi
 
 - "rs1_osc", which the client can use to request an access token for the OSCORE profile and targeting only that RS. That is, the client specifies this audience when requesting the access token T2.
 
-Alternatively, the client could provide the AS with an explicit indication of the profile to use, according to which the AS is requested to issue an access token. For example, this can rely on the 'ace_profile' parameter of the access token request, aligned with its revised semantics as specified in {{I-D.ietf-ace-workflow-and-params}}.
+Alternatively, the client could provide the AS with an explicit indication of the profile to use, according to which the AS is requested to issue an access token. For example, the client can rely on the 'ace_profile' parameter of the access token request, aligned with its revised semantics as specified in {{I-D.ietf-ace-workflow-and-params}}.
 
 Note that an RS has to be able to store at least one access token per PoP key. When specifically considering the Group OSCORE profile and the OSCORE profile, the RS can always store both corresponding access tokens T1 and T2, since they are always bound to different PoP keys. That is:
 
