@@ -1078,28 +1078,28 @@ IANA is asked to add the following entries to the "OAuth Parameters" registry wi
 * Name: context_id
 * Parameter Usage Location: token request
 * Change Controller: IETF
-* Reference: {{context_id}} of {{&SELF}}
+* Reference: \[RFC-XXXX, {{context_id}}\]
 
 <br>
 
 * Name: salt_input
 * Parameter Usage Location: token request
 * Change Controller: IETF
-* Reference: {{salt_input}} of {{&SELF}}
+* Reference: \[RFC-XXXX, {{salt_input}}\]
 
 <br>
 
 * Name: client_cred_verify
 * Parameter Usage Location: token request
 * Change Controller: IETF
-* Reference: {{client_cred_verify}} of {{&SELF}}
+* Reference: \[RFC-XXXX, {{client_cred_verify}}\]
 
 <br>
 
 * Name: client_cred_verify_mac
 * Parameter Usage Location: token request
 * Change Controller: IETF
-* Reference: {{client_cred_verify_mac}} of {{&SELF}}
+* Reference: \[RFC-XXXX, {{client_cred_verify_mac}}\]
 
 ## OAuth Parameters CBOR Mappings Registry ## {#iana-token-cbor-mappings}
 
@@ -1108,7 +1108,7 @@ IANA is asked to add the following entries to the "OAuth Parameters CBOR Mapping
 * Name: context_id
 * CBOR Key: TBD (value between 1 and 255)
 * Value Type: byte string
-* Reference: {{context_id}} of {{&SELF}}
+* Reference: \[RFC-XXXX, {{context_id}}\]
 * Original Specification: {{&SELF}}
 
 <br>
@@ -1116,7 +1116,7 @@ IANA is asked to add the following entries to the "OAuth Parameters CBOR Mapping
 * Name: salt_input
 * CBOR Key: TBD (value between 1 and 255)
 * Value Type: byte string
-* Reference: {{salt_input}} of {{&SELF}}
+* Reference: \[RFC-XXXX, {{salt_input}}\]
 * Original Specification: {{&SELF}}
 
 <br>
@@ -1124,7 +1124,7 @@ IANA is asked to add the following entries to the "OAuth Parameters CBOR Mapping
 * Name: client_cred_verify
 * CBOR Key: TBD (value between 1 and 255)
 * Value Type: byte string
-* Reference: {{client_cred_verify}} of {{&SELF}}
+* Reference: \[RFC-XXXX, {{client_cred_verify}}\]
 * Original Specification: {{&SELF}}
 
 <br>
@@ -1132,7 +1132,7 @@ IANA is asked to add the following entries to the "OAuth Parameters CBOR Mapping
 * Name: client_cred_verify_mac
 * CBOR Key: TBD (value between 1 and 255)
 * Value Type: byte string
-* Reference: {{client_cred_verify_mac}} of {{&SELF}}
+* Reference: \[RFC-XXXX, {{client_cred_verify_mac}}\]
 * Original Specification: {{&SELF}}
 
 ## CBOR Web Token (CWT) Claims Registry ## {#iana-token-cwt-claims}
@@ -1145,7 +1145,7 @@ IANA is asked to add the following entries to the "CBOR Web Token (CWT) Claims" 
 * Claim Key: TBD (value between 1 and 255)
 * Claim Value Type: byte string
 * Change Controller: IETF
-* Reference: {{context_id_claim}} of {{&SELF}}
+* Reference: \[RFC-XXXX, {{context_id_claim}}\]
 
 <br>
 
@@ -1155,7 +1155,7 @@ IANA is asked to add the following entries to the "CBOR Web Token (CWT) Claims" 
 * Claim Key: TBD (value between 1 and 255)
 * Claim Value Type: byte string
 * Change Controller: IETF
-* Reference: {{salt_input_claim}} of {{&SELF}}
+* Reference: \[RFC-XXXX, {{salt_input_claim}}\]
 
 ## TLS Exporter Label Registry ## {#iana-tls-exporter-label}
 
@@ -1164,7 +1164,7 @@ IANA is asked to add the following entry to the "TLS Exporter Label" registry wi
 * Value: EXPORTER-ACE-PoP-Input-Client-AS
 * DTLS-OK: Y
 * Recommended: N
-* Reference: {{sec-c-as-token-endpoint}} of {{&SELF}}
+* Reference: \[RFC-XXXX, {{sec-c-as-token-endpoint}}\]
 
 --- back
 
