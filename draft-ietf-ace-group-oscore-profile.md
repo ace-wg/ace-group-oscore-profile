@@ -128,15 +128,15 @@ This document specifies a profile for the Authentication and Authorization for C
 
 # Introduction # {#intro}
 
-A number of applications rely on a group communication model where a client can access a resource hosted at multiple resource servers at once, e.g., over IP multicast. Typical examples include switching of luminaries, actuators control, and distribution of software updates. Secure communication in the group can be achieved by sharing a set of keying material, which is typically provided upon joining the group.
+A number of applications rely on a group communication model where a client can access a resource hosted at multiple resource servers at once, e.g., over IP multicast. Typical examples include switching of luminaires, control of actuators, and distribution of software updates. Secure communication in the group can be achieved by sharing a set of keying material, which is typically provided upon joining the group.
 
-For some of such applications, it could be just fine to enforce access control in a straightforward fashion. That is, any client authorized to join the group, hence to obtain the group keying material, can also be implicitly authorized to perform any action at any resource hosted at any server in the group. An example of application where such implicit authorization might serve well is a simple lighting scenario, where the lightbulbs are the servers and the user account on an app on the user's phone is the client. In this case, it might be fine to not require additional authorization evidence from any user account, if it is acceptable that any current group member is also authorized to switch on and off any light, or to check the status of any light.
+For some of such applications, it could be acceptable to enforce access control in a straightforward fashion. That is, any client authorized to join the group, hence to obtain the group keying material, can also be implicitly authorized to perform any action at any resource hosted at any server in the group. An example of an application where such implicit authorization might serve well is a simple lighting scenario, where the lightbulbs are the servers and the user account on an app on the user's phone is the client. In this case, it might be fine to not require additional authorization evidence from any user account, if it is acceptable that any current group member is also authorized to switch on and off any light, or to check the status of any light.
 
 However, in different instances of such applications, the approach above is not desirable, as different group members are intended to have different access rights to resources hosted at other group members. For instance, enforcing access control in accordance with a more fine-grained approach is required in the two following use cases.
 
 As a first case, an application provides control of smart locks acting as servers in the group, where: a first type of client, e.g., a user account of a child, is allowed to only query the status of the smart locks; while a second type of client, e.g., a user account of a parent, is allowed to both query and change the status of the smart locks. Further similar applications concern the enforcement of different sets of permissions in groups with sensor/actuator devices, e.g., thermostats acting as servers. Also, some group members may even be intended as servers only. Hence, they must be prevented from acting as clients altogether and from accessing resources at other servers in the group, especially when attempting to perform non-safe operations.
 
-As a second case, building automation scenarios often rely on servers that, under different circumstances, enforce different level of priority for processing received commands. For instance, BACnet deployments consider multiple classes of clients, e.g., a normal light switch (C1) and an emergency fire panel (C2). Then, a C1 client is not allowed to override a command from a C2 client, until the latter relinquishes control at its higher priority. That is: i) only C2 clients should be able to adjust the minimum required level of priority on the servers, so rightly locking out C1 clients if needed; and ii) when a server is set to accept only high-priority commands, only C2 clients should be able to perform such commands that are otherwise allowed also to C1 clients. Given the different maximum authority of different clients, fine-grained access control would effectively limit the execution of high- and emergency-priority commands only to devices that are in fact authorized to perform such actions. Besides, it would prevent a misconfigured or compromised device from initiating a high-priority command and lock out normal control.
+As a second case, building automation scenarios often rely on servers that, under different circumstances, enforce different levels of priority for processing received commands. For instance, BACnet deployments consider multiple classes of clients, e.g., a normal light switch (C1) and an emergency fire panel (C2). Then, a C1 client is not allowed to override a command from a C2 client, until the latter relinquishes control at its higher priority. That is: i) only C2 clients should be able to adjust the minimum required level of priority on the servers, so rightly locking out C1 clients if needed; and ii) when a server is set to accept only high-priority commands, only C2 clients should be able to perform such commands that are otherwise allowed also to C1 clients. Given the different maximum authority of different clients, fine-grained access control would effectively limit the execution of high- and emergency-priority commands only to devices that are in fact authorized to perform such actions. Besides, it would prevent a misconfigured or compromised device from initiating a high-priority command and lock out normal control.
 
 In the cases above, being a legitimate group member and storing the group keying material is not meant to imply any particular access rights. Instead, access control to the secure group communication channel and access control to the resource space provided by servers in the group should remain logically separated domains.
 
@@ -144,7 +144,7 @@ This is aligned with the Zero Trust paradigm {{NIST-800-207}}, which focuses on 
 
 Furthermore, {{NIST-800-207}} highlights how the Zero Trust goal is to "prevent unauthorized access to data and services coupled with making the access control enforcement as granular as possible", in order to "enforce least privileges needed to perform the action in the request."
 
-As a step in this direction, one can be tempted to introduce a different security group for each different set of access rights. However, this inconveniently results in additional keying material to distribute and manage. In particular, if the access rights pertaining to a node change, this requires to evict the node from the group, after which the node has to join a different group aligned with its new access rights. Moreover, the keying material of both groups would have to be renewed for their current members. Overall, this would have a non negligible impact on operations and performance.
+As a step in this direction, one can be tempted to introduce a different security group for each different set of access rights. However, this inconveniently results in additional keying material to distribute and manage. In particular, if the access rights pertaining to a node change, this requires evicting the node from the group, after which the node has to join a different group aligned with its new access rights. Moreover, the keying material of both groups would have to be renewed for their current members. Overall, this would have a non-negligible impact on operations and performance.
 
 Instead, a fine-grained yet flexible access control model can be enforced within the same group, by using the Authentication and Authorization for Constrained Environments (ACE) framework {{RFC9200}}. That is, a client has to first obtain authorization credentials in the form of an access token and then upload it to the intended resource server(s) in the group, before accessing the target resources hosted at such resource server(s).
 
@@ -577,7 +577,7 @@ If the access token request specifies either the 'client_cred_verify' parameter 
 
 If the verification of the PoP evidence succeeds, then the AS considers AUTH_CRED_C to be "confirmed" from then on.
 
-Instead, if the verification of the PoP evidence fails, then the AS MUST consider the access token request to be invalid. Also, the AS MUST consider AUTH_CRED_C to be "non confirmed" from then on, until the AS achieves again proof of possession of the client's private key.
+Instead, if the verification of the PoP evidence fails, then the AS MUST consider the access token request to be invalid. Also, the AS MUST consider AUTH_CRED_C to be "non confirmed" from then on, until the AS again achieves proof of possession of the client's private key.
 
 If the access token request was invalid or not authorized, then the AS MUST reply to the client with an error response as described in {{Section 5.8.3 of RFC9200}}.
 
@@ -712,7 +712,7 @@ This can be enabled by building on concepts defined in {{I-D.ietf-ace-workflow-a
 
 * "token_series_id" - This new parameter is defined in {{I-D.ietf-ace-workflow-and-params}}, as intended to be used in the access token request/response exchange between C and the AS.
 
-  This parameter is meant to specify the unique identifier of a token series. A new, corresponding claim to include into access tokens is also defined in {{I-D.ietf-ace-workflow-and-params}}.
+  This parameter is meant to specify the unique identifier of a token series. A new, corresponding claim to include in access tokens is also defined in {{I-D.ietf-ace-workflow-and-params}}.
 
 At a high-level, the above can enable the dynamic update of access rights as follows:
 
@@ -786,7 +786,7 @@ The RS MUST verify the validity of the access token as defined in {{Section 5.10
   - The group G has GID\* as current Gid.
   - The audience targeted by the access token is consistent with using the group G for accessing protected resources hosted by the RS.
 
-  If no such group is found, the RS MUST consider the access token invalid and MUST reply to the client with a 4.00 (Bad Request) an error response.
+  If no such group is found, the RS MUST consider the access token invalid and MUST reply to the client with a 4.00 (Bad Request) error response.
 
   Otherwise, for each of the N >= 1 groups G in the set GROUPS, the RS MUST request to the corresponding Group Manager the authentication credential that the client uses in G, specifying SID\* in the request sent to the Group Manager (see {{Section 9.3 of I-D.ietf-ace-key-groupcomm-oscore}}).
 
@@ -796,7 +796,7 @@ The RS MUST verify the validity of the access token as defined in {{Section 5.10
 
   * None or more than one of the Group Managers provide the RS with a successful response where the conveyed AUTH_CRED_C is equal to AUTH_CRED_C\*.
 
-  * After having performed a maximum, pre-configured amount of attempts or after a maximum, pre-configured amount of time has elapsed, less than N Group Managers have sent a successful response to the RS.
+  * After having performed a maximum, pre-configured number of attempts or after a maximum, pre-configured amount of time has elapsed, less than N Group Managers have sent a successful response to the RS.
 
   The process above is successful if and only if the RS receives a successful response from all the N Group Managers, and exactly one of such responses conveys AUTH_CRED_C equal to AUTH_CRED_C\*. This ensures that there is only one OSCORE group G\* such that: the client and the RS are both its members; it has GID\* as current Gid; and the client uses SID\* as Sender ID in the group. In turn, this will ensure that the RS can bound the access token to such single OSCORE group G\*.
 
@@ -844,7 +844,7 @@ When communicating with the RS to access the resources as specified by the autho
 
 After successful validation of the access token as defined in {{sec-rs-c-created}} and after having sent the 2.01 (Created) response, the RS can start to communicate with the client using Group OSCORE {{I-D.ietf-core-oscore-groupcomm}}.
 
-When processing an incoming request protected with Group OSCORE, the RS MUST consider as client's valid authentication credential only the one associated with the stored access token. As defined in {{sec-client-public-key-change}}, a possible change of the client's authentication credential requires the client to upload to the RS a new access token bound to the new authentication credential.
+When processing an incoming request protected with Group OSCORE, the RS MUST consider as the client's valid authentication credential only the one associated with the stored access token. As defined in {{sec-client-public-key-change}}, a possible change of the client's authentication credential requires the client to upload to the RS a new access token bound to the new authentication credential.
 
 For every incoming request, if Group OSCORE verification succeeds, the verification of access rights is performed as described in {{sec-c-rs-access-rights}}.
 
@@ -977,7 +977,7 @@ If OSCORE {{RFC8613}} is used, the requesting entity and the AS are expected to 
 
 # Discarding the Security Context # {#sec-discard-context}
 
-As members of an OSCORE group, the client and the RS may independently leave the group or be forced to, e.g., if compromised or suspected so. Upon leaving the OSCORE group, the client or RS also discards the Group OSCORE Security Context, which may anyway be renewed by the Group Manager through a group rekeying process (see {{Section 12.2 of I-D.ietf-core-oscore-groupcomm}}).
+As members of an OSCORE group, the client and the RS may independently leave the group or be forced to, e.g., if compromised or suspected to be so. Upon leaving the OSCORE group, the client or RS also discards the Group OSCORE Security Context, which may anyway be renewed by the Group Manager through a group rekeying process (see {{Section 12.2 of I-D.ietf-core-oscore-groupcomm}}).
 
 The client or RS can acquire a new Group OSCORE Security Context by re-joining the OSCORE group, e.g., by using the approach defined in {{I-D.ietf-ace-key-groupcomm-oscore}}. In such a case, the client SHOULD request a new access token to be uploaded to the RS.
 
@@ -1031,7 +1031,7 @@ The new claims defined in this document MUST be mapped to CBOR types as specifie
 
 This document specifies a profile for the Authentication and Authorization for Constrained Environments (ACE) framework {{RFC9200}}. Thus, the general security considerations from the ACE framework also apply to this profile.
 
-The proof-of-possession (PoP) key bound to an access token is always an asymmetric key, i.e., the public key included in the authentication credential that the client uses in the OSCORE group. This means that there is never a same shared secret used as PoP key with possible multiple RSs. Therefore, it is possible and safe for the AS to issue an access token for an audience that includes multiple RSs (i.e., a group-audience, see {{Section 6.9 of RFC9200}}).
+The proof-of-possession (PoP) key bound to an access token is always an asymmetric key, i.e., the public key included in the authentication credential that the client uses in the OSCORE group. This means that the same shared secret is never used as PoP key with possible multiple RSs. Therefore, it is possible and safe for the AS to issue an access token for an audience that includes multiple RSs (i.e., a group-audience, see {{Section 6.9 of RFC9200}}).
 
 In such a case, as per {{Section 6.1 of RFC9200}}, the AS has to ensure the integrity protection of the access token by protecting it through an asymmetric signature. In addition, the used group-audience has to correctly identify all the RSs that are intended recipients of the access token and for which the single scope specified in the access token applies. As a particular case, the audience can refer to the OSCORE group as a whole, if the access token is intended for all the RSs in that group.
 
