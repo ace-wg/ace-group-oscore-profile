@@ -5,9 +5,9 @@
 ACE Working Group                                              M. Tiloca
 Internet-Draft                                                R. Höglund
 Intended status: Standards Track                                 RISE AB
-Expires: 20 August 2026                                     F. Palombini
+Expires: 30 August 2026                                     F. Palombini
                                                              Ericsson AB
-                                                        16 February 2026
+                                                        26 February 2026
 
 
  The Group Object Security for Constrained RESTful Environments (Group
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 August 2026.
+   This Internet-Draft will expire on 30 August 2026.
 
 Copyright Notice
 
@@ -140,15 +140,16 @@ Table of Contents
    A number of applications rely on a group communication model where a
    client can access a resource hosted at multiple resource servers at
    once, e.g., over IP multicast.  Typical examples include switching of
-   luminaries, actuators control, and distribution of software updates.
-   Secure communication in the group can be achieved by sharing a set of
-   keying material, which is typically provided upon joining the group.
+   luminaires, control of actuators, and distribution of software
+   updates.  Secure communication in the group can be achieved by
+   sharing a set of keying material, which is typically provided upon
+   joining the group.
 
-   For some of such applications, it could be just fine to enforce
+   For some of such applications, it could be acceptable to enforce
    access control in a straightforward fashion.  That is, any client
    authorized to join the group, hence to obtain the group keying
    material, can also be implicitly authorized to perform any action at
-   any resource hosted at any server in the group.  An example of
+   any resource hosted at any server in the group.  An example of an
    application where such implicit authorization might serve well is a
    simple lighting scenario, where the lightbulbs are the servers and
    the user account on an app on the user's phone is the client.  In
@@ -178,7 +179,7 @@ Table of Contents
    operations.
 
    As a second case, building automation scenarios often rely on servers
-   that, under different circumstances, enforce different level of
+   that, under different circumstances, enforce different levels of
    priority for processing received commands.  For instance, BACnet
    deployments consider multiple classes of clients, e.g., a normal
    light switch (C1) and an emergency fire panel (C2).  Then, a C1
@@ -221,11 +222,11 @@ Table of Contents
    different security group for each different set of access rights.
    However, this inconveniently results in additional keying material to
    distribute and manage.  In particular, if the access rights
-   pertaining to a node change, this requires to evict the node from the
+   pertaining to a node change, this requires evicting the node from the
    group, after which the node has to join a different group aligned
    with its new access rights.  Moreover, the keying material of both
    groups would have to be renewed for their current members.  Overall,
-   this would have a non negligible impact on operations and
+   this would have a non-negligible impact on operations and
    performance.
 
    Instead, a fine-grained yet flexible access control model can be
@@ -1059,7 +1060,7 @@ Table of Contents
    Instead, if the verification of the PoP evidence fails, then the AS
    MUST consider the access token request to be invalid.  Also, the AS
    MUST consider AUTH_CRED_C to be "non confirmed" from then on, until
-   the AS achieves again proof of possession of the client's private
+   the AS again achieves proof of possession of the client's private
    key.
 
    If the access token request was invalid or not authorized, then the
@@ -1249,7 +1250,7 @@ Table of Contents
       access token request/response exchange between C and the AS.
 
       This parameter is meant to specify the unique identifier of a
-      token series.  A new, corresponding claim to include into access
+      token series.  A new, corresponding claim to include in access
       tokens is also defined in [I-D.ietf-ace-workflow-and-params].
 
    At a high-level, the above can enable the dynamic update of access
@@ -1403,7 +1404,7 @@ Table of Contents
          the RS.
 
       If no such group is found, the RS MUST consider the access token
-      invalid and MUST reply to the client with a 4.00 (Bad Request) an
+      invalid and MUST reply to the client with a 4.00 (Bad Request)
       error response.
 
       Otherwise, for each of the N >= 1 groups G in the set GROUPS, the
@@ -1428,7 +1429,7 @@ Table of Contents
          a successful response where the conveyed AUTH_CRED_C is equal
          to AUTH_CRED_C*.
 
-      -  After having performed a maximum, pre-configured amount of
+      -  After having performed a maximum, pre-configured number of
          attempts or after a maximum, pre-configured amount of time has
          elapsed, less than N Group Managers have sent a successful
          response to the RS.
@@ -1540,8 +1541,8 @@ Table of Contents
    [I-D.ietf-core-oscore-groupcomm].
 
    When processing an incoming request protected with Group OSCORE, the
-   RS MUST consider as client's valid authentication credential only the
-   one associated with the stored access token.  As defined in
+   RS MUST consider as the client's valid authentication credential only
+   the one associated with the stored access token.  As defined in
    Section 5, a possible change of the client's authentication
    credential requires the client to upload to the RS a new access token
    bound to the new authentication credential.
@@ -1816,9 +1817,9 @@ Table of Contents
 
    As members of an OSCORE group, the client and the RS may
    independently leave the group or be forced to, e.g., if compromised
-   or suspected so.  Upon leaving the OSCORE group, the client or RS
-   also discards the Group OSCORE Security Context, which may anyway be
-   renewed by the Group Manager through a group rekeying process (see
+   or suspected to be so.  Upon leaving the OSCORE group, the client or
+   RS also discards the Group OSCORE Security Context, which may anyway
+   be renewed by the Group Manager through a group rekeying process (see
    Section 12.2 of [I-D.ietf-core-oscore-groupcomm]).
 
    The client or RS can acquire a new Group OSCORE Security Context by
@@ -1947,10 +1948,10 @@ Table of Contents
    The proof-of-possession (PoP) key bound to an access token is always
    an asymmetric key, i.e., the public key included in the
    authentication credential that the client uses in the OSCORE group.
-   This means that there is never a same shared secret used as PoP key
-   with possible multiple RSs.  Therefore, it is possible and safe for
-   the AS to issue an access token for an audience that includes
-   multiple RSs (i.e., a group-audience, see Section 6.9 of [RFC9200]).
+   This means that the same shared secret is never used as PoP key with
+   possible multiple RSs.  Therefore, it is possible and safe for the AS
+   to issue an access token for an audience that includes multiple RSs
+   (i.e., a group-audience, see Section 6.9 of [RFC9200]).
 
    In such a case, as per Section 6.1 of [RFC9200], the AS has to ensure
    the integrity protection of the access token by protecting it through
@@ -2222,9 +2223,9 @@ Table of Contents
               Object Security for Constrained RESTful Environments
               (Group OSCORE) Using Authentication and Authorization for
               Constrained Environments (ACE)", Work in Progress,
-              Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-19, 24
-              January 2026, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-ace-key-groupcomm-oscore-19>.
+              Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-20, 25
+              February 2026, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-ace-key-groupcomm-oscore-20>.
 
    [I-D.ietf-core-groupcomm-bis]
               Dijk, E. and M. Tiloca, "Group Communication for the
