@@ -5,9 +5,9 @@
 ACE Working Group                                              M. Tiloca
 Internet-Draft                                                R. Höglund
 Intended status: Standards Track                                 RISE AB
-Expires: 30 August 2026                                     F. Palombini
+Expires: 27 December 2026                                   F. Palombini
                                                              Ericsson AB
-                                                        26 February 2026
+                                                            25 June 2026
 
 
  The Group Object Security for Constrained RESTful Environments (Group
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 August 2026.
+   This Internet-Draft will expire on 27 December 2026.
 
 Copyright Notice
 
@@ -126,12 +126,13 @@ Table of Contents
    Appendix A.  Profile Requirements
    Appendix B.  CDDL Model
    Appendix C.  Document Updates
-     C.1.  Version -05 to -06
-     C.2.  Version -04 to -05
-     C.3.  Version -03 to -04
-     C.4.  Version -02 to -03
-     C.5.  Version -01 to -02
-     C.6.  Version -00 to -01
+     C.1.  Version -06 to -07
+     C.2.  Version -05 to -06
+     C.3.  Version -04 to -05
+     C.4.  Version -03 to -04
+     C.5.  Version -02 to -03
+     C.6.  Version -01 to -02
+     C.7.  Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -2223,9 +2224,9 @@ Table of Contents
               Object Security for Constrained RESTful Environments
               (Group OSCORE) Using Authentication and Authorization for
               Constrained Environments (ACE)", Work in Progress,
-              Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-20, 25
-              February 2026, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-ace-key-groupcomm-oscore-20>.
+              Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-21, 14
+              March 2026, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-ace-key-groupcomm-oscore-21>.
 
    [I-D.ietf-core-groupcomm-bis]
               Dijk, E. and M. Tiloca, "Group Communication for the
@@ -2359,34 +2360,34 @@ Table of Contents
               Security for Constrained Environments (OSCORE) Profile for
               Authentication and Authorization for Constrained
               Environments (ACE)", Work in Progress, Internet-Draft,
-              draft-ietf-ace-edhoc-oscore-profile-09, 20 October 2025,
+              draft-ietf-ace-edhoc-oscore-profile-10, 1 March 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-ace-
-              edhoc-oscore-profile-09>.
+              edhoc-oscore-profile-10>.
 
    [I-D.ietf-ace-workflow-and-params]
               Tiloca, M. and G. Selander, "Short Distribution Chain
               (SDC) Workflow and New OAuth Parameters for the
               Authentication and Authorization for Constrained
               Environments (ACE) Framework", Work in Progress, Internet-
-              Draft, draft-ietf-ace-workflow-and-params-06, 20 October
-              2025, <https://datatracker.ietf.org/doc/html/draft-ietf-
-              ace-workflow-and-params-06>.
+              Draft, draft-ietf-ace-workflow-and-params-07, 2 March
+              2026, <https://datatracker.ietf.org/doc/html/draft-ietf-
+              ace-workflow-and-params-07>.
 
    [I-D.ietf-cose-cbor-encoded-cert]
-              Mattsson, J. P., Selander, G., Raza, S., Höglund, J., and
-              M. Furuhed, "CBOR Encoded X.509 Certificates (C509
-              Certificates)", Work in Progress, Internet-Draft, draft-
-              ietf-cose-cbor-encoded-cert-16, 25 January 2026,
+              Mattsson, J. P., Selander, G., Raza, S., Höglund, J.,
+              Furuhed, M., and L. Liao, "CBOR Encoded X.509 Certificates
+              (C509 Certificates)", Work in Progress, Internet-Draft,
+              draft-ietf-cose-cbor-encoded-cert-19, 11 May 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-cose-
-              cbor-encoded-cert-16>.
+              cbor-encoded-cert-19>.
 
    [I-D.tiloca-core-oscore-discovery]
               Tiloca, M., Amsüss, C., and P. Van der Stok, "Discovery of
               OSCORE Groups with the CoRE Resource Directory", Work in
               Progress, Internet-Draft, draft-tiloca-core-oscore-
-              discovery-18, 3 September 2025,
+              discovery-19, 2 March 2026,
               <https://datatracker.ietf.org/doc/html/draft-tiloca-core-
-              oscore-discovery-18>.
+              oscore-discovery-19>.
 
    [NIST-800-207]
               Rose, S., Borchert, O., Mitchell, S., and S. Connelly,
@@ -2509,7 +2510,11 @@ Appendix C.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-C.1.  Version -05 to -06
+C.1.  Version -06 to -07
+
+   *  Minor clarifications and editorial improvements.
+
+C.2.  Version -05 to -06
 
    *  Replaced "GID" with "Gid".
 
@@ -2519,7 +2524,7 @@ C.1.  Version -05 to -06
 
    *  Minor clarifications and editorial improvements.
 
-C.2.  Version -04 to -05
+C.3.  Version -04 to -05
 
    *  Consistent mentioning of the optional presence of the PoP evidence
       in the access token request.
@@ -2529,7 +2534,7 @@ C.2.  Version -04 to -05
 
    *  Clarifications and editorial improvements.
 
-C.3.  Version -03 to -04
+C.4.  Version -03 to -04
 
    *  Required that 'cnf' in the access token includes exactly what C
       uploaded to the Group Manager.
@@ -2548,7 +2553,7 @@ C.3.  Version -03 to -04
 
    *  Editorial fixes and improvements.
 
-C.4.  Version -02 to -03
+C.5.  Version -02 to -03
 
    *  Lowercase "client", "resource server", "authorization server", and
       "access token".
@@ -2577,7 +2582,7 @@ C.4.  Version -02 to -03
 
    *  Editorial fixes and improvements.
 
-C.5.  Version -01 to -02
+C.6.  Version -01 to -02
 
    *  CBOR diagnostic notation uses placeholders from a CDDL model.
 
@@ -2595,7 +2600,7 @@ C.5.  Version -01 to -02
 
    *  Editorial fixes and improvements.
 
-C.6.  Version -00 to -01
+C.7.  Version -00 to -01
 
    *  Deleting an access token does not delete the Group OSCORE Security
       Context.

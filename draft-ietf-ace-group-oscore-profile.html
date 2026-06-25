@@ -11,22 +11,23 @@
 <meta content="
        This document specifies a profile for the Authentication and Authorization for Constrained Environments (ACE) framework. The profile uses Group Object Security for Constrained RESTful Environments (Group OSCORE) to provide communication security between a client and one or multiple resource servers that are members of an OSCORE group. The profile securely binds an OAuth 2.0 access token to the public key of the client associated with the private key used by that client in the OSCORE group. The profile uses Group OSCORE to achieve server authentication and proof of possession of the client's private key. Also, it provides proof of the client's membership to the OSCORE group by binding the access token to information from the Group OSCORE Security Context, thus allowing the resource server(s) to verify the client's membership upon receiving a message protected with Group OSCORE from the client. Effectively, the profile enables fine-grained access control paired with secure group communication, in accordance with the Zero Trust principles. 
     " name="description">
-<meta content="xml2rfc 3.31.0" name="generator">
+<meta content="xml2rfc 3.34.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-ace-group-oscore-profile-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.31.0
-    Python 3.12.12
-    ConfigArgParse 1.7
+  xml2rfc 3.34.0
+    Python 3.14.5
+    ConfigArgParse 1.7.5
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
-    lxml 6.0.2
-    platformdirs 4.5.1
+    lxml 6.1.1
+    natsort 8.4.0
+    platformdirs 4.10.0
     pycountry 24.6.1
     PyYAML 6.0.3
-    requests 2.32.5
-    wcwidth 0.3.0
+    requests 2.33.1
+    wcwidth 0.8.1
 -->
 <link href="draft-ietf-ace-group-oscore-profile.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -293,16 +294,19 @@ h1, h2, h3, h4, h5, h6 {
   font-size-adjust: 0.5;
   color: var(--title-color);
 }
-h1#title {
-  font-size: 32px;
-  line-height: 40px;
-  clear: both;
-}
-h1#title, h1#rfcnum {
-  margin: 1.5em 0 0.2em;
-}
-h1#rfcnum + h1#title {
-  margin: 0.2em 0;
+h1 {
+  &#title {
+    font-size: 32px;
+    line-height: 40px;
+    clear: both;
+    margin: 1.5em 0 0.2em;
+  }
+  &#rfcnum {
+    margin: 1.5em 0 0.2em;
+    & + h1#title {
+      margin: 0.2em 0;
+    }
+  }
 }
 
 h1, h2, h3 {
@@ -322,10 +326,10 @@ h4, h5, h6 {
 #abstract+p {
   font-size: 18px;
   line-height: 24px;
-}
-#abstract+p code, #abstract+p samp, #abstract+p tt {
-  font-size: 16px;
-  line-height: 0;
+  & code, & samp, & tt {
+    font-size: 16px;
+    line-height: 0;
+  }
 }
 
 p {
@@ -336,59 +340,59 @@ p {
 div {
   margin: 0;
 }
-.alignRight.art-text {
-  background-color: var(--highlight-color);
-  border: 1px solid var(--line-color);
-  border-radius: 3px;
-  padding: 0.5em 1em 0;
-  margin-bottom: 0.5em;
-}
-.alignRight.art-text pre {
-  padding: 0;
-  width: auto;
-}
 .alignRight {
   margin: 1em 0;
-}
-.alignRight > *:first-child {
-  border: none;
-  margin: 0;
-  float: right;
-  clear: both;
-}
-.alignRight > *:nth-child(2) {
-  clear: both;
-  display: block;
-  border: none;
+  &.art-text {
+    background-color: var(--highlight-color);
+    border: 1px solid var(--line-color);
+    border-radius: 3px;
+    padding: 0.5em 1em 0;
+    margin-bottom: 0.5em;
+    & pre {
+      padding: 0;
+      width: auto;
+    }
+  }
+  & > *:first-child {
+    border: none;
+    margin: 0;
+    float: right;
+    clear: both;
+  }
+  & > *:nth-child(2) {
+    clear: both;
+    display: block;
+    border: none;
+  }
 }
 svg {
   display: block;
-}
-/* font-family isn't space-separated, but =~ will have to do */
-svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
-  font-family: var(--font-mono);
-}
-.alignCenter.art-text {
-  background-color: var(--highlight-color);
-  border: 1px solid var(--line-color);
-  border-radius: 3px;
-  padding: 0.5em 1em 0;
-  margin-bottom: 0.5em;
-}
-.alignCenter.art-text pre {
-  padding: 0;
-  width: auto;
+  /* font-family isn't space-separated, but =~ will have to do */
+  &[font-family~="monospace" i], & [font-family~="monospace" i] {
+    font-family: var(--font-mono);
+  }
 }
 .alignCenter {
   margin: 1em 0;
-}
-.alignCenter > *:first-child {
-  border: none;
-  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
-     support flexbox yet.
-  */
-  display: table;
-  margin: 0 auto;
+  &.art-text {
+    background-color: var(--highlight-color);
+    border: 1px solid var(--line-color);
+    border-radius: 3px;
+    padding: 0.5em 1em 0;
+    margin-bottom: 0.5em;
+    & pre {
+      padding: 0;
+      width: auto;
+    }
+  }
+  & > *:first-child {
+    border: none;
+    /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+       support flexbox yet.
+    */
+    display: table;
+    margin: 0 auto;
+  }
 }
 
 /* lists */
@@ -426,26 +430,25 @@ dl {
     --indent: 5ch;
     & > dt {
       min-width: calc(var(--indent) - 2ch);
+      float: none;
     }
-  }
-  &.olPercent > dt {
-    float: none;
   }
 
   dl > dd > & {
     margin-top: 0.5em;
     margin-bottom: 0;
   }
-}
-dl:not(.dlNewline) > dt {
-  float: left;
-  margin-right: 2ch;
-  min-width: 8ch;
-}
-dl > dd {
-  margin-bottom: .8em;
-  margin-left: var(--indent) !important; /* stupid element overrides */
-  min-height: 2ex;
+
+  &:not(.dlNewline) > dt {
+    float: left;
+    margin-right: 2ch;
+    min-width: 8ch;
+  }
+  & > dd {
+    margin-bottom: .8em;
+    margin-left: var(--indent) !important; /* stupid element overrides */
+    min-height: 2ex;
+  }
 }
 :is(dl.compact, .dlCompact) > dd {
   margin-bottom: 0;
@@ -461,20 +464,22 @@ dl > dd {
 }
 
 /* links */
-a, a[href].selfRef:hover {
+a {
   text-decoration: none;
+  &[href] {
+    color: var(--link-color);
+    &:hover { text-decoration: underline; }
+    &.selfRef {
+      color: var(--text-color);
+      &:hover {
+        text-decoration: none;
+        background-color: var(--highlight-color);
+      }
+    }
+  }
 }
-a[href] {
-  color: var(--link-color);
-}
-a[href].selfRef, .iref + a[href].internal {
+.iref + a[href].internal {
   color: var(--text-color);
-}
-a[href]:hover {
-  text-decoration: underline;
-}
-a[href].selfRef:hover {
-  background-color: var(--highlight-color);
 }
 a.xref:is(.cite, .auto), :is(#status-of-memo, #copyright) a {
   white-space: nowrap;
@@ -510,9 +515,9 @@ img {
 figure {
   margin: 0.5em 0;
   padding: 0;
-}
-figure blockquote {
-  margin: 0.8em 0.4em 0.4em;
+  & blockquote {
+    margin: 0.8em 0.4em 0.4em;
+  }
 }
 figcaption, caption {
   font-style: italic;
@@ -522,17 +527,19 @@ figcaption, caption {
 }
 @media screen {
   /* Auto-collapse boilerplate. */
-  :is(#status-of-memo, #copyright) p {
-    margin: -2px 0;
-    max-height: 0;
-    transition: max-height 2s ease, margin 0.5s ease 0.5s;
-    overflow: hidden;
-  }
-  :is(#status-of-memo, #copyright):hover p,
-  :is(#status-of-memo, #copyright) h2:target ~ p {
-    margin: 0.5em 0;
-    max-height: 500px;
-    overflow: auto;
+  :is(#status-of-memo, #copyright) {
+    & p {
+      margin: -2px 0;
+      max-height: 0;
+      transition: max-height 2s ease, margin 0.5s ease 0.5s;
+      overflow: hidden;
+    }
+    &:hover p,
+    & h2:target ~ p {
+      margin: 0.5em 0;
+      max-height: 500px;
+      overflow: auto;
+    }
   }
   pre, svg {
     display: inline-block;
@@ -582,25 +589,17 @@ table {
   max-width: 100%;
   margin: 0 0 1em;
   border-collapse: collapse;
-}
-table.right {
-  margin-left: auto;
-}
-table.center {
-  margin-left: auto;
-  margin-right: auto;
-}
-table.left {
-  margin-right: auto;
-}
-table .text-left {
-  text-align: left;
-}
-table .text-center {
-  text-align: center;
-}
-table .text-right {
-  text-align: right;
+  &.right { margin-left: auto; }
+  &.center { margin-left: auto; margin-right: auto; }
+  &.left { margin-right: auto; }
+  & .text-left { text-align: left; }
+  & .text-center { text-align: center; }
+  & .text-right { text-align: right; }
+  & caption {
+    margin: 0;
+    padding: 3px 0 3px 1em;
+  }
+  & p { margin: 0; }
 }
 
 thead, tbody {
@@ -620,13 +619,6 @@ th {
 :is(tr:nth-child(2n+1), thead+tbody > tr:nth-child(2n)) > td {
   background-color: var(--highlight-color);
 }
-table caption {
-  margin: 0;
-  padding: 3px 0 3px 1em;
-}
-table p {
-  margin: 0;
-}
 
 /* pilcrow */
 a.pilcrow {
@@ -637,18 +629,16 @@ a.pilcrow {
     color: var(--pilcrow-weak);
     &:hover { text-decoration: none; }
   }
-}
-@media not print {
-  :hover > a.pilcrow, a.pilcrow:focus {
-    opacity: 1;
+  @media not print {
+    :hover > &, &:focus {
+      opacity: 1;
+    }
+    &[href]:hover {
+      color: var(--pilcrow-strong);
+      background-color: transparent;
+    }
   }
-  a.pilcrow[href]:hover {
-    color: var(--pilcrow-strong);
-    background-color: transparent;
-  }
-}
-@media print {
-  a.pilcrow {
+  @media print {
     display: none;
   }
 }
@@ -707,9 +697,9 @@ sub, sup {
   font-size: 0.9em;
   font-style: italic;
   margin-top: 2em;
-}
-.docInfo .prepared {
-  float: right;
+  & .prepared {
+    float: right;
+  }
 }
 
 /* table of contents */
@@ -799,23 +789,27 @@ hr.addr {
   max-width: calc(100% - 16px);
 }
 @media (min-width: 500px) {
-  #authors-addresses > section {
-    column-count: 2;
-    column-gap: 20px;
-  }
-  #authors-addresses > section > h2 {
-    column-span: all;
-  }
-  /* hack for break-inside: avoid-column */
-  #authors-addresses address {
-    display: inline-block;
-    break-inside: avoid-column;
+  #authors-addresses {
+    & > section {
+      column-count: 2;
+      column-gap: 20px;
+    }
+    & > section > h2 {
+      column-span: all;
+    }
+    /* hack for break-inside: avoid-column */
+    & address {
+      display: inline-block;
+      break-inside: avoid-column;
+    }
   }
 }
 
 /* Comments */
-.rfcEditorRemove p:first-of-type {
-  font-style: italic;
+.rfcEditorRemove {
+  & p:first-of-type {
+    font-style: italic;
+  }
 }
 .cref {
   background-color: rgba(249, 232, 105, 0.3);
@@ -826,19 +820,21 @@ hr.addr {
 }
 
 @media screen {
-  #toc nav {
-    font-family: var(--font-title);
-    font-weight: 360;
-    & > ul { margin-bottom: 2em; }
-    & ul {
-      margin: 0 0 0 4px;
-      & :is(p, li) {
-        margin: 2px 0;
+  #toc {
+    & nav {
+      font-family: var(--font-title);
+      font-weight: 360;
+      & > ul { margin-bottom: 2em; }
+      & ul {
+        margin: 0 0 0 4px;
+        & :is(p, li) {
+          margin: 2px 0;
+        }
       }
     }
-  }
-  #toc a.toplink {
-    float: right;
+    & a.toplink {
+      float: right;
+    }
   }
 }
 @media not screen {
@@ -859,54 +855,54 @@ hr.addr {
     margin: 0;
     border-bottom: 1px solid #ccc;
     opacity: 0.6;
-  }
-  #toc h2 {
-    margin: 0;
-    padding: 2px 0 2px 6px;
-    padding-right: 1em;
-    font-size: 18px;
-    line-height: 24px;
-    min-width: 190px;
-    text-align: right;
-    background-color: #444;
-    color: white;
-    cursor: pointer;
-    &::before { /* css hamburger */
-      float: right;
-      position: relative;
-      width: 1em;
-      height: 1px;
-      left: -164px;
-      margin: 8px 0 0 0;
-      background: white none repeat scroll 0 0;
-      box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
-      content: "";
+    & h2 {
+      margin: 0;
+      padding: 2px 0 2px 6px;
+      padding-right: 1em;
+      font-size: 18px;
+      line-height: 24px;
+      min-width: 190px;
+      text-align: right;
+      background-color: #444;
+      color: white;
+      cursor: pointer;
+      &::before { /* css hamburger */
+        float: right;
+        position: relative;
+        width: 1em;
+        height: 1px;
+        left: -164px;
+        margin: 8px 0 0 0;
+        background: white none repeat scroll 0 0;
+        box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+        content: "";
+      }
     }
-  }
-  #toc nav {
-    display: none;
-    background-color: var(--background-color);
-    padding: 0.5em 1em 1em;
-    overflow: auto;
-    overscroll-behavior: contain;
-    height: calc(100vh - 48px);
-    border-left: 1px solid #ddd;
-  }
-  #toc.active {
-    opacity: 1;
-    & nav { display: block; }
-  }
-  /* Make the collapsed ToC header render white on gray also when it's a link */
-  #toc h2 a,
-  #toc h2 a:is(:link, :focus, :hover),
-  #toc a.toplink,
-  #toc a.toplink:hover {
-    color: white;
-    background-color: #444;
-    text-decoration: none;
-  }
-  #toc a.toplink {
-    margin: 2px 0.5em 0;
+    & nav {
+      display: none;
+      background-color: var(--background-color);
+      padding: 0.5em 1em 1em;
+      overflow: auto;
+      overscroll-behavior: contain;
+      height: calc(100vh - 48px);
+      border-left: 1px solid #ddd;
+    }
+    &.active {
+      opacity: 1;
+      & nav { display: block; }
+    }
+    /* Make the collapsed ToC header render white on gray also when it's a link */
+    & h2 a,
+    & h2 a:is(:link, :focus, :hover),
+    & a.toplink,
+    & a.toplink:hover {
+      color: white;
+      background-color: #444;
+      text-decoration: none;
+    }
+    & a.toplink {
+      margin: 2px 0.5em 0;
+    }
   }
 }
 
@@ -925,26 +921,26 @@ hr.addr {
     margin: 0;
     padding: 0;
     z-index: 1;
-  }
-  #toc h2 {
-    margin: 0;
-    padding: 0.25em 1em 1em 0;
-  }
-  #toc nav {
-    display: block;
-    height: calc(90vh - 84px);
-    bottom: 0;
-    padding: 0.5em 0 2em;
-    overflow: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
+    & h2 {
+      margin: 0;
+      padding: 0.25em 1em 1em 0;
+    }
+    & nav {
+      display: block;
+      height: calc(90vh - 84px);
+      bottom: 0;
+      padding: 0.5em 0 2em;
+      overflow: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+    }
+    & a.toplink {
+      margin: 8px 0.5em 0;
+    }
   }
   img { /* future proofing */
     max-width: 100%;
     height: auto;
-  }
-  #toc a.toplink {
-    margin: 8px 0.5em 0;
   }
 }
 
@@ -960,12 +956,13 @@ hr.addr {
   #n-copyright-notice {
     border-bottom: none;
   }
-  #toc, #n-introduction {
-    page-break-before: always;
-  }
   #toc {
+    page-break-before: always;
     border-top: none;
     padding-top: 0;
+  }
+  #n-introduction {
+    page-break-before: always;
   }
   figure, pre, .vcard {
     page-break-inside: avoid;
@@ -1027,17 +1024,19 @@ hr.addr {
 }
 
 /* SVG Trick: a prefix match works because only black and white are allowed */
-svg :is([stroke="black"], [stroke^="#000"]) {
-  stroke: var(--text-color);
-}
-svg :is([stroke="white"], [stroke^="#fff"]) {
-  stroke: var(--background-color);
-}
-svg :is([fill="black"], [fill^="#000"], :not([fill])) {
-  fill: var(--text-color);
-}
-svg :is([fill="white"], [fill^="#fff"]) {
-  fill: var(--background-color);
+svg {
+  & :is([stroke="black"], [stroke^="#000"]) {
+    stroke: var(--text-color);
+  }
+  & :is([stroke="white"], [stroke^="#fff"]) {
+    stroke: var(--background-color);
+  }
+  & :is([fill="black"], [fill^="#000"], :not([fill])) {
+    fill: var(--text-color);
+  }
+  & :is([fill="white"], [fill^="#fff"]) {
+    fill: var(--background-color);
+  }
 }
 </style>
 
@@ -1047,11 +1046,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Group OSCORE Profile of ACE</td>
-<td class="right">February 2026</td>
+<td class="right">June 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Tiloca, et al.</td>
-<td class="center">Expires 30 August 2026</td>
+<td class="center">Expires 27 December 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1064,12 +1063,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-ace-group-oscore-profile-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-02-26" class="published">26 February 2026</time>
+<time datetime="2026-06-25" class="published">25 June 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-08-30">30 August 2026</time></dd>
+<dd class="expires"><time datetime="2026-12-27">27 December 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1122,7 +1121,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 30 August 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 27 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1311,22 +1310,25 @@ svg :is([fill="white"], [fill^="#fff"]) {
             <p id="section-toc.1-1.16.1"><a href="#appendix-C" class="auto internal xref">Appendix C</a>.  <a href="#name-document-updates" class="internal xref">Document Updates</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16.2.1">
-                <p id="section-toc.1-1.16.2.1.1"><a href="#appendix-C.1" class="auto internal xref">C.1</a>.  <a href="#name-version-05-to-06" class="internal xref">Version -05 to -06</a></p>
+                <p id="section-toc.1-1.16.2.1.1"><a href="#appendix-C.1" class="auto internal xref">C.1</a>.  <a href="#name-version-06-to-07" class="internal xref">Version -06 to -07</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16.2.2">
-                <p id="section-toc.1-1.16.2.2.1"><a href="#appendix-C.2" class="auto internal xref">C.2</a>.  <a href="#name-version-04-to-05" class="internal xref">Version -04 to -05</a></p>
+                <p id="section-toc.1-1.16.2.2.1"><a href="#appendix-C.2" class="auto internal xref">C.2</a>.  <a href="#name-version-05-to-06" class="internal xref">Version -05 to -06</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16.2.3">
-                <p id="section-toc.1-1.16.2.3.1"><a href="#appendix-C.3" class="auto internal xref">C.3</a>.  <a href="#name-version-03-to-04" class="internal xref">Version -03 to -04</a></p>
+                <p id="section-toc.1-1.16.2.3.1"><a href="#appendix-C.3" class="auto internal xref">C.3</a>.  <a href="#name-version-04-to-05" class="internal xref">Version -04 to -05</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16.2.4">
-                <p id="section-toc.1-1.16.2.4.1"><a href="#appendix-C.4" class="auto internal xref">C.4</a>.  <a href="#name-version-02-to-03" class="internal xref">Version -02 to -03</a></p>
+                <p id="section-toc.1-1.16.2.4.1"><a href="#appendix-C.4" class="auto internal xref">C.4</a>.  <a href="#name-version-03-to-04" class="internal xref">Version -03 to -04</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16.2.5">
-                <p id="section-toc.1-1.16.2.5.1"><a href="#appendix-C.5" class="auto internal xref">C.5</a>.  <a href="#name-version-01-to-02" class="internal xref">Version -01 to -02</a></p>
+                <p id="section-toc.1-1.16.2.5.1"><a href="#appendix-C.5" class="auto internal xref">C.5</a>.  <a href="#name-version-02-to-03" class="internal xref">Version -02 to -03</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16.2.6">
-                <p id="section-toc.1-1.16.2.6.1"><a href="#appendix-C.6" class="auto internal xref">C.6</a>.  <a href="#name-version-00-to-01" class="internal xref">Version -00 to -01</a></p>
+                <p id="section-toc.1-1.16.2.6.1"><a href="#appendix-C.6" class="auto internal xref">C.6</a>.  <a href="#name-version-01-to-02" class="internal xref">Version -01 to -02</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16.2.7">
+                <p id="section-toc.1-1.16.2.7.1"><a href="#appendix-C.7" class="auto internal xref">C.7</a>.  <a href="#name-version-00-to-01" class="internal xref">Version -00 to -01</a></p>
 </li>
             </ul>
 </li>
@@ -1664,10 +1666,10 @@ Members of an OSCORE group have an associated authentication credential in the f
 Alternatively, the client can alter its current group memberships, in order to ensure that two groups like G1 and G2 cannot be determined. To this end, the client has two available options.<a href="#section-3.1-3.3.2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.1-3.3.3.1">
-                <p id="section-3.1-3.3.3.1.1">The client leaves some of the OSCORE groups that could be determined as groups like G1 and G2 (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-20#section-9.11" class="relref">Section 9.11</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>).<a href="#section-3.1-3.3.3.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-3.3.3.1.1">The client leaves some of the OSCORE groups that could be determined as groups like G1 and G2 (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-9.11" class="relref">Section 9.11</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>).<a href="#section-3.1-3.3.3.1.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-3.1-3.3.3.2">
-                <p id="section-3.1-3.3.3.2.1">The client obtains a new Sender ID in some of the OSCORE groups that could be determined as groups like G1 and G2. To this end, the client can request a new Sender ID in a group to the Group Manager responsible for that group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-20#section-9.2" class="relref">Section 9.2</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>), or re-join a group thereby obtaining a new Sender ID in that group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-20#section-6" class="relref">Section 6</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>).<a href="#section-3.1-3.3.3.2.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-3.3.3.2.1">The client obtains a new Sender ID in some of the OSCORE groups that could be determined as groups like G1 and G2. To this end, the client can request a new Sender ID in a group to the Group Manager responsible for that group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-9.2" class="relref">Section 9.2</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>), or re-join a group thereby obtaining a new Sender ID in that group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-6" class="relref">Section 6</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>).<a href="#section-3.1-3.3.3.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 <p id="section-3.1-3.3.4">
@@ -1697,7 +1699,7 @@ At the time of writing this specification, acceptable formats of authentication 
 <p id="section-3.2-3.3.3">
 Further formats may be available in the future and would be acceptable to use as long as they comply with the criteria compiled in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-2.4" class="relref">Section 2.4</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>. In particular, an authentication credential has to explicitly include the public key as well as a comprehensive set of information related to the public key algorithm, including, e.g., the elliptic curve used (when applicable).<a href="#section-3.2-3.3.3" class="pilcrow">¶</a></p>
 <p id="section-3.2-3.3.4">
-Note that C might have previously uploaded AUTH_CRED_C to the Group Manager as provided within a chain or a bag (e.g., as the end-entity certificate in a chain of certificates), by specifying it in the 'client_cred' parameter of a Join Request or of an Authentication Credential Update Request sent to the Group Manager (see Sections <a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-20#section-6.1" class="relref">6.1</a> and <a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-20#section-9.4" class="relref">9.4</a> of <span>[<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>). In such a case, the inner confirmation value of the 'req_cnf' parameter <span class="bcp14">MUST</span> specify AUTH_CRED_C as provided within the same chain or bag.<a href="#section-3.2-3.3.4" class="pilcrow">¶</a></p>
+Note that C might have previously uploaded AUTH_CRED_C to the Group Manager as provided within a chain or a bag (e.g., as the end-entity certificate in a chain of certificates), by specifying it in the 'client_cred' parameter of a Join Request or of an Authentication Credential Update Request sent to the Group Manager (see Sections <a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-6.1" class="relref">6.1</a> and <a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-9.4" class="relref">9.4</a> of <span>[<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>). In such a case, the inner confirmation value of the 'req_cnf' parameter <span class="bcp14">MUST</span> specify AUTH_CRED_C as provided within the same chain or bag.<a href="#section-3.2-3.3.4" class="pilcrow">¶</a></p>
 <p id="section-3.2-3.3.5">
 [ As to CWTs and CCSs, the CWT Confirmation Methods 'kcwt' and 'kccs' are under pending registration requested by draft-ietf-ace-edhoc-oscore-profile. ]<a href="#section-3.2-3.3.5" class="pilcrow">¶</a></p>
 <p id="section-3.2-3.3.6">
@@ -2261,7 +2263,7 @@ Otherwise, the RS retrieves from the access token:<a href="#section-4.2-2.1.3" c
 <p id="section-4.2-2.2.3">
 If no such group is found, the RS <span class="bcp14">MUST</span> consider the access token invalid and <span class="bcp14">MUST</span> reply to the client with a 4.00 (Bad Request) error response.<a href="#section-4.2-2.2.3" class="pilcrow">¶</a></p>
 <p id="section-4.2-2.2.4">
-Otherwise, for each of the N &gt;= 1 groups G in the set GROUPS, the RS <span class="bcp14">MUST</span> request to the corresponding Group Manager the authentication credential that the client uses in G, specifying SID* in the request sent to the Group Manager (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-20#section-9.3" class="relref">Section 9.3</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>).<a href="#section-4.2-2.2.4" class="pilcrow">¶</a></p>
+Otherwise, for each of the N &gt;= 1 groups G in the set GROUPS, the RS <span class="bcp14">MUST</span> request to the corresponding Group Manager the authentication credential that the client uses in G, specifying SID* in the request sent to the Group Manager (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-9.3" class="relref">Section 9.3</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>).<a href="#section-4.2-2.2.4" class="pilcrow">¶</a></p>
 <p id="section-4.2-2.2.5">
 When receiving a successful response from each of the Group Managers, the RS <span class="bcp14">MUST</span> check whether the client's authentication credential AUTH_CRED_C retrieved from the Group Manager is equal to AUTH_CRED_C* retrieved from the access token. In case AUTH_CRED_C* is provided within a chain or a bag, but AUTH_CRED_C is not provided within the same chain or bag, then the RS <span class="bcp14">MUST NOT</span> determine AUTH_CRED_C* and AUTH_CRED_C to be equal.<a href="#section-4.2-2.2.5" class="pilcrow">¶</a></p>
 <p id="section-4.2-2.2.6">
@@ -2297,17 +2299,17 @@ The process above is successful if and only if the RS receives a successful resp
 <p id="section-4.2-6">The RS <span class="bcp14">MUST</span> keep this association up-to-date over time, as the quartet (GID, SaltInput, AuthCred, AuthCredGM) associated with the access token might change. In particular:<a href="#section-4.2-6" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.2-7.1">
-            <p id="section-4.2-7.1.1">If the OSCORE group is rekeyed (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-12.2" class="relref">Section 12.2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span> and <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-20#section-11" class="relref">Section 11</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>), the Group Identifier also changes in the group and the new one replaces the current 'GID' value in the quartet (Gid, SaltInput, AuthCred, AuthCredGM).<a href="#section-4.2-7.1.1" class="pilcrow">¶</a></p>
+            <p id="section-4.2-7.1.1">If the OSCORE group is rekeyed (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-12.2" class="relref">Section 12.2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span> and <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-11" class="relref">Section 11</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>), the Group Identifier also changes in the group and the new one replaces the current 'GID' value in the quartet (Gid, SaltInput, AuthCred, AuthCredGM).<a href="#section-4.2-7.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.2-7.2">
-            <p id="section-4.2-7.2.1">If the client requests and obtains a new OSCORE Sender ID from the Group Manager (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-2.6.3.1" class="relref">Section 2.6.3.1</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span> and <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-20#section-9.2" class="relref">Section 9.2</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>), the new Sender ID replaces the current 'SaltInput' value in the quartet (GID, SaltInput, AuthCred, AuthCredGM).<a href="#section-4.2-7.2.1" class="pilcrow">¶</a></p>
+            <p id="section-4.2-7.2.1">If the client requests and obtains a new OSCORE Sender ID from the Group Manager (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-2.6.3.1" class="relref">Section 2.6.3.1</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span> and <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-9.2" class="relref">Section 9.2</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>), the new Sender ID replaces the current 'SaltInput' value in the quartet (GID, SaltInput, AuthCred, AuthCredGM).<a href="#section-4.2-7.2.1" class="pilcrow">¶</a></p>
 <p id="section-4.2-7.2.2">
 Among the quartets corresponding to access tokens that are associated with a given Group OSCORE Security Context, the RS can always identify the correct quartet to update. For example, the RS can leverage the triple (GID, AuthCred, AuthCredGM) that played a role in the successful decryption and verification of a request protected with Group OSCORE and sent by the client with the newly obtained Sender ID.<a href="#section-4.2-7.2.2" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.2-7.3">
             <p id="section-4.2-7.3.1">If the Group Manager of the OSCORE group changes its authentication credential, the new authentication credential of the Group Manager replaces the current 'AuthCredGM' value in the quartet (Gid, SaltInput, AuthCred, AuthCredGM).<a href="#section-4.2-7.3.1" class="pilcrow">¶</a></p>
 <p id="section-4.2-7.3.2">
-In order to obtain the latest authentication credential of the Group Manager, the RS can re-join the group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-20#section-6" class="relref">Section 6</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>) or send a dedicated request to the Group Manager (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-20#section-9.3" class="relref">Section 9.3</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>).<a href="#section-4.2-7.3.2" class="pilcrow">¶</a></p>
+In order to obtain the latest authentication credential of the Group Manager, the RS can re-join the group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-6" class="relref">Section 6</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>) or send a dedicated request to the Group Manager (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-9.3" class="relref">Section 9.3</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>).<a href="#section-4.2-7.3.2" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-4.2-8">As defined in <a href="#sec-client-public-key-change" class="auto internal xref">Section 5</a>, a possible change of the client's authentication credential requires the client to upload to the RS a new access token bound to the new authentication credential.<a href="#section-4.2-8" class="pilcrow">¶</a></p>
@@ -2487,7 +2489,7 @@ When using multiple transport profiles of ACE that rely on asymmetric PoP keys, 
       <h2 id="name-change-of-clients-authentic">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-change-of-clients-authentic" class="section-name selfRef">Change of Client's Authentication Credential in the Group</a>
       </h2>
-<p id="section-5-1">During its membership in the OSCORE group, the client might change the authentication credential that it uses in the group. When this happens, the client uploads the new authentication credential to the Group Manager, as defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-20#section-9.4" class="relref">Section 9.4</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-1">During its membership in the OSCORE group, the client might change the authentication credential that it uses in the group. When this happens, the client uploads the new authentication credential to the Group Manager, as defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-9.4" class="relref">Section 9.4</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <p id="section-5-2">After that, in order to continue communicating with the RS, the client <span class="bcp14">MUST</span> perform the following actions.<a href="#section-5-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-5-3">
 <li id="section-5-3.1">
@@ -2975,7 +2977,7 @@ The possible omission of the PoP evidence is based on the same criteria that are
 <dl class="references">
 <dt id="I-D.ietf-ace-key-groupcomm-oscore">[I-D.ietf-ace-key-groupcomm-oscore]</dt>
         <dd>
-<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">F. Palombini</span>, <span class="refTitle">"Key Management for Group Object Security for Constrained RESTful Environments (Group OSCORE) Using Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-20</span>, <time datetime="2026-02-25" class="refDate">25 February 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-20">https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-20</a>&gt;</span>. </dd>
+<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">F. Palombini</span>, <span class="refTitle">"Key Management for Group Object Security for Constrained RESTful Environments (Group OSCORE) Using Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-21</span>, <time datetime="2026-03-14" class="refDate">14 March 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21">https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-groupcomm-bis">[I-D.ietf-core-groupcomm-bis]</dt>
         <dd>
@@ -3084,19 +3086,19 @@ The possible omission of the PoP evidence is based on the same criteria that are
 <dl class="references">
 <dt id="I-D.ietf-ace-edhoc-oscore-profile">[I-D.ietf-ace-edhoc-oscore-profile]</dt>
         <dd>
-<span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Tiloca, M.</span>, and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC) and Object Security for Constrained Environments (OSCORE) Profile for Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-edhoc-oscore-profile-09</span>, <time datetime="2025-10-20" class="refDate">20 October 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-09">https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-09</a>&gt;</span>. </dd>
+<span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Tiloca, M.</span>, and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC) and Object Security for Constrained Environments (OSCORE) Profile for Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-edhoc-oscore-profile-10</span>, <time datetime="2026-03-01" class="refDate">1 March 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-10">https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-10</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-ace-workflow-and-params">[I-D.ietf-ace-workflow-and-params]</dt>
         <dd>
-<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">G. Selander</span>, <span class="refTitle">"Short Distribution Chain (SDC) Workflow and New OAuth Parameters for the Authentication and Authorization for Constrained Environments (ACE) Framework"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-workflow-and-params-06</span>, <time datetime="2025-10-20" class="refDate">20 October 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-workflow-and-params-06">https://datatracker.ietf.org/doc/html/draft-ietf-ace-workflow-and-params-06</a>&gt;</span>. </dd>
+<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">G. Selander</span>, <span class="refTitle">"Short Distribution Chain (SDC) Workflow and New OAuth Parameters for the Authentication and Authorization for Constrained Environments (ACE) Framework"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-workflow-and-params-07</span>, <time datetime="2026-03-02" class="refDate">2 March 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-workflow-and-params-07">https://datatracker.ietf.org/doc/html/draft-ietf-ace-workflow-and-params-07</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-cose-cbor-encoded-cert">[I-D.ietf-cose-cbor-encoded-cert]</dt>
         <dd>
-<span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Raza, S.</span>, <span class="refAuthor">Höglund, J.</span>, and <span class="refAuthor">M. Furuhed</span>, <span class="refTitle">"CBOR Encoded X.509 Certificates (C509 Certificates)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-cose-cbor-encoded-cert-16</span>, <time datetime="2026-01-25" class="refDate">25 January 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-16">https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-16</a>&gt;</span>. </dd>
+<span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Raza, S.</span>, <span class="refAuthor">Höglund, J.</span>, <span class="refAuthor">Furuhed, M.</span>, and <span class="refAuthor">L. Liao</span>, <span class="refTitle">"CBOR Encoded X.509 Certificates (C509 Certificates)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-cose-cbor-encoded-cert-19</span>, <time datetime="2026-05-11" class="refDate">11 May 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-19">https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-19</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.tiloca-core-oscore-discovery">[I-D.tiloca-core-oscore-discovery]</dt>
         <dd>
-<span class="refAuthor">Tiloca, M.</span>, <span class="refAuthor">Amsüss, C.</span>, and <span class="refAuthor">P. Van der Stok</span>, <span class="refTitle">"Discovery of OSCORE Groups with the CoRE Resource Directory"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-tiloca-core-oscore-discovery-18</span>, <time datetime="2025-09-03" class="refDate">3 September 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-tiloca-core-oscore-discovery-18">https://datatracker.ietf.org/doc/html/draft-tiloca-core-oscore-discovery-18</a>&gt;</span>. </dd>
+<span class="refAuthor">Tiloca, M.</span>, <span class="refAuthor">Amsüss, C.</span>, and <span class="refAuthor">P. Van der Stok</span>, <span class="refTitle">"Discovery of OSCORE Groups with the CoRE Resource Directory"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-tiloca-core-oscore-discovery-19</span>, <time datetime="2026-03-02" class="refDate">2 March 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-tiloca-core-oscore-discovery-19">https://datatracker.ietf.org/doc/html/draft-tiloca-core-oscore-discovery-19</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="NIST-800-207">[NIST-800-207]</dt>
         <dd>
@@ -3185,7 +3187,7 @@ The possible omission of the PoP evidence is based on the same criteria that are
 <p id="appendix-B-1">This section is to be removed before publishing as an RFC.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
 <span id="name-cddl-model-2"></span><div id="fig-cddl-model">
 <figure id="figure-7">
-        <div class="alignLeft art-CDDL art-text artwork" id="appendix-B-2.1">
+        <div class="lang-cddl sourcecode" id="appendix-B-2.1">
 <pre>
 ; ACE Profiles
 coap_group_oscore = 5
@@ -3216,173 +3218,185 @@ kccs = 11
 <a href="#appendix-C" class="section-number selfRef">Appendix C. </a><a href="#name-document-updates" class="section-name selfRef">Document Updates</a>
       </h2>
 <p id="appendix-C-1">This section is to be removed before publishing as an RFC.<a href="#appendix-C-1" class="pilcrow">¶</a></p>
-<div id="sec-05-06">
+<div id="sec-06-07">
 <section id="appendix-C.1">
-        <h3 id="name-version-05-to-06">
-<a href="#appendix-C.1" class="section-number selfRef">C.1. </a><a href="#name-version-05-to-06" class="section-name selfRef">Version -05 to -06</a>
+        <h3 id="name-version-06-to-07">
+<a href="#appendix-C.1" class="section-number selfRef">C.1. </a><a href="#name-version-06-to-07" class="section-name selfRef">Version -06 to -07</a>
         </h3>
 <ul class="normal">
 <li class="normal" id="appendix-C.1-1.1">
-            <p id="appendix-C.1-1.1.1">Replaced "GID" with "Gid".<a href="#appendix-C.1-1.1.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.1.1">Minor clarifications and editorial improvements.<a href="#appendix-C.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.1-1.2">
-            <p id="appendix-C.1-1.2.1">Mentioned revised semantics of the 'ace_profile' parameter.<a href="#appendix-C.1-1.2.1" class="pilcrow">¶</a></p>
+        </ul>
+</section>
+</div>
+<div id="sec-05-06">
+<section id="appendix-C.2">
+        <h3 id="name-version-05-to-06">
+<a href="#appendix-C.2" class="section-number selfRef">C.2. </a><a href="#name-version-05-to-06" class="section-name selfRef">Version -05 to -06</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="appendix-C.2-1.1">
+            <p id="appendix-C.2-1.1.1">Replaced "GID" with "Gid".<a href="#appendix-C.2-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.1-1.3">
-            <p id="appendix-C.1-1.3.1">Added registrations to the "JSON Web Token Claims" IANA registry.<a href="#appendix-C.1-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.2-1.2">
+            <p id="appendix-C.2-1.2.1">Mentioned revised semantics of the 'ace_profile' parameter.<a href="#appendix-C.2-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.1-1.4">
-            <p id="appendix-C.1-1.4.1">Minor clarifications and editorial improvements.<a href="#appendix-C.1-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.2-1.3">
+            <p id="appendix-C.2-1.3.1">Added registrations to the "JSON Web Token Claims" IANA registry.<a href="#appendix-C.2-1.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.2-1.4">
+            <p id="appendix-C.2-1.4.1">Minor clarifications and editorial improvements.<a href="#appendix-C.2-1.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-04-05">
-<section id="appendix-C.2">
+<section id="appendix-C.3">
         <h3 id="name-version-04-to-05">
-<a href="#appendix-C.2" class="section-number selfRef">C.2. </a><a href="#name-version-04-to-05" class="section-name selfRef">Version -04 to -05</a>
+<a href="#appendix-C.3" class="section-number selfRef">C.3. </a><a href="#name-version-04-to-05" class="section-name selfRef">Version -04 to -05</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.2-1.1">
-            <p id="appendix-C.2-1.1.1">Consistent mentioning of the optional presence of the PoP evidence in the access token request.<a href="#appendix-C.2-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.3-1.1">
+            <p id="appendix-C.3-1.1.1">Consistent mentioning of the optional presence of the PoP evidence in the access token request.<a href="#appendix-C.3-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.2-1.2">
-            <p id="appendix-C.2-1.2.1">Guidelines on updating the quartet (GID, SaltInput, AuthCred, AuthCredGM) at the RS when a client obtains a new Sender ID.<a href="#appendix-C.2-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.3-1.2">
+            <p id="appendix-C.3-1.2.1">Guidelines on updating the quartet (GID, SaltInput, AuthCred, AuthCredGM) at the RS when a client obtains a new Sender ID.<a href="#appendix-C.3-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.2-1.3">
-            <p id="appendix-C.2-1.3.1">Clarifications and editorial improvements.<a href="#appendix-C.2-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.3-1.3">
+            <p id="appendix-C.3-1.3.1">Clarifications and editorial improvements.<a href="#appendix-C.3-1.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-03-04">
-<section id="appendix-C.3">
+<section id="appendix-C.4">
         <h3 id="name-version-03-to-04">
-<a href="#appendix-C.3" class="section-number selfRef">C.3. </a><a href="#name-version-03-to-04" class="section-name selfRef">Version -03 to -04</a>
+<a href="#appendix-C.4" class="section-number selfRef">C.4. </a><a href="#name-version-03-to-04" class="section-name selfRef">Version -03 to -04</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.3-1.1">
-            <p id="appendix-C.3-1.1.1">Required that 'cnf' in the access token includes exactly what C uploaded to the Group Manager.<a href="#appendix-C.3-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.4-1.1">
+            <p id="appendix-C.4-1.1.1">Required that 'cnf' in the access token includes exactly what C uploaded to the Group Manager.<a href="#appendix-C.4-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.3-1.2">
-            <p id="appendix-C.3-1.2.1">Made the PoP evidence in the access token request optional.<a href="#appendix-C.3-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.4-1.2">
+            <p id="appendix-C.4-1.2.1">Made the PoP evidence in the access token request optional.<a href="#appendix-C.4-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.3-1.3">
-            <p id="appendix-C.3-1.3.1">Better example value for audience, when indicating the profile to use.<a href="#appendix-C.3-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.4-1.3">
+            <p id="appendix-C.4-1.3.1">Better example value for audience, when indicating the profile to use.<a href="#appendix-C.4-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.3-1.4">
-            <p id="appendix-C.3-1.4.1">Placeholder: possible use of the 'ace_profile' parameter with extended semantics, for C to select the right profile.<a href="#appendix-C.3-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.4-1.4">
+            <p id="appendix-C.4-1.4.1">Placeholder: possible use of the 'ace_profile' parameter with extended semantics, for C to select the right profile.<a href="#appendix-C.4-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.3-1.5">
-            <p id="appendix-C.3-1.5.1">Suggested value ranges for codepoints to register.<a href="#appendix-C.3-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.4-1.5">
+            <p id="appendix-C.4-1.5.1">Suggested value ranges for codepoints to register.<a href="#appendix-C.4-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.3-1.6">
-            <p id="appendix-C.3-1.6.1">Aligned CBOR abbreviations to those used in other documents.<a href="#appendix-C.3-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.4-1.6">
+            <p id="appendix-C.4-1.6.1">Aligned CBOR abbreviations to those used in other documents.<a href="#appendix-C.4-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.3-1.7">
-            <p id="appendix-C.3-1.7.1">Editorial fixes and improvements.<a href="#appendix-C.3-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.4-1.7">
+            <p id="appendix-C.4-1.7.1">Editorial fixes and improvements.<a href="#appendix-C.4-1.7.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-02-03">
-<section id="appendix-C.4">
+<section id="appendix-C.5">
         <h3 id="name-version-02-to-03">
-<a href="#appendix-C.4" class="section-number selfRef">C.4. </a><a href="#name-version-02-to-03" class="section-name selfRef">Version -02 to -03</a>
+<a href="#appendix-C.5" class="section-number selfRef">C.5. </a><a href="#name-version-02-to-03" class="section-name selfRef">Version -02 to -03</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.4-1.1">
-            <p id="appendix-C.4-1.1.1">Lowercase "client", "resource server", "authorization server", and "access token".<a href="#appendix-C.4-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.5-1.1">
+            <p id="appendix-C.5-1.1.1">Lowercase "client", "resource server", "authorization server", and "access token".<a href="#appendix-C.5-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.4-1.2">
-            <p id="appendix-C.4-1.2.1">Consistent update of section numbers for external references.<a href="#appendix-C.4-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.5-1.2">
+            <p id="appendix-C.5-1.2.1">Consistent update of section numbers for external references.<a href="#appendix-C.5-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.4-1.3">
-            <p id="appendix-C.4-1.3.1">Mentioned that this profile can also use the ACE alternative workflow.<a href="#appendix-C.4-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.5-1.3">
+            <p id="appendix-C.5-1.3.1">Mentioned that this profile can also use the ACE alternative workflow.<a href="#appendix-C.5-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.4-1.4">
-            <p id="appendix-C.4-1.4.1">Clarified that the client may ask for a new access token after the old one becomes invalid.<a href="#appendix-C.4-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.5-1.4">
+            <p id="appendix-C.5-1.4.1">Clarified that the client may ask for a new access token after the old one becomes invalid.<a href="#appendix-C.5-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.4-1.5">
-            <p id="appendix-C.4-1.5.1">Enforced uniqueness pre-requirements on the client's group membership before requesting an access token.<a href="#appendix-C.4-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.5-1.5">
+            <p id="appendix-C.5-1.5.1">Enforced uniqueness pre-requirements on the client's group membership before requesting an access token.<a href="#appendix-C.5-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.4-1.6">
-            <p id="appendix-C.4-1.6.1">Added checks on uniqueness of clients' group membership at the RS.<a href="#appendix-C.4-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.5-1.6">
+            <p id="appendix-C.5-1.6.1">Added checks on uniqueness of clients' group membership at the RS.<a href="#appendix-C.5-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.4-1.7">
-            <p id="appendix-C.4-1.7.1">Clarified the process of access right verification.<a href="#appendix-C.4-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.5-1.7">
+            <p id="appendix-C.5-1.7.1">Clarified the process of access right verification.<a href="#appendix-C.5-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.4-1.8">
-            <p id="appendix-C.4-1.8.1">Added fine-grained recommendations on storing multiple access tokens bound to the same PoP key.<a href="#appendix-C.4-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.5-1.8">
+            <p id="appendix-C.5-1.8.1">Added fine-grained recommendations on storing multiple access tokens bound to the same PoP key.<a href="#appendix-C.5-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.4-1.9">
-            <p id="appendix-C.4-1.9.1">Added guidelines on using multiple profiles.<a href="#appendix-C.4-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.5-1.9">
+            <p id="appendix-C.5-1.9.1">Added guidelines on using multiple profiles.<a href="#appendix-C.5-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.4-1.10">
-            <p id="appendix-C.4-1.10.1">Fixes in the IANA considerations.<a href="#appendix-C.4-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.5-1.10">
+            <p id="appendix-C.5-1.10.1">Fixes in the IANA considerations.<a href="#appendix-C.5-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.4-1.11">
-            <p id="appendix-C.4-1.11.1">Editorial fixes and improvements.<a href="#appendix-C.4-1.11.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.5-1.11">
+            <p id="appendix-C.5-1.11.1">Editorial fixes and improvements.<a href="#appendix-C.5-1.11.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-01-02">
-<section id="appendix-C.5">
+<section id="appendix-C.6">
         <h3 id="name-version-01-to-02">
-<a href="#appendix-C.5" class="section-number selfRef">C.5. </a><a href="#name-version-01-to-02" class="section-name selfRef">Version -01 to -02</a>
+<a href="#appendix-C.6" class="section-number selfRef">C.6. </a><a href="#name-version-01-to-02" class="section-name selfRef">Version -01 to -02</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.5-1.1">
-            <p id="appendix-C.5-1.1.1">CBOR diagnostic notation uses placeholders from a CDDL model.<a href="#appendix-C.5-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.6-1.1">
+            <p id="appendix-C.6-1.1.1">CBOR diagnostic notation uses placeholders from a CDDL model.<a href="#appendix-C.6-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.5-1.2">
-            <p id="appendix-C.5-1.2.1">Renamed the claim 'contextId_input' to 'context_id'.<a href="#appendix-C.5-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.6-1.2">
+            <p id="appendix-C.6-1.2.1">Renamed the claim 'contextId_input' to 'context_id'.<a href="#appendix-C.6-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.5-1.3">
-            <p id="appendix-C.5-1.3.1">Revised examples.<a href="#appendix-C.5-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.6-1.3">
+            <p id="appendix-C.6-1.3.1">Revised examples.<a href="#appendix-C.6-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.5-1.4">
-            <p id="appendix-C.5-1.4.1">Placeholders and early direction for dynamic update of access rights.<a href="#appendix-C.5-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.6-1.4">
+            <p id="appendix-C.6-1.4.1">Placeholders and early direction for dynamic update of access rights.<a href="#appendix-C.6-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.5-1.5">
-            <p id="appendix-C.5-1.5.1">Added text on storing multiple access tokens per PoP key on the RS.<a href="#appendix-C.5-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.6-1.5">
+            <p id="appendix-C.6-1.5.1">Added text on storing multiple access tokens per PoP key on the RS.<a href="#appendix-C.6-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.5-1.6">
-            <p id="appendix-C.5-1.6.1">Fixes in the IANA considerations.<a href="#appendix-C.5-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.6-1.6">
+            <p id="appendix-C.6-1.6.1">Fixes in the IANA considerations.<a href="#appendix-C.6-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.5-1.7">
-            <p id="appendix-C.5-1.7.1">Editorial fixes and improvements.<a href="#appendix-C.5-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.6-1.7">
+            <p id="appendix-C.6-1.7.1">Editorial fixes and improvements.<a href="#appendix-C.6-1.7.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-00-01">
-<section id="appendix-C.6">
+<section id="appendix-C.7">
         <h3 id="name-version-00-to-01">
-<a href="#appendix-C.6" class="section-number selfRef">C.6. </a><a href="#name-version-00-to-01" class="section-name selfRef">Version -00 to -01</a>
+<a href="#appendix-C.7" class="section-number selfRef">C.7. </a><a href="#name-version-00-to-01" class="section-name selfRef">Version -00 to -01</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.6-1.1">
-            <p id="appendix-C.6-1.1.1">Deleting an access token does not delete the Group OSCORE Security Context.<a href="#appendix-C.6-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.7-1.1">
+            <p id="appendix-C.7-1.1.1">Deleting an access token does not delete the Group OSCORE Security Context.<a href="#appendix-C.7-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.6-1.2">
-            <p id="appendix-C.6-1.2.1">Distinct computation of the PoP input when C and the AS use (D)TLS 1.2 or 1.3.<a href="#appendix-C.6-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.7-1.2">
+            <p id="appendix-C.7-1.2.1">Distinct computation of the PoP input when C and the AS use (D)TLS 1.2 or 1.3.<a href="#appendix-C.7-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.6-1.3">
-            <p id="appendix-C.6-1.3.1">Revised computation of the PoP input when C and the AS use OSCORE.<a href="#appendix-C.6-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.7-1.3">
+            <p id="appendix-C.7-1.3.1">Revised computation of the PoP input when C and the AS use OSCORE.<a href="#appendix-C.7-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.6-1.4">
-            <p id="appendix-C.6-1.4.1">Revised computation of the PoP evidence when the OSCORE group is a pairwise-only group.<a href="#appendix-C.6-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.7-1.4">
+            <p id="appendix-C.7-1.4.1">Revised computation of the PoP evidence when the OSCORE group is a pairwise-only group.<a href="#appendix-C.7-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.6-1.5">
-            <p id="appendix-C.6-1.5.1">Clarified requirements on the AS for verifying the PoP evidence.<a href="#appendix-C.6-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.7-1.5">
+            <p id="appendix-C.7-1.5.1">Clarified requirements on the AS for verifying the PoP evidence.<a href="#appendix-C.7-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.6-1.6">
-            <p id="appendix-C.6-1.6.1">Renamed the TLS Exporter Label for computing the PoP input.<a href="#appendix-C.6-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.7-1.6">
+            <p id="appendix-C.7-1.6.1">Renamed the TLS Exporter Label for computing the PoP input.<a href="#appendix-C.7-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.6-1.7">
-            <p id="appendix-C.6-1.7.1">Editorial fixes and improvements.<a href="#appendix-C.6-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.7-1.7">
+            <p id="appendix-C.7-1.7.1">Editorial fixes and improvements.<a href="#appendix-C.7-1.7.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
