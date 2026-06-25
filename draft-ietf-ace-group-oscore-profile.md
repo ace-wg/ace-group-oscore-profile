@@ -237,25 +237,19 @@ C                             RS1         RS2                        AS
 |     Gid: 0xabcd0000)       \ |           |                          |
 |                             `----------->|                          |
 |                              |           |                          |
-|                           /proof of possession/                     |
+|                          / Authentication of C /                    |
+|                              |           |                          |
+|                          / Proof of possession /                    |
 |                              |           |                          |
 |<--- Group OSCORE Response ---+           |                          |
 |        (kid: 0x01)           |           |                          |
 |                              |           |                          |
-/proof of possession/          |           |                          |
-|                              |           |                          |
-|                              |           |                          |
-/Mutual authentication         |           |                          |
- between C and RS1/            |           |                          |
+/ Authentication of RS1 /      |           |                          |
 |                              |           |                          |
 |<--- Group OSCORE Response ---------------+                          |
 |        (kid: 0x02)           |           |                          |
 |                              |           |                          |
-/proof of possession/          |           |                          |
-|                              |           |                          |
-|                              |           |                          |
-/Mutual authentication         |           |                          |
- between C and RS2/            |           |                          |
+/ Authentication of RS2 /      |           |                          |
 |                              |           |                          |
 |            ...               |           |                          |
 |                              |           |                          |
