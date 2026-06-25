@@ -81,6 +81,7 @@ Table of Contents
 
    1.  Introduction
      1.1.  Terminology
+     1.2.  Notations
    2.  Protocol Overview
      2.1.  Pre-Conditions
      2.2.  Requesting an Access Token
@@ -187,12 +188,12 @@ Table of Contents
    client is not allowed to override a command from a C2 client, until
    the latter relinquishes control at its higher priority.  That is: i)
    only C2 clients should be able to adjust the minimum required level
-   of priority on the servers, so rightly locking out C1 clients if
-   needed; and ii) when a server is set to accept only high-priority
-   commands, only C2 clients should be able to perform such commands
-   that are otherwise allowed also to C1 clients.  Given the different
-   maximum authority of different clients, fine-grained access control
-   would effectively limit the execution of high- and emergency-priority
+   of priority on the servers, rightly locking out C1 clients if needed;
+   and ii) when a server is set to accept only high-priority commands,
+   only C2 clients should be able to perform such commands that are
+   otherwise allowed also to C1 clients.  Given the different maximum
+   authority of different clients, fine-grained access control would
+   effectively limit the execution of high- and emergency-priority
    commands only to devices that are in fact authorized to perform such
    actions.  Besides, it would prevent a misconfigured or compromised
    device from initiating a high-priority command and lock out normal
@@ -222,12 +223,12 @@ Table of Contents
    As a step in this direction, one can be tempted to introduce a
    different security group for each different set of access rights.
    However, this inconveniently results in additional keying material to
-   distribute and manage.  In particular, if the access rights
-   pertaining to a node change, this requires evicting the node from the
-   group, after which the node has to join a different group aligned
-   with its new access rights.  Moreover, the keying material of both
-   groups would have to be renewed for their current members.  Overall,
-   this would have a non-negligible impact on operations and
+   distribute and manage.  In particular, if there is a change in the
+   access rights pertaining to a node, this requires evicting the node
+   from the group, after which the node has to join a different group
+   aligned with its new access rights.  Moreover, the keying material of
+   both groups would have to be renewed for their current members.
+   Overall, this would have a non-negligible impact on operations and
    performance.
 
    Instead, a fine-grained yet flexible access control model can be
@@ -265,12 +266,16 @@ Table of Contents
    described in this document and is out of the scope of this profile.
 
    The client proves its authorization and access rights to the resource
-   server(s) by using an access token bound to a key (the proof-of-
-   possession key).  This profile uses Group OSCORE to achieve server
-   authentication and proof of possession of the client's private key
-   used in the OSCORE group in question.  Note that proof of possession
-   is not achieved through a dedicated protocol element, but instead
-   after the first message exchange protected with Group OSCORE.
+   server(s) by using an access token that is bound to the client's
+   public key used in the OSCORE group (the proof-of-possession key).
+
+   This profile uses Group OSCORE to achieve server authentication and
+   proof of possession of the client's private key used in the OSCORE
+   group in question.  Note that proof of possession is not achieved
+   through a dedicated protocol element.  Instead, it is achieved when
+   the resource server receives from the client a message protected with
+   Group OSCORE and successfully verifies source authentication of such
+   message through the client's public key bound to the access token.
 
    Furthermore, this profile provides proof of the client's membership
    to the OSCORE group, by binding the access token to information from
@@ -338,6 +343,8 @@ Table of Contents
    *  Pairwise-only group: an OSCORE group that uses only the pairwise
       mode of Group OSCORE (see Section 8 of
       [I-D.ietf-core-oscore-groupcomm]).
+
+1.2.  Notations
 
    Examples throughout this document are expressed in CBOR diagnostic
    notation as defined in Section 8 of [RFC8949] and Appendix G of
@@ -2511,6 +2518,8 @@ Appendix C.  Document Updates
    This section is to be removed before publishing as an RFC.
 
 C.1.  Version -06 to -07
+
+   *  Clarifications about achieving proof of possession.
 
    *  Minor clarifications and editorial improvements.
 
