@@ -136,7 +136,7 @@ However, in different instances of such applications, the approach above is not 
 
 As a first case, an application provides control of smart locks acting as servers in the group, where: a first type of client, e.g., a user account of a child, is allowed to only query the status of the smart locks; while a second type of client, e.g., a user account of a parent, is allowed to both query and change the status of the smart locks. Further similar applications concern the enforcement of different sets of permissions in groups with sensor/actuator devices, e.g., thermostats acting as servers. Also, some group members may even be intended as servers only. Hence, they must be prevented from acting as clients altogether and from accessing resources at other servers in the group, especially when attempting to perform non-safe operations.
 
-As a second case, building automation scenarios often rely on servers that, under different circumstances, enforce different levels of priority for processing received commands. For instance, BACnet deployments consider multiple classes of clients, e.g., a normal light switch (C1) and an emergency fire panel (C2). Then, a C1 client is not allowed to override a command from a C2 client, until the latter relinquishes control at its higher priority. That is: i) only C2 clients should be able to adjust the minimum required level of priority on the servers, so rightly locking out C1 clients if needed; and ii) when a server is set to accept only high-priority commands, only C2 clients should be able to perform such commands that are otherwise allowed also to C1 clients. Given the different maximum authority of different clients, fine-grained access control would effectively limit the execution of high- and emergency-priority commands only to devices that are in fact authorized to perform such actions. Besides, it would prevent a misconfigured or compromised device from initiating a high-priority command and lock out normal control.
+As a second case, building automation scenarios often rely on servers that, under different circumstances, enforce different levels of priority for processing received commands. For instance, BACnet deployments consider multiple classes of clients, e.g., a normal light switch (C1) and an emergency fire panel (C2). Then, a C1 client is not allowed to override a command from a C2 client, until the latter relinquishes control at its higher priority. That is: i) only C2 clients should be able to adjust the minimum required level of priority on the servers, rightly locking out C1 clients if needed; and ii) when a server is set to accept only high-priority commands, only C2 clients should be able to perform such commands that are otherwise allowed also to C1 clients. Given the different maximum authority of different clients, fine-grained access control would effectively limit the execution of high- and emergency-priority commands only to devices that are in fact authorized to perform such actions. Besides, it would prevent a misconfigured or compromised device from initiating a high-priority command and lock out normal control.
 
 In the cases above, being a legitimate group member and storing the group keying material is not meant to imply any particular access rights. Instead, access control to the secure group communication channel and access control to the resource space provided by servers in the group should remain logically separated domains.
 
@@ -144,7 +144,7 @@ This is aligned with the Zero Trust paradigm {{NIST-800-207}}, which focuses on 
 
 Furthermore, {{NIST-800-207}} highlights how the Zero Trust goal is to "prevent unauthorized access to data and services coupled with making the access control enforcement as granular as possible", in order to "enforce least privileges needed to perform the action in the request."
 
-As a step in this direction, one can be tempted to introduce a different security group for each different set of access rights. However, this inconveniently results in additional keying material to distribute and manage. In particular, if the access rights pertaining to a node change, this requires evicting the node from the group, after which the node has to join a different group aligned with its new access rights. Moreover, the keying material of both groups would have to be renewed for their current members. Overall, this would have a non-negligible impact on operations and performance.
+As a step in this direction, one can be tempted to introduce a different security group for each different set of access rights. However, this inconveniently results in additional keying material to distribute and manage. In particular, if there is a change in the access rights pertaining to a node, this requires evicting the node from the group, after which the node has to join a different group aligned with its new access rights. Moreover, the keying material of both groups would have to be renewed for their current members. Overall, this would have a non-negligible impact on operations and performance.
 
 Instead, a fine-grained yet flexible access control model can be enforced within the same group, by using the Authentication and Authorization for Constrained Environments (ACE) framework {{RFC9200}}. That is, a client has to first obtain authorization credentials in the form of an access token and then upload it to the intended resource server(s) in the group, before accessing the target resources hosted at such resource server(s).
 
@@ -154,7 +154,9 @@ This document specifies the "coap_group_oscore" profile of the ACE framework, ac
 
 That is, this profile describes how access control is enforced for a client after it has joined an OSCORE group, to access resources hosted by other members of that group. The process for joining the OSCORE group through the respective Group Manager as defined in {{I-D.ietf-ace-key-groupcomm-oscore}} takes place before the process described in this document and is out of the scope of this profile.
 
-The client proves its authorization and access rights to the resource server(s) by using an access token bound to a key (the proof-of-possession key). This profile uses Group OSCORE to achieve server authentication and proof of possession of the client's private key used in the OSCORE group in question. Note that proof of possession is not achieved through a dedicated protocol element, but instead after the first message exchange protected with Group OSCORE.
+The client proves its authorization and access rights to the resource server(s) by using an access token that is bound to the client's public key used in the OSCORE group (the proof-of-possession key).
+
+This profile uses Group OSCORE to achieve server authentication and proof of possession of the client's private key used in the OSCORE group in question. Note that proof of possession is not achieved through a dedicated protocol element. Instead, it is achieved when the resource server receives from the client a message protected with Group OSCORE and successfully verifies source authentication of such message through the client's public key bound to the access token.
 
 Furthermore, this profile provides proof of the client's membership to the OSCORE group, by binding the access token to information from the pre-established Group OSCORE Security Context, as well as to the client's authentication credential used in the group and including the client's public key. This allows the resource server(s) to verify the client's group membership upon reception of a message protected with Group OSCORE from that client.
 
@@ -179,6 +181,8 @@ Note that the term "endpoint" is used here following its OAuth definition {{RFC6
 Additionally, this document makes use of the following terminology.
 
 * Pairwise-only group: an OSCORE group that uses only the pairwise mode of Group OSCORE (see {{Section 8 of I-D.ietf-core-oscore-groupcomm}}).
+
+## Notations
 
 Examples throughout this document are expressed in CBOR diagnostic notation as defined in {{Section 8 of RFC8949}} and {{Section G of RFC8610}}. Diagnostic notation comments are often used to provide a textual representation of the parameters' keys and values.
 
@@ -1239,6 +1243,8 @@ kccs = 11
 {:removeinrfc}
 
 ## Version -06 to -07 ## {#sec-06-07}
+
+* Clarifications about achieving proof of possession.
 
 * Minor clarifications and editorial improvements.
 
