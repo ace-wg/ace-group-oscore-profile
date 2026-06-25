@@ -1216,7 +1216,7 @@ This appendix lists the specifications of this profile based on the requirements
 # CDDL Model # {#sec-cddl-model}
 {:removeinrfc}
 
-~~~~~~~~~~~~~~~~~~~~ CDDL
+~~~~~~~~~~~~~~~~~~~~ cddl
 ; ACE Profiles
 coap_group_oscore = 5
 
@@ -1233,10 +1233,14 @@ salt_input_claim = 52
 ; CWT Confirmation Methods
 kccs = 11
 ~~~~~~~~~~~~~~~~~~~~
-{: #fig-cddl-model title="CDDL model" artwork-align="left"}
+{: #fig-cddl-model title="CDDL model"}
 
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
+
+## Version -06 to -07 ## {#sec-06-07}
+
+* Minor clarifications and editorial improvements.
 
 ## Version -05 to -06 ## {#sec-05-06}
 
