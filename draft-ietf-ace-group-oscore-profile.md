@@ -87,6 +87,36 @@ normative:
     title: Recommendation for Pair-Wise Key-Establishment Schemes Using Discrete Logarithm Cryptography - NIST Special Publication 800-56A, Revision 3
     date: 2018-04
     target: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-56Ar3.pdf
+  IANA.OAuth.Parameters:
+    author:
+      org: IANA
+    date: false
+    title: OAuth Parameters
+    target: https://www.iana.org/assignments/oauth-parameters/oauth-parameters.xhtml#parameters
+  IANA.OAuth.Parameters.CBOR.Mappings:
+    author:
+      org: IANA
+    date: false
+    title: OAuth Parameters CBOR Mappings
+    target: https://www.iana.org/assignments/ace/ace.xhtml#oauth-parameters-cbor-mappings
+  IANA.JSON.Web.Token.Claims:
+    author:
+      org: IANA
+    date: false
+    title: JSON Web Token Claims
+    target: https://www.iana.org/assignments/jwt/jwt.xhtml#claims
+  IANA.CWT.Claims:
+    author:
+      org: IANA
+    date: false
+    title: CBOR Web Token (CWT) Claims
+    target: https://www.iana.org/assignments/cwt/cwt.xhtml#claims-registry
+  IANA.TLS.Exporter.Labels:
+    author:
+      org: IANA
+    date: false
+    title: TLS Exporter Labels
+    target: https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#exporter-labels
 
 informative:
   I-D.tiloca-core-oscore-discovery:
@@ -1080,7 +1110,7 @@ IANA is asked to add the following entry to the "ACE Profiles" registry within t
 
 ## OAuth Parameters Registry ## {#iana-oauth-params}
 
-IANA is asked to add the following entries to the "OAuth Parameters" registry within the "OAuth Parameters" registry group, following the procedure specified in {{Section 11.2 of RFC6749}}.
+IANA is asked to add the following entries to the "OAuth Parameters" registry {{IANA.OAuth.Parameters}} within the "OAuth Parameters" registry group.
 
 * Name: context_id
 * Parameter Usage Location: token request
@@ -1110,7 +1140,7 @@ IANA is asked to add the following entries to the "OAuth Parameters" registry wi
 
 ## OAuth Parameters CBOR Mappings Registry ## {#iana-token-cbor-mappings}
 
-IANA is asked to add the following entries to the "OAuth Parameters CBOR Mappings" registry within the "Authentication and Authorization for Constrained Environments (ACE)" registry group, following the procedure specified in {{Section 8.10 of RFC9200}}.
+IANA is asked to add the following entries to the "OAuth Parameters CBOR Mappings" registry {{IANA.OAuth.Parameters.CBOR.Mappings}} within the "Authentication and Authorization for Constrained Environments (ACE)" registry group, following the procedure specified in {{RFC9200}}.
 
 * Name: context_id
 * CBOR Key: TBD (value between 1 and 255)
@@ -1144,7 +1174,7 @@ IANA is asked to add the following entries to the "OAuth Parameters CBOR Mapping
 
 ## JSON Web Token Claims Registry ## {#iana-token-json-claims}
 
-IANA is asked to add the following entries to the "JSON Web Token Claims" registry within the "JSON Web Token (JWT)" registry group, following the procedure specified in {{RFC7519}}.
+IANA is asked to add the following entries to the "JSON Web Token Claims" registry {{IANA.JSON.Web.Token.Claims}} within the "JSON Web Token (JWT)" registry group, following the procedure specified in {{RFC7519}}.
 
 * Claim Name: context_id
 * Claim Description: Client provided Context ID
@@ -1160,7 +1190,7 @@ IANA is asked to add the following entries to the "JSON Web Token Claims" regist
 
 ## CBOR Web Token (CWT) Claims Registry ## {#iana-token-cwt-claims}
 
-IANA is asked to add the following entries to the "CBOR Web Token (CWT) Claims" registry within the "CBOR Web Token (CWT) Claims" registry group, following the procedure specified in {{Section 9.1 of RFC8392}}.
+IANA is asked to add the following entries to the "CBOR Web Token (CWT) Claims" registry {{IANA.CWT.Claims}} within the "CBOR Web Token (CWT) Claims" registry group, following the procedure specified in {{RFC8392}}.
 
 * Claim Name: context_id
 * Claim Description: Client provided Context ID
@@ -1182,7 +1212,7 @@ IANA is asked to add the following entries to the "CBOR Web Token (CWT) Claims" 
 
 ## TLS Exporter Label Registry ## {#iana-tls-exporter-label}
 
-IANA is asked to add the following entry to the "TLS Exporter Label" registry within the "Transport Layer Security (TLS) Parameters" registry group, following the procedure specified in {{Section 6 of RFC5705}} and updated in {{Section 12 of RFC8447}}.
+IANA is asked to register the following entry in the "TLS Exporter Labels" registry {{IANA.TLS.Exporter.Labels}} within the "Transport Layer Security (TLS) Parameters" registry group, which is defined in {{Section 6 of RFC5705}} and updated in {{Section 12 of RFC8447}}.
 
 * Value: EXPORTER-ACE-PoP-Input-Client-AS
 * DTLS-OK: Y
@@ -1255,6 +1285,8 @@ kccs = 11
   * Latest group joining for the RS.
 
 * Moved overview text about enforced access control to the appropriate subsection.
+
+* Added references to IANA registries.
 
 * Editorial improvements.
 
