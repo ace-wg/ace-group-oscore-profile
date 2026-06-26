@@ -2520,9 +2520,9 @@ Appendix A.  Profile Requirements
       protection of messages with the pairwise mode of Group OSCORE, by
       using pairwise symmetric keys derived from the asymmetric keys of
       the two peers exchanging the message.  Note that mutual
-      authentication is not completed before the client has verified a
-      Group OSCORE response using the corresponding Group OSCORE
-      Security Context.
+      authentication is only achieved after the client has successfully
+      verified a response from the RS protected with Group OSCORE, using
+      the shared Group OSCORE Security Context.
 
    *  Specify the proof-of-possession protocol(s) and how to select one,
       if several are available.  Also specify which key types (e.g.,
