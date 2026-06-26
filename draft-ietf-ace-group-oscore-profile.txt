@@ -2080,8 +2080,8 @@ Table of Contents
 12.2.  OAuth Parameters Registry
 
    IANA is asked to add the following entries to the "OAuth Parameters"
-   registry within the "OAuth Parameters" registry group, following the
-   procedure specified in Section 11.2 of [RFC6749].
+   registry [IANA.OAuth.Parameters] within the "OAuth Parameters"
+   registry group.
 
    *  Name: context_id
 
@@ -2124,9 +2124,10 @@ Table of Contents
 12.3.  OAuth Parameters CBOR Mappings Registry
 
    IANA is asked to add the following entries to the "OAuth Parameters
-   CBOR Mappings" registry within the "Authentication and Authorization
-   for Constrained Environments (ACE)" registry group, following the
-   procedure specified in Section 8.10 of [RFC9200].
+   CBOR Mappings" registry [IANA.OAuth.Parameters.CBOR.Mappings] within
+   the "Authentication and Authorization for Constrained Environments
+   (ACE)" registry group, following the procedure specified in
+   [RFC9200].
 
    *  Name: context_id
 
@@ -2177,8 +2178,9 @@ Table of Contents
 12.4.  JSON Web Token Claims Registry
 
    IANA is asked to add the following entries to the "JSON Web Token
-   Claims" registry within the "JSON Web Token (JWT)" registry group,
-   following the procedure specified in [RFC7519].
+   Claims" registry [IANA.JSON.Web.Token.Claims] within the "JSON Web
+   Token (JWT)" registry group, following the procedure specified in
+   [RFC7519].
 
    *  Claim Name: context_id
 
@@ -2201,8 +2203,8 @@ Table of Contents
 12.5.  CBOR Web Token (CWT) Claims Registry
 
    IANA is asked to add the following entries to the "CBOR Web Token
-   (CWT) Claims" registry within the "CBOR Web Token (CWT) Claims"
-   registry group, following the procedure specified in Section 9.1 of
+   (CWT) Claims" registry [IANA.CWT.Claims] within the "CBOR Web Token
+   (CWT) Claims" registry group, following the procedure specified in
    [RFC8392].
 
    *  Claim Name: context_id
@@ -2237,10 +2239,10 @@ Table of Contents
 
 12.6.  TLS Exporter Label Registry
 
-   IANA is asked to add the following entry to the "TLS Exporter Label"
-   registry within the "Transport Layer Security (TLS) Parameters"
-   registry group, following the procedure specified in Section 6 of
-   [RFC5705] and updated in Section 12 of [RFC8447].
+   IANA is asked to register the following entry in the "TLS Exporter
+   Labels" registry [IANA.TLS.Exporter.Labels] within the "Transport
+   Layer Security (TLS) Parameters" registry group, which is defined in
+   Section 6 of [RFC5705] and updated in Section 12 of [RFC8447].
 
    *  Value: EXPORTER-ACE-PoP-Input-Client-AS
 
@@ -2278,6 +2280,30 @@ Table of Contents
               Internet-Draft, draft-ietf-core-oscore-groupcomm-28, 23
               December 2025, <https://datatracker.ietf.org/doc/html/
               draft-ietf-core-oscore-groupcomm-28>.
+
+   [IANA.CWT.Claims]
+              IANA, "CBOR Web Token (CWT) Claims",
+              <https://www.iana.org/assignments/cwt/cwt.xhtml#claims-
+              registry>.
+
+   [IANA.JSON.Web.Token.Claims]
+              IANA, "JSON Web Token Claims",
+              <https://www.iana.org/assignments/jwt/jwt.xhtml#claims>.
+
+   [IANA.OAuth.Parameters]
+              IANA, "OAuth Parameters",
+              <https://www.iana.org/assignments/oauth-parameters/oauth-
+              parameters.xhtml#parameters>.
+
+   [IANA.OAuth.Parameters.CBOR.Mappings]
+              IANA, "OAuth Parameters CBOR Mappings",
+              <https://www.iana.org/assignments/ace/ace.xhtml#oauth-
+              parameters-cbor-mappings>.
+
+   [IANA.TLS.Exporter.Labels]
+              IANA, "TLS Exporter Labels",
+              <https://www.iana.org/assignments/tls-parameters/tls-
+              parameters.xhtml#exporter-labels>.
 
    [NIST-800-56A]
               Barker, E., Chen, L., Roginsky, A., Vassilev, A., and R.
@@ -2557,6 +2583,8 @@ C.1.  Version -06 to -07
 
    *  Moved overview text about enforced access control to the
       appropriate subsection.
+
+   *  Added references to IANA registries.
 
    *  Editorial improvements.
 
