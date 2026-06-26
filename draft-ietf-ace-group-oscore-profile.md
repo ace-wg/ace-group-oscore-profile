@@ -780,7 +780,7 @@ The RS MUST verify the validity of the access token as defined in {{Section 5.10
 
   - AUTH_CRED_C\* as the authentication credential that the client uses in the OSCORE group, which is specified in the inner confirmation value of the 'cnf' claim.
 
-* The RS joins the pertaining OSCORE group if it has not already. The group is identified by GID\*. If need be, the RS can rely on GID\* to retrieve from the Group Manager the group name and the URI of the group-membership resource at the Group Manager for joining the group (e.g., using the method defined in {{Section 9.10 of I-D.ietf-ace-key-groupcomm-oscore}}).
+* The RS joins the pertaining OSCORE group if it is not already a member. The group is identified by GID\*. If need be, the RS can rely on GID\* to retrieve from the Group Manager the group name and the URI of the group-membership resource at the Group Manager for joining the group (e.g., using the method defined in {{Section 9.10 of I-D.ietf-ace-key-groupcomm-oscore}}).
 
   If the RS is intended to be a member of multiple groups and different Group Managers are responsible for those groups, the RS needs to perform the above with all such Group Managers.
 
