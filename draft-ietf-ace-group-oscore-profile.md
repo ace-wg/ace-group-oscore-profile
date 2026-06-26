@@ -1235,7 +1235,7 @@ This appendix lists the specifications of this profile based on the requirements
 
 * Specify the security protocol the client and RS must use to protect their communication: Group OSCORE, by using a pre-established Group OSCORE Security Context.
 
-* Specify how the client and the RS mutually authenticate: Explicitly, by possession of a common Group OSCORE Security Context and by either: usage of digital signatures embedded in messages, if protected with the group mode of Group OSCORE; or protection of messages with the pairwise mode of Group OSCORE, by using pairwise symmetric keys derived from the asymmetric keys of the two peers exchanging the message. Note that mutual authentication is not completed before the client has verified a Group OSCORE response using the corresponding Group OSCORE Security Context.
+* Specify how the client and the RS mutually authenticate: Explicitly, by possession of a common Group OSCORE Security Context and by either: usage of digital signatures embedded in messages, if protected with the group mode of Group OSCORE; or protection of messages with the pairwise mode of Group OSCORE, by using pairwise symmetric keys derived from the asymmetric keys of the two peers exchanging the message. Note that mutual authentication is only achieved after the client has successfully verified a response from the RS protected with Group OSCORE, using the shared Group OSCORE Security Context.
 
 * Specify the proof-of-possession protocol(s) and how to select one, if several are available. Also specify which key types (e.g., symmetric/asymmetric) are supported by a specific proof-of- possession protocol: Group OSCORE algorithms; asymmetric keys verified and distributed by a Group Manager.
 
