@@ -1622,8 +1622,8 @@ Members of an OSCORE group have an associated authentication credential in the f
 <p id="section-2.3-1">After having obtained the access token from the AS, the client uploads the access token to the RS, by sending a POST request to the authz-info endpoint and using the mechanisms specified in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10" class="relref">Section 5.10</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>. When using this profile, the communication that C has with the authz-info endpoint is not protected.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
 <p id="section-2.3-2">Editor's note: the above will have to be updated, once defined the dynamic update of access rights (<a href="#sec-as-update-access-rights" class="auto internal xref">Section 3.3.1</a> and <a href="#sec-rs-update-access-rights" class="auto internal xref">Section 4.4</a>), in which case the access token is intended to be uploaded by means of a protected request to the authz-info endpoint.<a href="#section-2.3-2" class="pilcrow">¶</a></p>
 <p id="section-2.3-3">When verifying the access token (see <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10.1.1" class="relref">Section 5.10.1.1</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>), the RS joins the pertaining OSCORE group if it has not already (see <a href="#sec-rs-c-created" class="auto internal xref">Section 4.2</a> for further details).<a href="#section-2.3-3" class="pilcrow">¶</a></p>
-<p id="section-2.3-4">If the access token is valid, the RS replies to the POST request with a 2.01 (Created) response. Also, the RS associates the access token with the Group OSCORE Security Context identified by the Group Identifier that is specified in the access token. In practice, the RS maintains a collection of Security Contexts with associated authorization information, for all the clients that it is currently communicating with. The authorization information is a policy that is used as input when processing requests from those clients to access resources at the RS.<a href="#section-2.3-4" class="pilcrow">¶</a></p>
-<p id="section-2.3-5">After that, the RS stores the association between: i) the authorization information from the access token; and ii) the Group Identifier of the OSCORE group together with the Sender ID and the authentication credential of the client in that group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-2" class="relref">Section 2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>), which are all specified within the access token (see <a href="#sec-as-c-token" class="auto internal xref">Section 3.3</a>). This binds the access token to the Group OSCORE Security Context of the OSCORE group.<a href="#section-2.3-5" class="pilcrow">¶</a></p>
+<p id="section-2.3-4">If the access token is valid, the RS replies to the POST request with a 2.01 (Created) response. Also, the RS associates the access token with the Recipient Context pertaining to the client, within the Group OSCORE Security Context identified by the Group Identifier that is specified in the access token. In practice, the RS maintains a collection of Security Contexts with associated authorization information, for all the clients that it is currently communicating with. The authorization information is a policy that is used as input when processing requests from those clients to access resources at the RS.<a href="#section-2.3-4" class="pilcrow">¶</a></p>
+<p id="section-2.3-5">After that, the RS stores the association between: i) the authorization information from the access token; and ii) the Group Identifier of the OSCORE group together with the Sender ID and the authentication credential of the client in that group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-2" class="relref">Section 2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>), which are all specified within the access token (see <a href="#sec-as-c-token" class="auto internal xref">Section 3.3</a>). This binds the access token to the Recipient Context pertaining to the client, within the Group OSCORE Security Context of the OSCORE group.<a href="#section-2.3-5" class="pilcrow">¶</a></p>
 <p id="section-2.3-6">The above has considered an access token intended for a single RS. However, as discussed in <a href="#sec-protocol-overview-token-retrieval" class="auto internal xref">Section 2.2</a>, an access token can be intended for a group-audience including multiple RSs in the OSCORE group. In such a case, the client could efficiently upload the access token to many or all of those RSs at once (e.g., over IP multicast), after which each RS individually performs the same steps described above.<a href="#section-2.3-6" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1634,7 +1634,7 @@ Members of an OSCORE group have an associated authentication credential in the f
         </h3>
 <p id="section-2.4-1">The client can send a CoAP request protected with Group OSCORE <span>[<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span> to the RS. This can be a unicast request targeting the RS <span>[<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>, or a one-to-many group request (e.g., over IP multicast) <span>[<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span> targeting the OSCORE group where the RS is also a member.<a href="#section-2.4-1" class="pilcrow">¶</a></p>
 <p id="section-2.4-2">To this end, the client uses the Group OSCORE Security Context already established upon joining the OSCORE group, unless it has a more recent Security Context that has been established in the group as a result of a group rekeying (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-12.2" class="relref">Section 12.2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-2.4-2" class="pilcrow">¶</a></p>
-<p id="section-2.4-3">When the client communicates with the RS using the Group OSCORE Security Context, the RS verifies that the client is a legitimate member of the OSCORE group and especially the exact group member with the same Sender ID associated with the access token. This occurs when verifying a request protected with Group OSCORE, since the request includes the client's Sender ID and either it embeds a signature computed also over that Sender ID (if protected with the group mode), or it is protected by means of pairwise symmetric keying material derived from the asymmetric keys of the two peers (if protected with the pairwise mode).<a href="#section-2.4-3" class="pilcrow">¶</a></p>
+<p id="section-2.4-3">When the client sends to the RS a request protected with the Group OSCORE Security Context and the RS successfully verifies the request, the RS authenticates the client as a legitimate member of the OSCORE group. After that, if the target resource requires authorization, the RS performs access rights verification as per the access token associated with the Recipient Context pertaining to the client, which was used to verify the request and is included is the Group OSCORE Security Context.<a href="#section-2.4-3" class="pilcrow">¶</a></p>
 <p id="section-2.4-4">The RS may send a response back to the client, also protecting it with Group OSCORE.<a href="#section-2.4-4" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2301,40 +2301,39 @@ If any of the following conditions holds, the RS <span class="bcp14">MUST</span>
 The process above is successful if and only if the RS receives a successful response from all the N Group Managers, and exactly one of such responses conveys AUTH_CRED_C equal to AUTH_CRED_C*. This ensures that there is only one OSCORE group G* such that: the client and the RS are both its members; it has GID* as current Gid; and the client uses SID* as Sender ID in the group. In turn, this will ensure that the RS can bound the access token to such single OSCORE group G*.<a href="#section-4.2-2.3.8" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-4.2-3">If the operations above are successful, the access token is valid, and further checks on its content are successful, then the RS associates the authorization information from the access token with the Group OSCORE Security Context of the OSCORE group G*.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
-<p id="section-4.2-4">In particular, the RS associates the authorization information from the access token with the quartet (GID, SaltInput, AuthCred, AuthCredGM), where:<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+<p id="section-4.2-3">If the operations above are successful, the access token is valid, and further checks on its content are successful, then the RS proceeds as follows.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.2-5.1">
-            <p id="section-4.2-5.1.1">Gid is the Group Identifier of G*, i.e.,  GID*.<a href="#section-4.2-5.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.2-4.1">
+            <p id="section-4.2-4.1.1">The RS considers the Group OSCORE Security Context identified by GID* and used in the OSCORE group G* determined above.<a href="#section-4.2-4.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.2-5.2">
-            <p id="section-4.2-5.2.1">SaltInput is the Sender ID that the client uses in G*, i.e., SID*.<a href="#section-4.2-5.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-4.2-4.2">
+            <p id="section-4.2-4.2.1">If the Group OSCORE Security Context is not including a Recipient Context pertaining to the client (i.e., with Recipient ID equal to SID* and authentication credential equal to AUTH_CRED_C*), then the RS derives such Recipient Context and adds it to the Group OSCORE Security Context.<a href="#section-4.2-4.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.2-5.3">
-            <p id="section-4.2-5.3.1">AuthCred is the authentication credential that the client uses in G*, i.e., AUTH_CRED_C*.<a href="#section-4.2-5.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-4.2-4.3">
+            <p id="section-4.2-4.3.1">The RS associates the authorization information from the access token with the Recipient Context pertaining to the client, within the Group OSCORE Security Context used in the OSCORE group G*.<a href="#section-4.2-4.3.1" class="pilcrow">¶</a></p>
+<p id="section-4.2-4.3.2">
+In particular, the RS associates the authorization information from the access token with the tuple (Aud, AuthCred), where:<a href="#section-4.2-4.3.2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.2-4.3.3.1">
+                <p id="section-4.2-4.3.3.1.1">Aud is the target audience indicated by the 'aud' claim of the access token.<a href="#section-4.2-4.3.3.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.2-5.4">
-            <p id="section-4.2-5.4.1">AuthCredGM is the authentication credential of the Group Manager responsible for G* (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-2.1.6" class="relref">Section 2.1.6</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-4.2-5.4.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-4.2-4.3.3.2">
+                <p id="section-4.2-4.3.3.2.1">AuthCred is the authentication credential that the client uses in G*, i.e., AUTH_CRED_C*.<a href="#section-4.2-4.3.3.2.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
 </li>
         </ul>
-<p id="section-4.2-6">The RS <span class="bcp14">MUST</span> keep this association up-to-date over time, as the quartet (GID, SaltInput, AuthCred, AuthCredGM) associated with the access token might change. In particular:<a href="#section-4.2-6" class="pilcrow">¶</a></p>
+<p id="section-4.2-5">Finally, the RS <span class="bcp14">MUST</span> send a 2.01 (Created) response to the client, as defined in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10.1" class="relref">Section 5.10.1</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>.<a href="#section-4.2-5" class="pilcrow">¶</a></p>
+<p id="section-4.2-6">As defined in <a href="#sec-client-public-key-change" class="auto internal xref">Section 5</a>, a possible change of the client's authentication credential requires the client to upload to the RS a new access token bound to the new authentication credential.<a href="#section-4.2-6" class="pilcrow">¶</a></p>
+<p id="section-4.2-7">Given a Recipient Context within the Group OSCORE Security Context, the RS <span class="bcp14">MUST</span> delete every access token associated with that Recipient Context if any of the following occurs:<a href="#section-4.2-7" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.2-7.1">
-            <p id="section-4.2-7.1.1">If the OSCORE group is rekeyed (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-12.2" class="relref">Section 12.2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>), the Group Identifier also changes in the group and the new one replaces the current 'GID' value in the quartet (Gid, SaltInput, AuthCred, AuthCredGM).<a href="#section-4.2-7.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.2-8.1">
+            <p id="section-4.2-8.1.1">The RS deletes that Recipient Context.<a href="#section-4.2-8.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.2-7.2">
-            <p id="section-4.2-7.2.1">If the client requests and obtains a new OSCORE Sender ID from the Group Manager (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-2.6.3.1" class="relref">Section 2.6.3.1</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>), the new Sender ID replaces the current 'SaltInput' value in the quartet (GID, SaltInput, AuthCred, AuthCredGM).<a href="#section-4.2-7.2.1" class="pilcrow">¶</a></p>
-<p id="section-4.2-7.2.2">
-Among the quartets corresponding to access tokens that are associated with a given Group OSCORE Security Context, the RS can always identify the correct quartet to update. For example, the RS can leverage the triple (GID, AuthCred, AuthCredGM) that played a role in the successful decryption and verification of a request protected with Group OSCORE and sent by the client with the newly obtained Sender ID.<a href="#section-4.2-7.2.2" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-4.2-7.3">
-            <p id="section-4.2-7.3.1">If the Group Manager of the OSCORE group changes its authentication credential, the new authentication credential of the Group Manager replaces the current 'AuthCredGM' value in the quartet (Gid, SaltInput, AuthCred, AuthCredGM).<a href="#section-4.2-7.3.1" class="pilcrow">¶</a></p>
-<p id="section-4.2-7.3.2">
-In order to retrieve the latest authentication credential of the Group Manager, the RS can send a dedicated request to the Group Manager, e.g., as specified in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-9.5" class="relref">Section 9.5</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>. Alternatively, if the Group Manager provides its own authentication credential during the joining process, the RS can re-join the group, e.g., as specified in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-6" class="relref">Section 6</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>.<a href="#section-4.2-7.3.2" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-4.2-8.2">
+            <p id="section-4.2-8.2.1">The RS updates the client's authentication credential in that Recipient Context, i.e., in the case that the client has changed its authentication credential in the OSCORE group.<a href="#section-4.2-8.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-4.2-8">As defined in <a href="#sec-client-public-key-change" class="auto internal xref">Section 5</a>, a possible change of the client's authentication credential requires the client to upload to the RS a new access token bound to the new authentication credential.<a href="#section-4.2-8" class="pilcrow">¶</a></p>
-<p id="section-4.2-9">Finally, the RS <span class="bcp14">MUST</span> send a 2.01 (Created) response to the client, as defined in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10.1" class="relref">Section 5.10.1</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>.<a href="#section-4.2-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-client-rs-secure-communication">
@@ -2343,14 +2342,16 @@ In order to retrieve the latest authentication credential of the Group Manager, 
 <a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-client-rs-secure-communicat" class="section-name selfRef">Client-RS Secure Communication</a>
         </h3>
 <p id="section-4.3-1">As members of the OSCORE group, both the client and the RS have established the related Group OSCORE Security Context to securely communicate in the group. Therefore, they can simply start to securely communicate using Group OSCORE, without deriving any additional keying material or security association.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
-<p id="section-4.3-2">If the client or the RS deletes an access token (e.g., when the access token has expired or has been revoked), it <span class="bcp14">MUST NOT</span> delete the related Group OSCORE Security Context. If the client deletes an access token, the client <span class="bcp14">MAY</span> request a new access token from the AS, to be uploaded to the RS for re-enabling access to protected resources for the client.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">It can happen that the client or the RS deletes an access token, e.g., when the access token has expired or has been revoked.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.3-3">If the RS deletes an access token, this <span class="bcp14">MUST NOT</span> result in the RS deleting the associated Recipient Context pertaining to the client from the Group OSCORE Security Context used in the OSCORE group.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
+<p id="section-4.3-4">If the client deletes an access token, this <span class="bcp14">MUST NOT</span> result in the client deleting the associated Group OSCORE Security Context used in the OSCORE group. The client <span class="bcp14">MAY</span> request a new access token from the AS, to be uploaded to the RS for re-enabling access to protected resources.<a href="#section-4.3-4" class="pilcrow">¶</a></p>
 <div id="client-side">
 <section id="section-4.3.1">
           <h4 id="name-client-side">
 <a href="#section-4.3.1" class="section-number selfRef">4.3.1. </a><a href="#name-client-side" class="section-name selfRef">Client Side</a>
           </h4>
 <p id="section-4.3.1-1">After having received the 2.01 (Created) response from the RS, following the POST request to the authz-info endpoint, the client can start communicating with the RS, by sending a request protected with Group OSCORE <span>[<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>.<a href="#section-4.3.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.3.1-2">When communicating with the RS to access the resources as specified by the authorization information in the access token, the client <span class="bcp14">MUST</span> use the Group OSCORE Security Context of the OSCORE group pertaining to the access token, i.e., the group that the client referred to when requesting the access token to the AS (see <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>).<a href="#section-4.3.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.3.1-2">When communicating with the RS to access the resources as specified by the authorization information in the access token, the client <span class="bcp14">MUST</span> use the Group OSCORE Security Context used in the OSCORE group pertaining to the access token, i.e., the group that the client referred to when requesting the access token to the AS (see <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>).<a href="#section-4.3.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="resource-server-side">
@@ -2359,9 +2360,8 @@ In order to retrieve the latest authentication credential of the Group Manager, 
 <a href="#section-4.3.2" class="section-number selfRef">4.3.2. </a><a href="#name-resource-server-side" class="section-name selfRef">Resource Server Side</a>
           </h4>
 <p id="section-4.3.2-1">After successful validation of the access token as defined in <a href="#sec-rs-c-created" class="auto internal xref">Section 4.2</a> and after having sent the 2.01 (Created) response, the RS can start to communicate with the client using Group OSCORE <span>[<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>.<a href="#section-4.3.2-1" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-2">When processing an incoming request protected with Group OSCORE, the RS <span class="bcp14">MUST</span> consider as the client's valid authentication credential only the one associated with the stored access token. As defined in <a href="#sec-client-public-key-change" class="auto internal xref">Section 5</a>, a possible change of the client's authentication credential requires the client to upload to the RS a new access token bound to the new authentication credential.<a href="#section-4.3.2-2" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-3">For every incoming request, if Group OSCORE verification succeeds, the verification of access rights is performed as described in <a href="#sec-c-rs-access-rights" class="auto internal xref">Section 4.5</a>.<a href="#section-4.3.2-3" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-4">If the RS receives a request protected with a Group OSCORE Security Context CTX, the target resource requires authorization, and the RS does not store a valid access token related to CTX, then the RS <span class="bcp14">MUST</span> reply with a 4.01 (Unauthorized) error response protected with CTX.<a href="#section-4.3.2-4" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-2">For every incoming request, if Group OSCORE verification succeeds, the verification of access rights is performed as described in <a href="#sec-c-rs-access-rights" class="auto internal xref">Section 4.5</a>.<a href="#section-4.3.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-3">In the case that the RS receives a request protected with a Group OSCORE Security Context CTX, it successfully verifies the request, and the target resource requires authorization, then the RS checks whether it stores a valid access token associated with the Recipient Context pertaining to the client that is included within CTX and was used to verify the request. If the RS does not store such an access token, the RS <span class="bcp14">MUST</span> reply with a 4.01 (Unauthorized) error response protected with CTX.<a href="#section-4.3.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2381,27 +2381,12 @@ In order to retrieve the latest authentication credential of the Group Manager, 
         <h3 id="name-access-rights-verification">
 <a href="#section-4.5" class="section-number selfRef">4.5. </a><a href="#name-access-rights-verification" class="section-name selfRef">Access Rights Verification</a>
         </h3>
-<p id="section-4.5-1">The RS <span class="bcp14">MUST</span> follow the procedures defined in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10.2" class="relref">Section 5.10.2</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>. If an RS receives a request protected with Group OSCORE from a client, the RS processes the request according to <span>[<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>.<a href="#section-4.5-1" class="pilcrow">¶</a></p>
-<p id="section-4.5-2">If the Group OSCORE verification succeeds and the target resource requires authorization, the RS retrieves the authorization information from the access token associated with the Group OSCORE Security Context.<a href="#section-4.5-2" class="pilcrow">¶</a></p>
-<p id="section-4.5-3">In particular, the RS retrieves the access token associated with the quartet (Gid, SaltInput, AuthCred, AuthCredGM), where:<a href="#section-4.5-3" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-4.5-4.1">
-            <p id="section-4.5-4.1.1">Gid is the Group Identifier of the OSCORE group, which is specified in the 'kid context' parameter of the CoAP OSCORE Option in the received request. The RS maintains Gid in the Common Context within the Group OSCORE Security Context associated with the OSCORE group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-2" class="relref">Section 2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-4.5-4.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-4.5-4.2">
-            <p id="section-4.5-4.2.1">SaltInput is the Sender ID that the client has in the OSCORE group, which is specified in the 'kid' parameter of the CoAP OSCORE Option in the received request. The RS maintains SaltInput in its Recipient Context associated with the client, within the Group OSCORE Security Context associated with the OSCORE group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-2" class="relref">Section 2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-4.5-4.2.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-4.5-4.3">
-            <p id="section-4.5-4.3.1">AuthCred is the authentication credential that the client uses in the OSCORE group. The RS maintains AuthCred in its Recipient Context associated with the client, within the Group OSCORE Security Context associated with the OSCORE group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-2" class="relref">Section 2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-4.5-4.3.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-4.5-4.4">
-            <p id="section-4.5-4.4.1">AuthCredGM is the authentication credential of the Group Manager responsible for the OSCORE group. The RS maintains AuthCredGM in the Common Context within the Group OSCORE Security Context associated with the OSCORE group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-2" class="relref">Section 2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-4.5-4.4.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-<p id="section-4.5-5">Then, the RS <span class="bcp14">MUST</span> verify that the action requested on the resource is authorized.<a href="#section-4.5-5" class="pilcrow">¶</a></p>
-<p id="section-4.5-6">If the RS has no valid access token for the client, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the client with a 4.01 (Unauthorized) error response.<a href="#section-4.5-6" class="pilcrow">¶</a></p>
-<p id="section-4.5-7">If the RS has an access token for the client but no actions are authorized on the target resource, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the client with a 4.03 (Forbidden) error response.<a href="#section-4.5-7" class="pilcrow">¶</a></p>
-<p id="section-4.5-8">If the RS has an access token for the client but the requested action is not authorized, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the client with a 4.05 (Method Not Allowed) error response.<a href="#section-4.5-8" class="pilcrow">¶</a></p>
+<p id="section-4.5-1">The RS <span class="bcp14">MUST</span> follow the procedures defined in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10.2" class="relref">Section 5.10.2</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>. If an RS receives a request protected with Group OSCORE from a client, the RS processes the request according to <span>[<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>, using the Recipient Context pertaining to the client that is included within the Group OSCORE Security Context used in the group.<a href="#section-4.5-1" class="pilcrow">¶</a></p>
+<p id="section-4.5-2">If the Group OSCORE verification succeeds and the target resource requires authorization, the RS retrieves the authorization information from the access token associated with the Recipient Context used to verify the request.<a href="#section-4.5-2" class="pilcrow">¶</a></p>
+<p id="section-4.5-3">Then, the RS <span class="bcp14">MUST</span> verify that the action requested on the resource is authorized.<a href="#section-4.5-3" class="pilcrow">¶</a></p>
+<p id="section-4.5-4">If the RS has no valid access token for the client, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the client with a 4.01 (Unauthorized) error response.<a href="#section-4.5-4" class="pilcrow">¶</a></p>
+<p id="section-4.5-5">If the RS has an access token for the client but no actions are authorized on the target resource, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the client with a 4.03 (Forbidden) error response.<a href="#section-4.5-5" class="pilcrow">¶</a></p>
+<p id="section-4.5-6">If the RS has an access token for the client but the requested action is not authorized, the RS <span class="bcp14">MUST</span> reject the request and <span class="bcp14">MUST</span> reply to the client with a 4.05 (Method Not Allowed) error response.<a href="#section-4.5-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-multiple-pop-keys">
@@ -2558,8 +2543,25 @@ The possible omission of the PoP evidence is based on the same criteria that are
       <h2 id="name-discarding-the-security-con">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-discarding-the-security-con" class="section-name selfRef">Discarding the Security Context</a>
       </h2>
-<p id="section-7-1">As members of an OSCORE group, the client and the RS may independently leave the group or be forced to, e.g., if compromised or suspected to be so. Upon leaving the OSCORE group, the client or RS also discards the Group OSCORE Security Context, which may anyway be renewed by the Group Manager through a group rekeying process (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-12.2" class="relref">Section 12.2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">The client or RS can obtain a new Group OSCORE Security Context by re-joining the OSCORE group. In such a case, the client <span class="bcp14">SHOULD</span> request a new access token to be uploaded to the RS.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<p id="section-7-1">As members of an OSCORE group, the client and the RS may independently leave the group or be forced to, e.g., if compromised or suspected to be so. Upon leaving the OSCORE group, the client or RS also discards the Group OSCORE Security Context. Consequently:<a href="#section-7-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-7-2.1">
+          <p id="section-7-2.1.1">The RS <span class="bcp14">MUST</span> delete every access token that is associated with a Recipient Context in the Group OSCORE Security Context.<a href="#section-7-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-7-2.2">
+          <p id="section-7-2.2.1">The client <span class="bcp14">MUST</span> delete every access token that is associated with the Group OSCORE Security Context.<a href="#section-7-2.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-7-3">The client or RS can obtain a new Group OSCORE Security Context by re-joining the OSCORE group. In such a case, the client requests a new access token to be uploaded to the RS.<a href="#section-7-3" class="pilcrow">¶</a></p>
+<p id="section-7-4">Note that a Group OSCORE Security Context CTX_OLD can be renewed by the Group Manager through a group rekeying process (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-12.2" class="relref">Section 12.2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>), establishing a Group OSCORE Security Context CTX_NEW that supersedes CTX_OLD. In such case:<a href="#section-7-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-7-5.1">
+          <p id="section-7-5.1.1">The RS considers the associations that stored access tokens have with Recipient Contexts within CTX_OLD, and it updates those associations to be with the corresponding, renewed Recipient Contexts in CTX_NEW.<a href="#section-7-5.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-7-5.2">
+          <p id="section-7-5.2.1">The client considers the associations that stored access tokens have with CTX_OLD, and it updates those associations to be with CTX_NEW.<a href="#section-7-5.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
 </section>
 </div>
 <div id="sec-multiple-profiles">
@@ -2567,7 +2569,7 @@ The possible omission of the PoP evidence is based on the same criteria that are
       <h2 id="name-guidelines-on-using-multipl">
 <a href="#section-8" class="section-number selfRef">8. </a><a href="#name-guidelines-on-using-multipl" class="section-name selfRef">Guidelines on Using Multiple Profiles</a>
       </h2>
-<p id="section-8-1">When using the profile defined in this document, access tokens are to be bound to a Group OSCORE Security Context, which is used to protect communications between the client and the RS(s) in the targeted audience by using the security protocol Group OSCORE.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-1">When using the profile defined in this document, access tokens are to be bound to a Recipient Context within a Group OSCORE Security Context, which is used to protect communications between the client and the RS(s) in the targeted audience by using the security protocol Group OSCORE.<a href="#section-8-1" class="pilcrow">¶</a></p>
 <p id="section-8-2">After having obtained an access token T1 for this profile and uploaded it to the RS (RSs) pertaining to the targeted audience, the client might want to establish a separate, pairwise OSCORE association with that RS (with one RS among those RSs). In order to do that, the client can ask the AS for a different access token T2 intended for that RS (for one RS among those RSs), as per the OSCORE profile defined in <span>[<a href="#RFC9203" class="cite xref">RFC9203</a>]</span>.<a href="#section-8-2" class="pilcrow">¶</a></p>
 <p id="section-8-3">Since the ACE framework does not allow the client to negotiate with the AS the profile to use, the client has instead to choose the use of the OSCORE profile, and to explicitly indicate it to the AS when requesting T2.<a href="#section-8-3" class="pilcrow">¶</a></p>
 <p id="section-8-4">To this end, the client could indicate its wish for an access token aligned with the Group OSCORE profile or with the OSCORE profile, by specifying one of two different audiences in the 'audience' parameter of the access token request to the AS. Assuming a proper configuration of the access policies at the AS, this is still conducive to a consistent evaluation of what is specified in the 'scope' parameter of the access token request against the access policies at the AS.<a href="#section-8-4" class="pilcrow">¶</a></p>
@@ -3269,30 +3271,36 @@ kccs = 11
             <p id="appendix-C.1-1.1.1">It is <span class="bcp14">RECOMMENDED</span> to use the OSCORE Group Manager defined in draft-ietf-ace-key-groupcomm-oscore.<a href="#appendix-C.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-C.1-1.2">
-            <p id="appendix-C.1-1.2.1">Clarifications:<a href="#appendix-C.1-1.2.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.2.1">Major simplification in associating the access token with other information.<a href="#appendix-C.1-1.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.1-1.3">
+            <p id="appendix-C.1-1.3.1">Clarifications:<a href="#appendix-C.1-1.3.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="appendix-C.1-1.2.2.1">
-                <p id="appendix-C.1-1.2.2.1.1">Achieving proof of possession.<a href="#appendix-C.1-1.2.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.1-1.3.2.1">
+                <p id="appendix-C.1-1.3.2.1.1">The RS binds the access token to a specific Recipient Context.<a href="#appendix-C.1-1.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="appendix-C.1-1.2.2.2">
-                <p id="appendix-C.1-1.2.2.2.1">Details on proof of group membership.<a href="#appendix-C.1-1.2.2.2.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="appendix-C.1-1.3.2.2">
+                <p id="appendix-C.1-1.3.2.2.1">Achieving proof of possession.<a href="#appendix-C.1-1.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="appendix-C.1-1.2.2.3">
-                <p id="appendix-C.1-1.2.2.3.1">Timing and consistency of group joining.<a href="#appendix-C.1-1.2.2.3.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="appendix-C.1-1.3.2.3">
+                <p id="appendix-C.1-1.3.2.3.1">Details on proof of group membership.<a href="#appendix-C.1-1.3.2.3.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="appendix-C.1-1.2.2.4">
-                <p id="appendix-C.1-1.2.2.4.1">Latest group joining for the RS.<a href="#appendix-C.1-1.2.2.4.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="appendix-C.1-1.3.2.4">
+                <p id="appendix-C.1-1.3.2.4.1">Timing and consistency of group joining.<a href="#appendix-C.1-1.3.2.4.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="appendix-C.1-1.3.2.5">
+                <p id="appendix-C.1-1.3.2.5.1">Latest group joining for the RS.<a href="#appendix-C.1-1.3.2.5.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="normal" id="appendix-C.1-1.3">
-            <p id="appendix-C.1-1.3.1">Moved overview text about enforced access control to the appropriate subsection.<a href="#appendix-C.1-1.3.1" class="pilcrow">¶</a></p>
-</li>
           <li class="normal" id="appendix-C.1-1.4">
-            <p id="appendix-C.1-1.4.1">Added references to IANA registries.<a href="#appendix-C.1-1.4.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.4.1">Moved overview text about enforced access control to the appropriate subsection.<a href="#appendix-C.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-C.1-1.5">
-            <p id="appendix-C.1-1.5.1">Editorial improvements.<a href="#appendix-C.1-1.5.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.5.1">Added references to IANA registries.<a href="#appendix-C.1-1.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.1-1.6">
+            <p id="appendix-C.1-1.6.1">Editorial improvements.<a href="#appendix-C.1-1.6.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
