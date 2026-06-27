@@ -548,14 +548,13 @@ Table of Contents
    input when processing requests from those clients to access resources
    at the RS.
 
-   After that, the RS stores the association between: i) the
-   authorization information from the access token; and ii) the Group
-   Identifier of the OSCORE group together with the Sender ID and the
-   authentication credential of the client in that group (see Section 2
-   of [I-D.ietf-core-oscore-groupcomm]), which are all specified within
-   the access token (see Section 3.3).  This binds the access token to
-   the Recipient Context pertaining to the client, within the Group
-   OSCORE Security Context of the OSCORE group.
+   After that, the RS associates the access token with the following
+   pieces of information: i) the target audience for which the access
+   token is issued; and ii) the authentication credential of the client
+   in the OSCORE group (see Section 2 of
+   [I-D.ietf-core-oscore-groupcomm]).  Such pieces of information are
+   specified by corresponding claims of the access token (see
+   Section 3.3).
 
    The above has considered an access token intended for a single RS.
    However, as discussed in Section 2.2, an access token can be intended
@@ -585,7 +584,7 @@ Table of Contents
    the RS performs access rights verification as per the access token
    associated with the Recipient Context pertaining to the client, which
    was used to verify the request and is included is the Group OSCORE
-   Security Context.
+   Security Context used in the group.
 
    The RS may send a response back to the client, also protecting it
    with Group OSCORE.
@@ -1492,12 +1491,12 @@ Table of Contents
       the RS derives such Recipient Context and adds it to the Group
       OSCORE Security Context.
 
-   *  The RS associates the authorization information from the access
-      token with the Recipient Context pertaining to the client, within
-      the Group OSCORE Security Context used in the OSCORE group G*.
+   *  The RS associates the access token with the Recipient Context
+      pertaining to the client, within the Group OSCORE Security Context
+      used in the OSCORE group G*.
 
-      In particular, the RS associates the authorization information
-      from the access token with the tuple (Aud, AuthCred), where:
+      In particular, the RS associates the access token with the tuple
+      (Aud, AuthCred), where:
 
       -  Aud is the target audience indicated by the 'aud' claim of the
          access token.
@@ -1512,8 +1511,8 @@ Table of Contents
    authentication credential requires the client to upload to the RS a
    new access token bound to the new authentication credential.
 
-   Given a Recipient Context within the Group OSCORE Security Context,
-   the RS MUST delete every access token associated with that Recipient
+   Given a Recipient Context within a Group OSCORE Security Context, the
+   RS MUST delete every access token associated with that Recipient
    Context if any of the following occurs:
 
    *  The RS deletes that Recipient Context.
@@ -1552,8 +1551,8 @@ Table of Contents
 
    When communicating with the RS to access the resources as specified
    by the authorization information in the access token, the client MUST
-   use the Group OSCORE Security Context used in the OSCORE group
-   pertaining to the access token, i.e., the group that the client
+   use the Group OSCORE Security Context that is used in the OSCORE
+   group pertaining to the access token, i.e., the group that the client
    referred to when requesting the access token to the AS (see
    Section 3.2).
 
