@@ -224,13 +224,21 @@ Note to RFC Editor: Please delete the paragraph immediately preceding this note.
 
 This section provides an overview of this profile, i.e., of how to use the ACE framework for authentication and authorization {{RFC9200}} when communications between a client and one or more resource servers are secured using Group OSCORE {{I-D.ietf-core-oscore-groupcomm}}.
 
-This profile describes how access control is enforced for a client that has joined an OSCORE group, to access resources hosted by other members in that group. The client needs to join the OSCORE group before requesting an access token that indicates the client's authorization and access rights related to such resources in the group.
+In this profile, access control is enforced for a client that has joined an OSCORE group, to access resources hosted by resource servers that are also members in the same group.
 
-The process for joining the OSCORE group through the respective Group Manager takes place separately from the process described in this document, and it is out of the scope of this profile.
+After the client has joined the OSCORE group and as long as it is a member of that group, the client can send to the authorization server (AS) an access token request for issuing an access token that indicates the client's authorization and access rights related to such resources in the group.
 
-For applications that intend to use this profile, it is RECOMMENDED that the realization of Group Manager used is the one based on the ACE framework and defined in {{I-D.ietf-ace-key-groupcomm-oscore}}.
+If the request is granted, the AS replies to C with a successful response. Also, the AS can provide the access token to the client by including it in the response, or instead upload the access token directly to the RS as per the alternative workflow defined in {{I-D.ietf-ace-workflow-and-params}}. The latter option is not detailed further in this document.
 
-An overview of the protocol flow for this profile is shown by the example in {{fig-protocol-overview}}, where it is assumed that both the resource servers RS1 and RS2 are associated with the same authorization server AS. It is also assumed that the client C as well as RS1 and RS2 have previously joined an OSCORE group with Group Identifier (Gid) 0xabcd0000, and that they got assigned Sender ID (Sid) 0x00, 0x01, and 0x02 in the group, respectively. The names of messages coincide with those of {{RFC9200}} when applicable. Messages in square brackets are optional.
+In the case that the client has obtained an access token from the AS, the client uploads the access token to the RS, using the authz-info endpoint and mechanisms specified in {{Section 5.10 of RFC9200}}. When using this profile, the communication with the authz-info endpoint is not protected.
+
+If the access token is valid, the RS relies on information in the access token and on the assistance of the Group Manager to verify the client's group membership in the OSCORE group. If all verifications succeed, the RS replies to the client with a 2.01 (Created) response. Then, the RS associates the access token with the Recipient Context pertaining to the client, within the Group OSCORE Security Context used in the group.
+
+After that, when the RS receives and successfully verifies a request from the client protected with Group OSCORE, the RS performs access rights verification per the access token associated with the Recipient Context pertaining to the client, which was used to verify the request and is included in the Group OSCORE Security Context used in the group.
+
+The process for joining the OSCORE group through the respective Group Manager takes place separately from the process described in this document, and it is out of the scope of this profile. For applications that intend to use this profile, it is RECOMMENDED that the realization of Group Manager used is the one based on the ACE framework and defined in {{I-D.ietf-ace-key-groupcomm-oscore}}.
+
+An overview of the protocol flow for this profile is shown by the example in {{fig-protocol-overview}}, where it is assumed that both the resource servers RS1 and RS2 are associated with the same AS. It is also assumed that the client C as well as RS1 and RS2 have previously joined an OSCORE group with Group Identifier (Gid) 0xabcd0000, and that they got assigned Sender ID (Sid) 0x00, 0x01, and 0x02 in the group, respectively. The names of messages coincide with those of {{RFC9200}} when applicable. Messages in square brackets are optional.
 
 ~~~~~~~~~~~ aasvg
 C                             RS1         RS2                        AS
@@ -288,6 +296,12 @@ C                             RS1         RS2                        AS
 ~~~~~~~~~~~
 {: #fig-protocol-overview title="Protocol Overview" artwork-align="center"}
 
+As long as the client is a member of the OSCORE group and the access token previously uploaded at the RS is still valid, the client can contact the AS to ask for an update of its access rights. To this end, the client can send to the AS an access token request similar to the initial one mentioned above that was sent when asking for the first access token.
+
+This latest access token request also includes a "token series identifier" provided by the AS in the response to the initial access token request, which allows the AS to retrieve the data that it previously shared with the client. The token series identifier is assigned by the AS and used to identify a series of access tokens, called a "token series" (see {{sec-token-series}}).
+
+After the new issued access token is successfully uploaded at the RS and thus the client's access rights are updated accordingly, the new issued access token effectively becomes the latest in its token series also for the RS, but the token series identifier remains the same. When the latest access token of a token series becomes invalid (e.g., when it expires or gets revoked), that token series ends.
+
 ## Pre-Conditions ## {#sec-protocol-overview-pre-conditions}
 
 Using Group OSCORE to protect message exchanges between the client and the resource servers (RSs) requires that the client and the RSs have joined the same OSCORE group. This especially includes the derivation of the Group OSCORE Security Context and the assignment of unique Sender IDs to use in the group. Nodes can join the OSCORE group through the respective Group Manager, e.g., as specified in {{Section 6 of I-D.ietf-ace-key-groupcomm-oscore}}.
@@ -314,8 +328,6 @@ The access token request and response exchanged between the client and the AS MU
 
 After having obtained the access token from the AS, the client uploads the access token to the RS, by sending a POST request to the authz-info endpoint and using the mechanisms specified in {{Section 5.10 of RFC9200}}. When using this profile, the communication that C has with the authz-info endpoint is not protected.
 
-Editor's note: the above will have to be updated, once defined the dynamic update of access rights ({{sec-as-update-access-rights}} and {{sec-rs-update-access-rights}}), in which case the access token is intended to be uploaded by means of a protected request to the authz-info endpoint.
-
 When verifying the access token (see {{Section 5.10.1.1 of RFC9200}}), the RS joins the pertaining OSCORE group if it has not already (see {{sec-rs-c-created}} for further details).
 
 If the access token is valid, the RS replies to the POST request with a 2.01 (Created) response. Also, the RS associates the access token with the Recipient Context pertaining to the client, within the Group OSCORE Security Context identified by the Group Identifier that is specified in the access token. In practice, the RS maintains a collection of Security Contexts with associated authorization information, for all the clients that it is currently communicating with. The authorization information is a policy that is used as input when processing requests from those clients to access resources at the RS.
@@ -330,7 +342,7 @@ The client can send a CoAP request protected with Group OSCORE {{I-D.ietf-core-o
 
 To this end, the client uses the Group OSCORE Security Context already established upon joining the OSCORE group, unless it has a more recent Security Context that has been established in the group as a result of a group rekeying (see {{Section 12.2 of I-D.ietf-core-oscore-groupcomm}}).
 
-When the client sends to the RS a request protected with the Group OSCORE Security Context and the RS successfully verifies the request, the RS authenticates the client as a legitimate member of the OSCORE group. After that, if the target resource requires authorization, the RS performs access rights verification as per the access token associated with the Recipient Context pertaining to the client, which was used to verify the request and is included is the Group OSCORE Security Context used in the group.
+When the client sends to the RS a request protected with the Group OSCORE Security Context and the RS successfully verifies the request, the RS authenticates the client as a legitimate member of the OSCORE group. After that, if the target resource requires authorization, the RS performs access rights verification as per the access token associated with the Recipient Context pertaining to the client, which was used to verify the request and is included in the Group OSCORE Security Context used in the group.
 
 The RS may send a response back to the client, also protecting it with Group OSCORE.
 
@@ -564,6 +576,10 @@ The 'client_cred_verify' parameter is an OPTIONAL parameter of the access token 
 ### 'client_cred_verify_mac' Parameter ### {#client_cred_verify_mac}
 
 The 'client_cred_verify_mac' parameter is an OPTIONAL parameter of the access token request message defined in {{Section 5.8.1. of RFC9200}}. This parameter provides a Message Authentication Code (MAC) computed by the client to prove the possession of its own private key.
+
+## Token Series ## {#sec-token-series}
+
+TBD
 
 ## AS-to-C: Response ## {#sec-as-c-token}
 
