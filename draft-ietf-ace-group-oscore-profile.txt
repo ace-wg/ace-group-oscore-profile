@@ -94,10 +94,11 @@ Table of Contents
        3.2.2.  'salt_input' Parameter
        3.2.3.  'client_cred_verify' Parameter
        3.2.4.  'client_cred_verify_mac' Parameter
-     3.3.  AS-to-C: Response
-       3.3.1.  Update of Access Rights
-       3.3.2.  'context_id' Claim
-       3.3.3.  'salt_input' Claim
+     3.3.  Token Series
+     3.4.  AS-to-C: Response
+       3.4.1.  Update of Access Rights
+       3.4.2.  'context_id' Claim
+       3.4.3.  'salt_input' Claim
    4.  Client-RS Communication
      4.1.  C-to-RS POST to authz-info Endpoint
      4.2.  RS-to-C: 2.01 (Created)
@@ -372,30 +373,59 @@ Table of Contents
    when communications between a client and one or more resource servers
    are secured using Group OSCORE [I-D.ietf-core-oscore-groupcomm].
 
-   This profile describes how access control is enforced for a client
-   that has joined an OSCORE group, to access resources hosted by other
-   members in that group.  The client needs to join the OSCORE group
-   before requesting an access token that indicates the client's
-   authorization and access rights related to such resources in the
-   group.
+   In this profile, access control is enforced for a client that has
+   joined an OSCORE group, to access resources hosted by resource
+   servers that are also members in the same group.
+
+   After the client has joined the OSCORE group and as long as it is a
+   member of that group, the client can send to the authorization server
+   (AS) an access token request for issuing an access token that
+   indicates the client's authorization and access rights related to
+   such resources in the group.
+
+   If the request is granted, the AS replies to C with a successful
+   response.  Also, the AS can provide the access token to the client by
+   including it in the response, or instead upload the access token
+   directly to the RS as per the alternative workflow defined in
+   [I-D.ietf-ace-workflow-and-params].  The latter option is not
+   detailed further in this document.
+
+   In the case that the client has obtained an access token from the AS,
+   the client uploads the access token to the RS, using the authz-info
+   endpoint and mechanisms specified in Section 5.10 of [RFC9200].  When
+   using this profile, the communication with the authz-info endpoint is
+   not protected.
+
+   If the access token is valid, the RS relies on information in the
+   access token and on the assistance of the Group Manager to verify the
+   client's group membership in the OSCORE group.  If all verifications
+   succeed, the RS replies to the client with a 2.01 (Created) response.
+   Then, the RS associates the access token with the Recipient Context
+   pertaining to the client, within the Group OSCORE Security Context
+   used in the group.
+
+   After that, when the RS receives and successfully verifies a request
+   from the client protected with Group OSCORE, the RS performs access
+   rights verification per the access token associated with the
+   Recipient Context pertaining to the client, which was used to verify
+   the request and is included in the Group OSCORE Security Context used
+   in the group.
 
    The process for joining the OSCORE group through the respective Group
    Manager takes place separately from the process described in this
-   document, and it is out of the scope of this profile.
-
-   For applications that intend to use this profile, it is RECOMMENDED
-   that the realization of Group Manager used is the one based on the
-   ACE framework and defined in [I-D.ietf-ace-key-groupcomm-oscore].
+   document, and it is out of the scope of this profile.  For
+   applications that intend to use this profile, it is RECOMMENDED that
+   the realization of Group Manager used is the one based on the ACE
+   framework and defined in [I-D.ietf-ace-key-groupcomm-oscore].
 
    An overview of the protocol flow for this profile is shown by the
    example in Figure 1, where it is assumed that both the resource
-   servers RS1 and RS2 are associated with the same authorization server
-   AS.  It is also assumed that the client C as well as RS1 and RS2 have
-   previously joined an OSCORE group with Group Identifier (Gid)
-   0xabcd0000, and that they got assigned Sender ID (Sid) 0x00, 0x01,
-   and 0x02 in the group, respectively.  The names of messages coincide
-   with those of [RFC9200] when applicable.  Messages in square brackets
-   are optional.
+   servers RS1 and RS2 are associated with the same AS.  It is also
+   assumed that the client C as well as RS1 and RS2 have previously
+   joined an OSCORE group with Group Identifier (Gid) 0xabcd0000, and
+   that they got assigned Sender ID (Sid) 0x00, 0x01, and 0x02 in the
+   group, respectively.  The names of messages coincide with those of
+   [RFC9200] when applicable.  Messages in square brackets are optional.
 
  C                             RS1         RS2                        AS
  |                              |           |                          |
@@ -451,6 +481,27 @@ Table of Contents
  |                              |           |                          |
 
                       Figure 1: Protocol Overview
+
+   As long as the client is a member of the OSCORE group and the access
+   token previously uploaded at the RS is still valid, the client can
+   contact the AS to ask for an update of its access rights.  To this
+   end, the client can send to the AS an access token request similar to
+   the initial one mentioned above that was sent when asking for the
+   first access token.
+
+   This latest access token request also includes a "token series
+   identifier" provided by the AS in the response to the initial access
+   token request, which allows the AS to retrieve the data that it
+   previously shared with the client.  The token series identifier is
+   assigned by the AS and used to identify a series of access tokens,
+   called a "token series" (see Section 3.3).
+
+   After the new issued access token is successfully uploaded at the RS
+   and thus the client's access rights are updated accordingly, the new
+   issued access token effectively becomes the latest in its token
+   series also for the RS, but the token series identifier remains the
+   same.  When the latest access token of a token series becomes invalid
+   (e.g., when it expires or gets revoked), that token series ends.
 
 2.1.  Pre-Conditions
 
@@ -528,11 +579,6 @@ Table of Contents
    communication that C has with the authz-info endpoint is not
    protected.
 
-   Editor's note: the above will have to be updated, once defined the
-   dynamic update of access rights (Section 3.3.1 and Section 4.4), in
-   which case the access token is intended to be uploaded by means of a
-   protected request to the authz-info endpoint.
-
    When verifying the access token (see Section 5.10.1.1 of [RFC9200]),
    the RS joins the pertaining OSCORE group if it has not already (see
    Section 4.2 for further details).
@@ -554,7 +600,7 @@ Table of Contents
    in the OSCORE group (see Section 2 of
    [I-D.ietf-core-oscore-groupcomm]).  Such pieces of information are
    specified by corresponding claims of the access token (see
-   Section 3.3).
+   Section 3.4).
 
    The above has considered an access token intended for a single RS.
    However, as discussed in Section 2.2, an access token can be intended
@@ -583,7 +629,7 @@ Table of Contents
    group.  After that, if the target resource requires authorization,
    the RS performs access rights verification as per the access token
    associated with the Recipient Context pertaining to the client, which
-   was used to verify the request and is included is the Group OSCORE
+   was used to verify the request and is included in the Group OSCORE
    Security Context used in the group.
 
    The RS may send a response back to the client, also protecting it
@@ -933,7 +979,7 @@ Table of Contents
    [
 
    TODO: Specify how C requests a new access token that dynamically
-   updates its access rights.  (See Section 3.3.1 for pre-requirements
+   updates its access rights.  (See Section 3.4.1 for pre-requirements
    and a high-level direction)
 
    ]
@@ -969,7 +1015,11 @@ Table of Contents
    (MAC) computed by the client to prove the possession of its own
    private key.
 
-3.3.  AS-to-C: Response
+3.3.  Token Series
+
+   TBD
+
+3.4.  AS-to-C: Response
 
    After having verified the POST access token request to the token
    endpoint and that the client is authorized to obtain an access token
@@ -1122,13 +1172,13 @@ Table of Contents
       the access token request.  If the access token is a CWT, the
       content of the 'context_id' parameter MUST be specified in the
       'context_id' claim of the access token, which is defined in
-      Section 3.3.2 of this document.
+      Section 3.4.2 of this document.
 
    *  The salt input specified in the 'salt_input' parameter of the
       access token request.  If the access token is a CWT, the content
       of the 'salt_input' parameter MUST be specified in the
       'salt_input' claim of the access token, which is defined in
-      Section 3.3.3 of this document.
+      Section 3.4.3 of this document.
 
    *  The authentication credential that the client uses in the OSCORE
       group, as specified in the 'req_cnf' parameter of the access token
@@ -1239,7 +1289,7 @@ Table of Contents
 
             Figure 6: Example CWT Claims Set Using CBOR Encoding
 
-3.3.1.  Update of Access Rights
+3.4.1.  Update of Access Rights
 
    [
 
@@ -1307,7 +1357,7 @@ Table of Contents
 
    ]
 
-3.3.2.  'context_id' Claim
+3.4.2.  'context_id' Claim
 
    The 'context_id' claim provides a value that the client requesting
    the access token wishes to use with the RS, as a hint for a security
@@ -1316,7 +1366,7 @@ Table of Contents
    This claim specifies the value of the Context ID input, encoded as a
    CBOR byte string.
 
-3.3.3.  'salt_input' Claim
+3.4.3.  'salt_input' Claim
 
    The 'salt_input' claim provides a value that the client requesting
    the access token wishes to use as a part of a salt with the RS, e.g.,
@@ -1581,7 +1631,7 @@ Table of Contents
    [
 
    TODO: Specify the processing on the RS when receiving an access token
-   that dynamically updates the access rights of C.  (See Section 3.3.1
+   that dynamically updates the access rights of C.  (See Section 3.4.1
    for pre-requirements and a high-level direction)
 
    ]
@@ -1776,7 +1826,7 @@ Table of Contents
           criteria that are defined in Section 3.2.
 
    2.  After receiving the access token response from the AS (see
-       Section 3.3), the client performs with the RS the same exchanges
+       Section 3.4), the client performs with the RS the same exchanges
        that are defined in Section 4.
 
    When receiving the new access token T_NEW, the RS performs the same
@@ -2196,7 +2246,7 @@ Table of Contents
 
    *  Change Controller: IETF
 
-   *  Reference: [RFC-XXXX, Section 3.3.2]
+   *  Reference: [RFC-XXXX, Section 3.4.2]
 
 
 
@@ -2212,7 +2262,7 @@ Table of Contents
 
    *  Change Controller: IETF
 
-   *  Reference: [RFC-XXXX, Section 3.3.3]
+   *  Reference: [RFC-XXXX, Section 3.4.3]
 
 12.6.  TLS Exporter Label Registry
 
