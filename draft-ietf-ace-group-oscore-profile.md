@@ -48,6 +48,7 @@ normative:
   I-D.ietf-core-groupcomm-bis:
   I-D.ietf-core-oscore-groupcomm:
   I-D.ietf-ace-key-groupcomm-oscore:
+  I-D.ietf-ace-workflow-and-params:
   RFC5246:
   RFC5705:
   RFC5869:
@@ -122,7 +123,6 @@ informative:
   I-D.tiloca-core-oscore-discovery:
   I-D.ietf-cose-cbor-encoded-cert:
   I-D.ietf-ace-edhoc-oscore-profile:
-  I-D.ietf-ace-workflow-and-params:
   RFC5280:
   RFC8446:
   RFC9147:
@@ -296,7 +296,7 @@ C                             RS1         RS2                        AS
 ~~~~~~~~~~~
 {: #fig-protocol-overview title="Protocol Overview" artwork-align="center"}
 
-As long as the client is a member of the OSCORE group and the access token previously uploaded at the RS is still valid, the client can contact the AS to ask for an update of its access rights. To this end, the client can send to the AS an access token request similar to the initial one mentioned above that was sent when asking for the first access token.
+As long as the client is a member of the OSCORE group and the access token previously uploaded at the RS is still valid, the client can contact the AS to ask for updating its access rights, through a process more efficient that that used for the first access token. To this end, the client can send to the AS an access token request similar to the initial one mentioned above that was sent when asking for the first access token.
 
 This latest access token request also includes a "token series identifier" provided by the AS in the response to the initial access token request, which allows the AS to retrieve the data that it previously shared with the client. The token series identifier is assigned by the AS and used to identify a series of access tokens, called a "token series" (see {{sec-token-series}}).
 
@@ -387,6 +387,8 @@ The POST request is formatted as the analogous Client-to-AS request in the OSCOR
 * 'salt_input', defined in {{salt_input}} of this document. This parameter includes the Sender ID that the client has in the OSCORE group whose Gid is specified in the 'context_id' parameter above.
 
 * 'req_cnf', defined in {{Section 3.1 of RFC9201}}. This parameter follows the syntax from {{Section 3.1 of RFC8747}} and its inner confirmation value specifies the authentication credential AUTH_CRED_C that the client uses in the OSCORE group. The public key included in the authentication credential will be used as the PoP key bound to the access token.
+
+  The inner confirmation value of the 'req_cnf' parameter MUST specify AUTH_CRED_C as transported by value.
 
   At the time of writing this specification, acceptable formats of authentication credentials in Group OSCORE are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) {{RFC8392}}, X.509 certificates {{RFC5280}}, and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}.
 
@@ -554,12 +556,37 @@ In the example above, the client specifies that its authentication credential in
 ~~~~~~~~~~~
 {: #fig-client-auth-cred title="Example of client Authentication Credential as CWT Claims Set (CCS)"}
 
+Later on, the client might want to update its access rights with respect to the same target audience for which the first access token was issued.
 
-\[
+As long as the client is a member of the OSCORE group and the access token previously uploaded at the RS is still valid, the client can contact the AS to ask for updating its access rights, through a process more efficient that that used for the first access token.
 
-TODO: Specify how C requests a new access token that dynamically updates its access rights. (See {{sec-as-update-access-rights}} for pre-requirements and a high-level direction)
+When doing so, the POST request sent the token endpoint is like the one defined above, with the differences compiled below. An example of such a request is shown in {{fig-example-C-to-AS-symm-update}}.
 
-\]
+* The request MUST include the 'token_series_id' parameter defined in {{I-D.ietf-ace-workflow-and-params}}.
+
+  The 'token_series_id' parameter encodes a token series identifier that is assigned by the AS as discussed in {{sec-token-series}} and identifies an ongoing token series associated with the pair (AUTH_CRED_C, Aud). That is, previous access tokens in that series were issued by the AS to the client, as bound to AUTH_CRED_C and intended for the target audience Aud (see {{Section 5.8.1 of RFC9200}}).
+
+  Note that the same 'token_series_id' value might identify multiple ongoing token series, e.g., if those are associated with the same client but different audiences. Therefore, the AS uses the 'token_series_id' value together with other information such as the targeted audience and the authenticated identity of the client, in order to determine the exact token series to which the new requested access token has to be added.
+
+* The 'audience' parameter MUST be included in the POST request, if it was included in the POST request that the client previously sent to the AS for requesting the first access token in the token series to which the new requested access token has to be added. If the 'audience' parameter is included in the present POST request, its value MUST be the same value of the 'audience' parameter in that previous POST request.
+
+* The request MUST NOT include any of the following parameters: 'context_id', 'salt_input', 'client_cred_verify', 'client_cred_verify_mac', and 'req_cnf'.
+
+The AS MUST verify that the received 'token_series_id' identifies a token series to which a still valid access token belongs, such that the access token is issued to the client, is bound to AUTH\_CRED\_C, and is intended for the audience specified by the 'audience' parameter of the POST request, if present therein, or for the default audience associated with the client otherwise. If that is not the case, the Client-to-AS request MUST be declined with the error code "invalid_request" as defined in {{Section 5.8.3 of RFC9200}}.
+
+~~~~~~~~~~~
+Header: POST (Code=0.02)
+Uri-Host: "as.example.com"
+Uri-Path: "token"
+Content-Format: 19 (application/ace+cbor)
+Payload:
+{
+  / audience /             5 : "tempSensor4711",
+  / scope /                9 : "write",
+    e'token_series_id_param' : h'42'
+}
+~~~~~~~~~~~
+{: #fig-example-C-to-AS-symm-update title="Example C-to-AS POST /token Request for Updating Access Rights to an Access Token."}
 
 ### 'context_id' Parameter ### {#context_id}
 
@@ -1275,6 +1302,7 @@ This appendix lists the specifications of this profile based on the requirements
 coap_group_oscore = 5
 
 ; OAuth Parameters CBOR Mappings
+token_series_id_param = 56
 context_id_param = 71
 salt_input_param = 72
 client_cred_verify = 73
