@@ -152,7 +152,7 @@ entity:
 
 --- abstract
 
-This document specifies a profile for the Authentication and Authorization for Constrained Environments (ACE) framework. The profile uses Group Object Security for Constrained RESTful Environments (Group OSCORE) to provide communication security between a client and one or multiple resource servers that are members of an OSCORE group. The profile securely binds an OAuth 2.0 access token to the public key of the client associated with the private key used by that client in the OSCORE group. The profile uses Group OSCORE to achieve server authentication and proof of possession of the client's private key. Also, it provides proof of the client's membership to the OSCORE group by binding the access token to information from the Group OSCORE Security Context, thus allowing the resource server(s) to verify the client's membership upon receiving a message protected with Group OSCORE from the client. Effectively, the profile enables fine-grained access control paired with secure group communication, in accordance with the Zero Trust principles.
+This document specifies a profile for the Authentication and Authorization for Constrained Environments (ACE) framework. The profile uses Group Object Security for Constrained RESTful Environments (Group OSCORE) to provide communication security between a client and one or multiple resource servers that are members of an OSCORE group. The profile securely binds an OAuth 2.0 access token to the public key of the client associated with the private key used by that client in the OSCORE group. The profile uses Group OSCORE to achieve server authentication and proof of possession of the client's private key. Also, it provides proof of the client's membership to the OSCORE group by binding the access token to information that pertains to the Group OSCORE Security Context, thus allowing the resource server(s) to verify the client's membership upon receiving the access token. Effectively, the profile enables fine-grained access control paired with secure group communication, in accordance with the Zero Trust principles.
 
 --- middle
 
@@ -188,7 +188,7 @@ The client proves its authorization and access rights to the resource server(s) 
 
 This profile uses Group OSCORE to achieve server authentication and proof of possession of the client's private key used in the OSCORE group in question. Note that proof of possession is not achieved through a dedicated protocol element. Instead, it is achieved when the resource server receives from the client a message protected with Group OSCORE and successfully verifies source authentication of such message through the client's public key bound to the access token.
 
-Furthermore, this profile provides proof of the client's membership to the OSCORE group, by binding the access token to information from the pre-established Group OSCORE Security Context, as well as to the client's authentication credential used in the group and including the client's public key. This allows the resource server(s) in the group to verify the client's group membership upon reception of a message protected with Group OSCORE from that client.
+Furthermore, this profile provides proof of the client's membership to the OSCORE group, by binding the access token to information that pertains to the Group OSCORE Security Context, as well as to the client's authentication credential used in the group and including the client's public key. This allows the resource server(s) in the group to verify the client's group membership upon receiving the access token.
 
 Object Security for Constrained RESTful Environments (OSCORE) {{RFC8613}} specifies how to use CBOR Object Signing and Encryption (COSE) {{RFC9052}}{{RFC9053}} to secure CoAP messages. Group OSCORE builds on OSCORE to provide secure group communication and ensures source authentication: by means of digital signatures embedded in the protected message (when using the group mode); or by protecting a message with pairwise keying material derived from the asymmetric keys of the two peers exchanging the message (when using the pairwise mode).
 
@@ -1285,6 +1285,8 @@ kccs = 11
 * Clarifications:
 
   * Achieving proof of possession.
+
+  * Details on proof of group membership.
 
   * Timing and consistency of group joining.
 
