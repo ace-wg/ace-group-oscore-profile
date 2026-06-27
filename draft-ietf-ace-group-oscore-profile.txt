@@ -5,9 +5,9 @@
 ACE Working Group                                              M. Tiloca
 Internet-Draft                                                R. Höglund
 Intended status: Standards Track                                 RISE AB
-Expires: 28 December 2026                                   F. Palombini
+Expires: 29 December 2026                                   F. Palombini
                                                              Ericsson AB
-                                                            26 June 2026
+                                                            27 June 2026
 
 
  The Group Object Security for Constrained RESTful Environments (Group
@@ -27,12 +27,12 @@ Abstract
    by that client in the OSCORE group.  The profile uses Group OSCORE to
    achieve server authentication and proof of possession of the client's
    private key.  Also, it provides proof of the client's membership to
-   the OSCORE group by binding the access token to information from the
-   Group OSCORE Security Context, thus allowing the resource server(s)
-   to verify the client's membership upon receiving a message protected
-   with Group OSCORE from the client.  Effectively, the profile enables
-   fine-grained access control paired with secure group communication,
-   in accordance with the Zero Trust principles.
+   the OSCORE group by binding the access token to information that
+   pertains to the Group OSCORE Security Context, thus allowing the
+   resource server(s) to verify the client's membership upon receiving
+   the access token.  Effectively, the profile enables fine-grained
+   access control paired with secure group communication, in accordance
+   with the Zero Trust principles.
 
 Discussion Venues
 
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 December 2026.
+   This Internet-Draft will expire on 29 December 2026.
 
 Copyright Notice
 
@@ -280,12 +280,12 @@ Table of Contents
    message through the client's public key bound to the access token.
 
    Furthermore, this profile provides proof of the client's membership
-   to the OSCORE group, by binding the access token to information from
-   the pre-established Group OSCORE Security Context, as well as to the
+   to the OSCORE group, by binding the access token to information that
+   pertains to the Group OSCORE Security Context, as well as to the
    client's authentication credential used in the group and including
    the client's public key.  This allows the resource server(s) in the
-   group to verify the client's group membership upon reception of a
-   message protected with Group OSCORE from that client.
+   group to verify the client's group membership upon receiving the
+   access token.
 
    Object Security for Constrained RESTful Environments (OSCORE)
    [RFC8613] specifies how to use CBOR Object Signing and Encryption
@@ -2581,6 +2581,8 @@ C.1.  Version -06 to -07
    *  Clarifications:
 
       -  Achieving proof of possession.
+
+      -  Details on proof of group membership.
 
       -  Timing and consistency of group joining.
 
