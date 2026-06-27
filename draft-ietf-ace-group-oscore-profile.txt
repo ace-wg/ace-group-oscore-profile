@@ -356,14 +356,14 @@ Table of Contents
 
    In the CBOR diagnostic notation used in this document, constructs of
    the form e'SOME_NAME' are replaced by the value assigned to SOME_NAME
-   in the CDDL model shown in Figure 7 of Appendix B.  For example,
+   in the CDDL model shown in Figure 8 of Appendix B.  For example,
    {e'context_id_param': h'abcd0000', e'salt_input_param': h'00'} stands
    for {71: h'abcd0000', 72: h'00'}.
 
    Note to RFC Editor: Please delete the paragraph immediately preceding
    this note.  Also, in the CBOR diagnostic notation used in this
    document, please replace the constructs of the form e'SOME_NAME' with
-   the value assigned to SOME_NAME in the CDDL model shown in Figure 7
+   the value assigned to SOME_NAME in the CDDL model shown in Figure 8
    of Appendix B.  Finally, please delete this note.
 
 2.  Protocol Overview
@@ -484,10 +484,11 @@ Table of Contents
 
    As long as the client is a member of the OSCORE group and the access
    token previously uploaded at the RS is still valid, the client can
-   contact the AS to ask for an update of its access rights.  To this
-   end, the client can send to the AS an access token request similar to
-   the initial one mentioned above that was sent when asking for the
-   first access token.
+   contact the AS to ask for updating its access rights, through a
+   process more efficient that that used for the first access token.  To
+   this end, the client can send to the AS an access token request
+   similar to the initial one mentioned above that was sent when asking
+   for the first access token.
 
    This latest access token request also includes a "token series
    identifier" provided by the AS in the response to the initial access
@@ -724,6 +725,9 @@ Table of Contents
       AUTH_CRED_C that the client uses in the OSCORE group.  The public
       key included in the authentication credential will be used as the
       PoP key bound to the access token.
+
+      The inner confirmation value of the 'req_cnf' parameter MUST
+      specify AUTH_CRED_C as transported by value.
 
       At the time of writing this specification, acceptable formats of
       authentication credentials in Group OSCORE are CBOR Web Tokens
@@ -976,13 +980,72 @@ Table of Contents
         Figure 3: Example of client Authentication Credential as CWT
                               Claims Set (CCS)
 
-   [
+   Later on, the client might want to update its access rights with
+   respect to the same target audience for which the first access token
+   was issued.
 
-   TODO: Specify how C requests a new access token that dynamically
-   updates its access rights.  (See Section 3.4.1 for pre-requirements
-   and a high-level direction)
+   As long as the client is a member of the OSCORE group and the access
+   token previously uploaded at the RS is still valid, the client can
+   contact the AS to ask for updating its access rights, through a
+   process more efficient that that used for the first access token.
 
-   ]
+   When doing so, the POST request sent the token endpoint is like the
+   one defined above, with the differences compiled below.  An example
+   of such a request is shown in Figure 4.
+
+   *  The request MUST include the 'token_series_id' parameter defined
+      in [I-D.ietf-ace-workflow-and-params].
+
+      The 'token_series_id' parameter encodes a token series identifier
+      that is assigned by the AS as discussed in Section 3.3 and
+      identifies an ongoing token series associated with the pair
+      (AUTH_CRED_C, Aud).  That is, previous access tokens in that
+      series were issued by the AS to the client, as bound to
+      AUTH_CRED_C and intended for the target audience Aud (see
+      Section 5.8.1 of [RFC9200]).
+
+      Note that the same 'token_series_id' value might identify multiple
+      ongoing token series, e.g., if those are associated with the same
+      client but different audiences.  Therefore, the AS uses the
+      'token_series_id' value together with other information such as
+      the targeted audience and the authenticated identity of the
+      client, in order to determine the exact token series to which the
+      new requested access token has to be added.
+
+   *  The 'audience' parameter MUST be included in the POST request, if
+      it was included in the POST request that the client previously
+      sent to the AS for requesting the first access token in the token
+      series to which the new requested access token has to be added.
+      If the 'audience' parameter is included in the present POST
+      request, its value MUST be the same value of the 'audience'
+      parameter in that previous POST request.
+
+   *  The request MUST NOT include any of the following parameters:
+      'context_id', 'salt_input', 'client_cred_verify',
+      'client_cred_verify_mac', and 'req_cnf'.
+
+   The AS MUST verify that the received 'token_series_id' identifies a
+   token series to which a still valid access token belongs, such that
+   the access token is issued to the client, is bound to AUTH_CRED_C,
+   and is intended for the audience specified by the 'audience'
+   parameter of the POST request, if present therein, or for the default
+   audience associated with the client otherwise.  If that is not the
+   case, the Client-to-AS request MUST be declined with the error code
+   "invalid_request" as defined in Section 5.8.3 of [RFC9200].
+
+   Header: POST (Code=0.02)
+   Uri-Host: "as.example.com"
+   Uri-Path: "token"
+   Content-Format: 19 (application/ace+cbor)
+   Payload:
+   {
+     / audience /             5 : "tempSensor4711",
+     / scope /                9 : "write",
+       e'token_series_id_param' : h'42'
+   }
+
+     Figure 4: Example C-to-AS POST /token Request for Updating Access
+                         Rights to an Access Token.
 
 3.2.1.  'context_id' Parameter
 
@@ -1188,7 +1251,7 @@ Table of Contents
       credential MUST be specified in the 'cnf' claim, which follows the
       syntax from Section 3.1 of [RFC8747].
 
-   Figure 4 shows an example of access token response, where the access
+   Figure 5 shows an example of access token response, where the access
    token has been truncated for readability.
 
  Header: Created (Code=2.01)
@@ -1200,10 +1263,10 @@ Table of Contents
    / expires_in /   2 : 3600
  }
 
-     Figure 4: Example AS-to-C Access Token Response with the Group
+     Figure 5: Example AS-to-C Access Token Response with the Group
                              OSCORE Profile
 
-   Figure 5 shows an example CWT Claims Set, containing the client's
+   Figure 6 shows an example CWT Claims Set, containing the client's
    public key in the group (as PoP key), as specified by the inner
    confirmation value in the 'cnf' claim.
 
@@ -1231,10 +1294,10 @@ Table of Contents
      }
    }
 
-                      Figure 5: Example CWT Claims Set
+                      Figure 6: Example CWT Claims Set
 
-   The same CWT Claims Set as in Figure 5 and encoded in CBOR is shown
-   in Figure 6, using the value abbreviations defined in [RFC9200] and
+   The same CWT Claims Set as in Figure 6 and encoded in CBOR is shown
+   in Figure 7, using the value abbreviations defined in [RFC9200] and
    [RFC8747].  The bytes in hexadecimal are reported in the first
    column, while their corresponding CBOR meaning is reported after the
    "#" sign on the second column, for easiness of readability.
@@ -1287,7 +1350,7 @@ Table of Contents
                      F95E1D4B851A2CC80FFF87D8E23F22AF
                      B725D535E515D020731E79A3B4E47120
 
-            Figure 6: Example CWT Claims Set Using CBOR Encoding
+            Figure 7: Example CWT Claims Set Using CBOR Encoding
 
 3.4.1.  Update of Access Rights
 
@@ -2292,6 +2355,15 @@ Table of Contents
               March 2026, <https://datatracker.ietf.org/doc/html/draft-
               ietf-ace-key-groupcomm-oscore-21>.
 
+   [I-D.ietf-ace-workflow-and-params]
+              Tiloca, M. and G. Selander, "Short Distribution Chain
+              (SDC) Workflow and New OAuth Parameters for the
+              Authentication and Authorization for Constrained
+              Environments (ACE) Framework", Work in Progress, Internet-
+              Draft, draft-ietf-ace-workflow-and-params-07, 2 March
+              2026, <https://datatracker.ietf.org/doc/html/draft-ietf-
+              ace-workflow-and-params-07>.
+
    [I-D.ietf-core-groupcomm-bis]
               Dijk, E. and M. Tiloca, "Group Communication for the
               Constrained Application Protocol (CoAP)", Work in
@@ -2452,15 +2524,6 @@ Table of Contents
               <https://datatracker.ietf.org/doc/html/draft-ietf-ace-
               edhoc-oscore-profile-10>.
 
-   [I-D.ietf-ace-workflow-and-params]
-              Tiloca, M. and G. Selander, "Short Distribution Chain
-              (SDC) Workflow and New OAuth Parameters for the
-              Authentication and Authorization for Constrained
-              Environments (ACE) Framework", Work in Progress, Internet-
-              Draft, draft-ietf-ace-workflow-and-params-07, 2 March
-              2026, <https://datatracker.ietf.org/doc/html/draft-ietf-
-              ace-workflow-and-params-07>.
-
    [I-D.ietf-cose-cbor-encoded-cert]
               Mattsson, J. P., Selander, G., Raza, S., Höglund, J.,
               Furuhed, M., and L. Liao, "CBOR Encoded X.509 Certificates
@@ -2580,6 +2643,7 @@ Appendix B.  CDDL Model
    coap_group_oscore = 5
 
    ; OAuth Parameters CBOR Mappings
+   token_series_id_param = 56
    context_id_param = 71
    salt_input_param = 72
    client_cred_verify = 73
@@ -2592,7 +2656,7 @@ Appendix B.  CDDL Model
    ; CWT Confirmation Methods
    kccs = 11
 
-                            Figure 7: CDDL model
+                            Figure 8: CDDL model
 
 Appendix C.  Document Updates
 

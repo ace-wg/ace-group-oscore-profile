@@ -1406,8 +1406,8 @@ Members of an OSCORE group have an associated authentication credential in the f
 <a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-notations" class="section-name selfRef">Notations</a>
         </h3>
 <p id="section-1.2-1">Examples throughout this document are expressed in CBOR diagnostic notation as defined in <span><a href="https://rfc-editor.org/rfc/rfc8949#section-8" class="relref">Section 8</a> of [<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> and <span><a href="https://rfc-editor.org/rfc/rfc8610#appendix-G" class="relref">Appendix G</a> of [<a href="#RFC8610" class="cite xref">RFC8610</a>]</span>. Diagnostic notation comments are often used to provide a textual representation of the parameters' keys and values.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
-<p id="section-1.2-2">In the CBOR diagnostic notation used in this document, constructs of the form e'SOME_NAME' are replaced by the value assigned to SOME_NAME in the CDDL model shown in <a href="#fig-cddl-model" class="auto internal xref">Figure 7</a> of <a href="#sec-cddl-model" class="auto internal xref">Appendix B</a>. For example, {e'context_id_param': h'abcd0000', e'salt_input_param': h'00'} stands for {71: h'abcd0000', 72: h'00'}.<a href="#section-1.2-2" class="pilcrow">¶</a></p>
-<p id="section-1.2-3">Note to RFC Editor: Please delete the paragraph immediately preceding this note. Also, in the CBOR diagnostic notation used in this document, please replace the constructs of the form e'SOME_NAME' with the value assigned to SOME_NAME in the CDDL model shown in <a href="#fig-cddl-model" class="auto internal xref">Figure 7</a> of <a href="#sec-cddl-model" class="auto internal xref">Appendix B</a>. Finally, please delete this note.<a href="#section-1.2-3" class="pilcrow">¶</a></p>
+<p id="section-1.2-2">In the CBOR diagnostic notation used in this document, constructs of the form e'SOME_NAME' are replaced by the value assigned to SOME_NAME in the CDDL model shown in <a href="#fig-cddl-model" class="auto internal xref">Figure 8</a> of <a href="#sec-cddl-model" class="auto internal xref">Appendix B</a>. For example, {e'context_id_param': h'abcd0000', e'salt_input_param': h'00'} stands for {71: h'abcd0000', 72: h'00'}.<a href="#section-1.2-2" class="pilcrow">¶</a></p>
+<p id="section-1.2-3">Note to RFC Editor: Please delete the paragraph immediately preceding this note. Also, in the CBOR diagnostic notation used in this document, please replace the constructs of the form e'SOME_NAME' with the value assigned to SOME_NAME in the CDDL model shown in <a href="#fig-cddl-model" class="auto internal xref">Figure 8</a> of <a href="#sec-cddl-model" class="auto internal xref">Appendix B</a>. Finally, please delete this note.<a href="#section-1.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1598,7 +1598,7 @@ Members of an OSCORE group have an associated authentication credential in the f
 <a href="#name-protocol-overview-2" class="selfRef">Protocol Overview</a>
         </figcaption></figure>
 </div>
-<p id="section-2-11">As long as the client is a member of the OSCORE group and the access token previously uploaded at the RS is still valid, the client can contact the AS to ask for an update of its access rights. To this end, the client can send to the AS an access token request similar to the initial one mentioned above that was sent when asking for the first access token.<a href="#section-2-11" class="pilcrow">¶</a></p>
+<p id="section-2-11">As long as the client is a member of the OSCORE group and the access token previously uploaded at the RS is still valid, the client can contact the AS to ask for updating its access rights, through a process more efficient that that used for the first access token. To this end, the client can send to the AS an access token request similar to the initial one mentioned above that was sent when asking for the first access token.<a href="#section-2-11" class="pilcrow">¶</a></p>
 <p id="section-2-12">This latest access token request also includes a "token series identifier" provided by the AS in the response to the initial access token request, which allows the AS to retrieve the data that it previously shared with the client. The token series identifier is assigned by the AS and used to identify a series of access tokens, called a "token series" (see <a href="#sec-token-series" class="auto internal xref">Section 3.3</a>).<a href="#section-2-12" class="pilcrow">¶</a></p>
 <p id="section-2-13">After the new issued access token is successfully uploaded at the RS and thus the client's access rights are updated accordingly, the new issued access token effectively becomes the latest in its token series also for the RS, but the token series identifier remains the same. When the latest access token of a token series becomes invalid (e.g., when it expires or gets revoked), that token series ends.<a href="#section-2-13" class="pilcrow">¶</a></p>
 <div id="sec-protocol-overview-pre-conditions">
@@ -1716,19 +1716,21 @@ Finally, the client moves to Step 1.<a href="#section-3.1-3.3.4" class="pilcrow"
           <li class="normal" id="section-3.2-3.3">
             <p id="section-3.2-3.3.1">'req_cnf', defined in <span><a href="https://rfc-editor.org/rfc/rfc9201#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC9201" class="cite xref">RFC9201</a>]</span>. This parameter follows the syntax from <span><a href="https://rfc-editor.org/rfc/rfc8747#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8747" class="cite xref">RFC8747</a>]</span> and its inner confirmation value specifies the authentication credential AUTH_CRED_C that the client uses in the OSCORE group. The public key included in the authentication credential will be used as the PoP key bound to the access token.<a href="#section-3.2-3.3.1" class="pilcrow">¶</a></p>
 <p id="section-3.2-3.3.2">
-At the time of writing this specification, acceptable formats of authentication credentials in Group OSCORE are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) <span>[<a href="#RFC8392" class="cite xref">RFC8392</a>]</span>, X.509 certificates <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, and C509 certificates <span>[<a href="#I-D.ietf-cose-cbor-encoded-cert" class="cite xref">I-D.ietf-cose-cbor-encoded-cert</a>]</span>.<a href="#section-3.2-3.3.2" class="pilcrow">¶</a></p>
+The inner confirmation value of the 'req_cnf' parameter <span class="bcp14">MUST</span> specify AUTH_CRED_C as transported by value.<a href="#section-3.2-3.3.2" class="pilcrow">¶</a></p>
 <p id="section-3.2-3.3.3">
-Further formats may be available in the future and would be acceptable to use as long as they comply with the criteria compiled in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-2.4" class="relref">Section 2.4</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>. In particular, an authentication credential has to explicitly include the public key as well as a comprehensive set of information related to the public key algorithm, including, e.g., the elliptic curve used (when applicable).<a href="#section-3.2-3.3.3" class="pilcrow">¶</a></p>
+At the time of writing this specification, acceptable formats of authentication credentials in Group OSCORE are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) <span>[<a href="#RFC8392" class="cite xref">RFC8392</a>]</span>, X.509 certificates <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, and C509 certificates <span>[<a href="#I-D.ietf-cose-cbor-encoded-cert" class="cite xref">I-D.ietf-cose-cbor-encoded-cert</a>]</span>.<a href="#section-3.2-3.3.3" class="pilcrow">¶</a></p>
 <p id="section-3.2-3.3.4">
-Note that C might have previously uploaded AUTH_CRED_C to the Group Manager as provided within a chain or a bag (e.g., as the end-entity certificate in a chain of certificates). For example, such uploading can rely on the 'client_cred' parameter of a Join Request or of an Authentication Credential Update Request sent to the Group Manager as specified in Sections <a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-6.1" class="relref">6.1</a> and <a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-9.4" class="relref">9.4</a> of <span>[<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>.<a href="#section-3.2-3.3.4" class="pilcrow">¶</a></p>
+Further formats may be available in the future and would be acceptable to use as long as they comply with the criteria compiled in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-2.4" class="relref">Section 2.4</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>. In particular, an authentication credential has to explicitly include the public key as well as a comprehensive set of information related to the public key algorithm, including, e.g., the elliptic curve used (when applicable).<a href="#section-3.2-3.3.4" class="pilcrow">¶</a></p>
 <p id="section-3.2-3.3.5">
-In such a case, the inner confirmation value of the 'req_cnf' parameter <span class="bcp14">MUST</span> specify AUTH_CRED_C as provided within the same chain or bag.<a href="#section-3.2-3.3.5" class="pilcrow">¶</a></p>
+Note that C might have previously uploaded AUTH_CRED_C to the Group Manager as provided within a chain or a bag (e.g., as the end-entity certificate in a chain of certificates). For example, such uploading can rely on the 'client_cred' parameter of a Join Request or of an Authentication Credential Update Request sent to the Group Manager as specified in Sections <a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-6.1" class="relref">6.1</a> and <a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-9.4" class="relref">9.4</a> of <span>[<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>.<a href="#section-3.2-3.3.5" class="pilcrow">¶</a></p>
 <p id="section-3.2-3.3.6">
-[ As to CWTs and CCSs, the CWT Confirmation Methods 'kcwt' and 'kccs' are under pending registration requested by draft-ietf-ace-edhoc-oscore-profile. ]<a href="#section-3.2-3.3.6" class="pilcrow">¶</a></p>
+In such a case, the inner confirmation value of the 'req_cnf' parameter <span class="bcp14">MUST</span> specify AUTH_CRED_C as provided within the same chain or bag.<a href="#section-3.2-3.3.6" class="pilcrow">¶</a></p>
 <p id="section-3.2-3.3.7">
-[ As to X.509 certificates, the CWT Confirmation Methods 'x5bag' and '5chain' are under pending registration requested by draft-ietf-ace-edhoc-oscore-profile. ]<a href="#section-3.2-3.3.7" class="pilcrow">¶</a></p>
+[ As to CWTs and CCSs, the CWT Confirmation Methods 'kcwt' and 'kccs' are under pending registration requested by draft-ietf-ace-edhoc-oscore-profile. ]<a href="#section-3.2-3.3.7" class="pilcrow">¶</a></p>
 <p id="section-3.2-3.3.8">
-[ As to C509 certificates, the CWT Confirmation Methods 'c5b' and 'c5c' are under pending registration requested by draft-ietf-ace-edhoc-oscore-profile. ]<a href="#section-3.2-3.3.8" class="pilcrow">¶</a></p>
+[ As to X.509 certificates, the CWT Confirmation Methods 'x5bag' and '5chain' are under pending registration requested by draft-ietf-ace-edhoc-oscore-profile. ]<a href="#section-3.2-3.3.8" class="pilcrow">¶</a></p>
+<p id="section-3.2-3.3.9">
+[ As to C509 certificates, the CWT Confirmation Methods 'c5b' and 'c5c' are under pending registration requested by draft-ietf-ace-edhoc-oscore-profile. ]<a href="#section-3.2-3.3.9" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-3.2-4">Furthermore, the payload of the request can include exactly one of the two following parameters, specifying a proof-of-possession (PoP) evidence computed by the client.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
@@ -1926,9 +1928,45 @@ Payload:
 <a href="#name-example-of-client-authentic" class="selfRef">Example of client Authentication Credential as CWT Claims Set (CCS)</a>
           </figcaption></figure>
 </div>
-<p id="section-3.2-18">[<a href="#section-3.2-18" class="pilcrow">¶</a></p>
-<p id="section-3.2-19">TODO: Specify how C requests a new access token that dynamically updates its access rights. (See <a href="#sec-as-update-access-rights" class="auto internal xref">Section 3.4.1</a> for pre-requirements and a high-level direction)<a href="#section-3.2-19" class="pilcrow">¶</a></p>
-<p id="section-3.2-20">]<a href="#section-3.2-20" class="pilcrow">¶</a></p>
+<p id="section-3.2-18">Later on, the client might want to update its access rights with respect to the same target audience for which the first access token was issued.<a href="#section-3.2-18" class="pilcrow">¶</a></p>
+<p id="section-3.2-19">As long as the client is a member of the OSCORE group and the access token previously uploaded at the RS is still valid, the client can contact the AS to ask for updating its access rights, through a process more efficient that that used for the first access token.<a href="#section-3.2-19" class="pilcrow">¶</a></p>
+<p id="section-3.2-20">When doing so, the POST request sent the token endpoint is like the one defined above, with the differences compiled below. An example of such a request is shown in <a href="#fig-example-C-to-AS-symm-update" class="auto internal xref">Figure 4</a>.<a href="#section-3.2-20" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.2-21.1">
+            <p id="section-3.2-21.1.1">The request <span class="bcp14">MUST</span> include the 'token_series_id' parameter defined in <span>[<a href="#I-D.ietf-ace-workflow-and-params" class="cite xref">I-D.ietf-ace-workflow-and-params</a>]</span>.<a href="#section-3.2-21.1.1" class="pilcrow">¶</a></p>
+<p id="section-3.2-21.1.2">
+The 'token_series_id' parameter encodes a token series identifier that is assigned by the AS as discussed in <a href="#sec-token-series" class="auto internal xref">Section 3.3</a> and identifies an ongoing token series associated with the pair (AUTH_CRED_C, Aud). That is, previous access tokens in that series were issued by the AS to the client, as bound to AUTH_CRED_C and intended for the target audience Aud (see <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.8.1" class="relref">Section 5.8.1</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>).<a href="#section-3.2-21.1.2" class="pilcrow">¶</a></p>
+<p id="section-3.2-21.1.3">
+Note that the same 'token_series_id' value might identify multiple ongoing token series, e.g., if those are associated with the same client but different audiences. Therefore, the AS uses the 'token_series_id' value together with other information such as the targeted audience and the authenticated identity of the client, in order to determine the exact token series to which the new requested access token has to be added.<a href="#section-3.2-21.1.3" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.2-21.2">
+            <p id="section-3.2-21.2.1">The 'audience' parameter <span class="bcp14">MUST</span> be included in the POST request, if it was included in the POST request that the client previously sent to the AS for requesting the first access token in the token series to which the new requested access token has to be added. If the 'audience' parameter is included in the present POST request, its value <span class="bcp14">MUST</span> be the same value of the 'audience' parameter in that previous POST request.<a href="#section-3.2-21.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.2-21.3">
+            <p id="section-3.2-21.3.1">The request <span class="bcp14">MUST NOT</span> include any of the following parameters: 'context_id', 'salt_input', 'client_cred_verify', 'client_cred_verify_mac', and 'req_cnf'.<a href="#section-3.2-21.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-3.2-22">The AS <span class="bcp14">MUST</span> verify that the received 'token_series_id' identifies a token series to which a still valid access token belongs, such that the access token is issued to the client, is bound to AUTH_CRED_C, and is intended for the audience specified by the 'audience' parameter of the POST request, if present therein, or for the default audience associated with the client otherwise. If that is not the case, the Client-to-AS request <span class="bcp14">MUST</span> be declined with the error code "invalid_request" as defined in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.8.3" class="relref">Section 5.8.3</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>.<a href="#section-3.2-22" class="pilcrow">¶</a></p>
+<span id="name-example-c-to-as-post-token-r"></span><div id="fig-example-C-to-AS-symm-update">
+<figure id="figure-4">
+          <div class="alignLeft art-text artwork" id="section-3.2-23.1">
+<pre>
+Header: POST (Code=0.02)
+Uri-Host: "as.example.com"
+Uri-Path: "token"
+Content-Format: 19 (application/ace+cbor)
+Payload:
+{
+  / audience /             5 : "tempSensor4711",
+  / scope /                9 : "write",
+    e'token_series_id_param' : h'42'
+}
+</pre>
+</div>
+<figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
+<a href="#name-example-c-to-as-post-token-r" class="selfRef">Example C-to-AS POST /token Request for Updating Access Rights to an Access Token.</a>
+          </figcaption></figure>
+</div>
 <div id="context_id">
 <section id="section-3.2.1">
           <h4 id="name-context_id-parameter">
@@ -2056,9 +2094,9 @@ Practically, this is not an issue, since the same ECDH algorithm is used by RSs 
 If the access token is a CWT, the client's authentication credential <span class="bcp14">MUST</span> be specified in the 'cnf' claim, which follows the syntax from <span><a href="https://rfc-editor.org/rfc/rfc8747#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8747" class="cite xref">RFC8747</a>]</span>.<a href="#section-3.4-14.4.2" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-3.4-15"><a href="#fig-example-AS-to-C" class="auto internal xref">Figure 4</a> shows an example of access token response, where the access token has been truncated for readability.<a href="#section-3.4-15" class="pilcrow">¶</a></p>
+<p id="section-3.4-15"><a href="#fig-example-AS-to-C" class="auto internal xref">Figure 5</a> shows an example of access token response, where the access token has been truncated for readability.<a href="#section-3.4-15" class="pilcrow">¶</a></p>
 <span id="name-example-as-to-c-access-toke"></span><div id="fig-example-AS-to-C">
-<figure id="figure-4">
+<figure id="figure-5">
           <div class="alignLeft art-text artwork" id="section-3.4-16.1">
 <pre>
 Header: Created (Code=2.01)
@@ -2071,13 +2109,13 @@ Payload:
 }
 </pre>
 </div>
-<figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
+<figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
 <a href="#name-example-as-to-c-access-toke" class="selfRef">Example AS-to-C Access Token Response with the Group OSCORE Profile</a>
           </figcaption></figure>
 </div>
-<p id="section-3.4-17"><a href="#fig-example-AS-to-C-CWT" class="auto internal xref">Figure 5</a> shows an example CWT Claims Set, containing the client's public key in the group (as PoP key), as specified by the inner confirmation value in the 'cnf' claim.<a href="#section-3.4-17" class="pilcrow">¶</a></p>
+<p id="section-3.4-17"><a href="#fig-example-AS-to-C-CWT" class="auto internal xref">Figure 6</a> shows an example CWT Claims Set, containing the client's public key in the group (as PoP key), as specified by the inner confirmation value in the 'cnf' claim.<a href="#section-3.4-17" class="pilcrow">¶</a></p>
 <span id="name-example-cwt-claims-set"></span><div id="fig-example-AS-to-C-CWT">
-<figure id="figure-5">
+<figure id="figure-6">
           <div class="lang-cbor-diag sourcecode" id="section-3.4-18.1">
 <pre>
 {
@@ -2105,14 +2143,14 @@ Payload:
 }
 </pre>
 </div>
-<figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
+<figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
 <a href="#name-example-cwt-claims-set" class="selfRef">Example CWT Claims Set</a>
           </figcaption></figure>
 </div>
-<p id="section-3.4-19">The same CWT Claims Set as in <a href="#fig-example-AS-to-C-CWT" class="auto internal xref">Figure 5</a> and encoded in CBOR is shown in <a href="#fig-example-AS-to-C-CWT-encoding" class="auto internal xref">Figure 6</a>, using the value abbreviations defined in <span>[<a href="#RFC9200" class="cite xref">RFC9200</a>]</span> and <span>[<a href="#RFC8747" class="cite xref">RFC8747</a>]</span>. The bytes in hexadecimal are reported in the first column, while their corresponding CBOR meaning is reported after the "#" sign on the second column, for easiness of readability.<a href="#section-3.4-19" class="pilcrow">¶</a></p>
+<p id="section-3.4-19">The same CWT Claims Set as in <a href="#fig-example-AS-to-C-CWT" class="auto internal xref">Figure 6</a> and encoded in CBOR is shown in <a href="#fig-example-AS-to-C-CWT-encoding" class="auto internal xref">Figure 7</a>, using the value abbreviations defined in <span>[<a href="#RFC9200" class="cite xref">RFC9200</a>]</span> and <span>[<a href="#RFC8747" class="cite xref">RFC8747</a>]</span>. The bytes in hexadecimal are reported in the first column, while their corresponding CBOR meaning is reported after the "#" sign on the second column, for easiness of readability.<a href="#section-3.4-19" class="pilcrow">¶</a></p>
 <p id="section-3.4-20">Editor's note: it should be checked (and in case fixed) that the values used below (which are not yet registered) are the final values registered by IANA.<a href="#section-3.4-20" class="pilcrow">¶</a></p>
 <span id="name-example-cwt-claims-set-usin"></span><div id="fig-example-AS-to-C-CWT-encoding">
-<figure id="figure-6">
+<figure id="figure-7">
           <div class="lang-cbor-pretty sourcecode" id="section-3.4-21.1">
 <pre>
 A7                                      # map(7)
@@ -2160,7 +2198,7 @@ A7                                      # map(7)
                   B725D535E515D020731E79A3B4E47120
 </pre>
 </div>
-<figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
+<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
 <a href="#name-example-cwt-claims-set-usin" class="selfRef">Example CWT Claims Set Using CBOR Encoding</a>
           </figcaption></figure>
 </div>
@@ -3019,6 +3057,10 @@ The possible omission of the PoP evidence is based on the same criteria that are
         <dd>
 <span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">F. Palombini</span>, <span class="refTitle">"Key Management for Group Object Security for Constrained RESTful Environments (Group OSCORE) Using Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-21</span>, <time datetime="2026-03-14" class="refDate">14 March 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21">https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="I-D.ietf-ace-workflow-and-params">[I-D.ietf-ace-workflow-and-params]</dt>
+        <dd>
+<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">G. Selander</span>, <span class="refTitle">"Short Distribution Chain (SDC) Workflow and New OAuth Parameters for the Authentication and Authorization for Constrained Environments (ACE) Framework"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-workflow-and-params-07</span>, <time datetime="2026-03-02" class="refDate">2 March 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-workflow-and-params-07">https://datatracker.ietf.org/doc/html/draft-ietf-ace-workflow-and-params-07</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="I-D.ietf-core-groupcomm-bis">[I-D.ietf-core-groupcomm-bis]</dt>
         <dd>
 <span class="refAuthor">Dijk, E.</span> and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Group Communication for the Constrained Application Protocol (CoAP)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-groupcomm-bis-18</span>, <time datetime="2026-02-10" class="refDate">10 February 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-18">https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-18</a>&gt;</span>. </dd>
@@ -3148,10 +3190,6 @@ The possible omission of the PoP evidence is based on the same criteria that are
         <dd>
 <span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Tiloca, M.</span>, and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC) and Object Security for Constrained Environments (OSCORE) Profile for Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-edhoc-oscore-profile-10</span>, <time datetime="2026-03-01" class="refDate">1 March 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-10">https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-10</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="I-D.ietf-ace-workflow-and-params">[I-D.ietf-ace-workflow-and-params]</dt>
-        <dd>
-<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">G. Selander</span>, <span class="refTitle">"Short Distribution Chain (SDC) Workflow and New OAuth Parameters for the Authentication and Authorization for Constrained Environments (ACE) Framework"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-workflow-and-params-07</span>, <time datetime="2026-03-02" class="refDate">2 March 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-workflow-and-params-07">https://datatracker.ietf.org/doc/html/draft-ietf-ace-workflow-and-params-07</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="I-D.ietf-cose-cbor-encoded-cert">[I-D.ietf-cose-cbor-encoded-cert]</dt>
         <dd>
 <span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Raza, S.</span>, <span class="refAuthor">Höglund, J.</span>, <span class="refAuthor">Furuhed, M.</span>, and <span class="refAuthor">L. Liao</span>, <span class="refTitle">"CBOR Encoded X.509 Certificates (C509 Certificates)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-cose-cbor-encoded-cert-19</span>, <time datetime="2026-05-11" class="refDate">11 May 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-19">https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-19</a>&gt;</span>. </dd>
@@ -3246,13 +3284,14 @@ The possible omission of the PoP evidence is based on the same criteria that are
       </h2>
 <p id="appendix-B-1">This section is to be removed before publishing as an RFC.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
 <span id="name-cddl-model-2"></span><div id="fig-cddl-model">
-<figure id="figure-7">
+<figure id="figure-8">
         <div class="lang-cddl sourcecode" id="appendix-B-2.1">
 <pre>
 ; ACE Profiles
 coap_group_oscore = 5
 
 ; OAuth Parameters CBOR Mappings
+token_series_id_param = 56
 context_id_param = 71
 salt_input_param = 72
 client_cred_verify = 73
@@ -3266,7 +3305,7 @@ salt_input_claim = 52
 kccs = 11
 </pre>
 </div>
-<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
+<figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
 <a href="#name-cddl-model-2" class="selfRef">CDDL model</a>
         </figcaption></figure>
 </div>
