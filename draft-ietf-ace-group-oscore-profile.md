@@ -318,9 +318,9 @@ Editor's note: the above will have to be updated, once defined the dynamic updat
 
 When verifying the access token (see {{Section 5.10.1.1 of RFC9200}}), the RS joins the pertaining OSCORE group if it has not already (see {{sec-rs-c-created}} for further details).
 
-If the access token is valid, the RS replies to the POST request with a 2.01 (Created) response. Also, the RS associates the access token with the Group OSCORE Security Context identified by the Group Identifier that is specified in the access token. In practice, the RS maintains a collection of Security Contexts with associated authorization information, for all the clients that it is currently communicating with. The authorization information is a policy that is used as input when processing requests from those clients to access resources at the RS.
+If the access token is valid, the RS replies to the POST request with a 2.01 (Created) response. Also, the RS associates the access token with the Recipient Context pertaining to the client, within the Group OSCORE Security Context identified by the Group Identifier that is specified in the access token. In practice, the RS maintains a collection of Security Contexts with associated authorization information, for all the clients that it is currently communicating with. The authorization information is a policy that is used as input when processing requests from those clients to access resources at the RS.
 
-After that, the RS stores the association between: i) the authorization information from the access token; and ii) the Group Identifier of the OSCORE group together with the Sender ID and the authentication credential of the client in that group (see {{Section 2 of I-D.ietf-core-oscore-groupcomm}}), which are all specified within the access token (see {{sec-as-c-token}}). This binds the access token to the Group OSCORE Security Context of the OSCORE group.
+After that, the RS stores the association between: i) the authorization information from the access token; and ii) the Group Identifier of the OSCORE group together with the Sender ID and the authentication credential of the client in that group (see {{Section 2 of I-D.ietf-core-oscore-groupcomm}}), which are all specified within the access token (see {{sec-as-c-token}}). This binds the access token to the Recipient Context pertaining to the client, within the Group OSCORE Security Context of the OSCORE group.
 
 The above has considered an access token intended for a single RS. However, as discussed in {{sec-protocol-overview-token-retrieval}}, an access token can be intended for a group-audience including multiple RSs in the OSCORE group. In such a case, the client could efficiently upload the access token to many or all of those RSs at once (e.g., over IP multicast), after which each RS individually performs the same steps described above.
 
@@ -330,7 +330,7 @@ The client can send a CoAP request protected with Group OSCORE {{I-D.ietf-core-o
 
 To this end, the client uses the Group OSCORE Security Context already established upon joining the OSCORE group, unless it has a more recent Security Context that has been established in the group as a result of a group rekeying (see {{Section 12.2 of I-D.ietf-core-oscore-groupcomm}}).
 
-When the client communicates with the RS using the Group OSCORE Security Context, the RS verifies that the client is a legitimate member of the OSCORE group and especially the exact group member with the same Sender ID associated with the access token. This occurs when verifying a request protected with Group OSCORE, since the request includes the client's Sender ID and either it embeds a signature computed also over that Sender ID (if protected with the group mode), or it is protected by means of pairwise symmetric keying material derived from the asymmetric keys of the two peers (if protected with the pairwise mode).
+When the client sends to the RS a request protected with the Group OSCORE Security Context and the RS successfully verifies the request, the RS authenticates the client as a legitimate member of the OSCORE group. After that, if the target resource requires authorization, the RS performs access rights verification as per the access token associated with the Recipient Context pertaining to the client, which was used to verify the request and is included is the Group OSCORE Security Context.
 
 The RS may send a response back to the client, also protecting it with Group OSCORE.
 
@@ -840,55 +840,53 @@ The RS MUST verify the validity of the access token as defined in {{Section 5.10
 
   The process above is successful if and only if the RS receives a successful response from all the N Group Managers, and exactly one of such responses conveys AUTH_CRED_C equal to AUTH_CRED_C\*. This ensures that there is only one OSCORE group G\* such that: the client and the RS are both its members; it has GID\* as current Gid; and the client uses SID\* as Sender ID in the group. In turn, this will ensure that the RS can bound the access token to such single OSCORE group G\*.
 
-If the operations above are successful, the access token is valid, and further checks on its content are successful, then the RS associates the authorization information from the access token with the Group OSCORE Security Context of the OSCORE group G\*.
+If the operations above are successful, the access token is valid, and further checks on its content are successful, then the RS proceeds as follows.
 
-In particular, the RS associates the authorization information from the access token with the quartet (GID, SaltInput, AuthCred, AuthCredGM), where:
+* The RS considers the Group OSCORE Security Context identified by GID\* and used in the OSCORE group G\* determined above.
 
-* Gid is the Group Identifier of G\*, i.e.,  GID\*.
+* If the Group OSCORE Security Context is not including a Recipient Context pertaining to the client (i.e., with Recipient ID equal to SID\* and authentication credential equal to AUTH_CRED_C\*), then the RS derives such Recipient Context and adds it to the Group OSCORE Security Context.
 
-* SaltInput is the Sender ID that the client uses in G\*, i.e., SID\*.
+* The RS associates the authorization information from the access token with the Recipient Context pertaining to the client, within the Group OSCORE Security Context used in the OSCORE group G\*.
 
-* AuthCred is the authentication credential that the client uses in G\*, i.e., AUTH_CRED_C\*.
+  In particular, the RS associates the authorization information from the access token with the tuple (Aud, AuthCred), where:
 
-* AuthCredGM is the authentication credential of the Group Manager responsible for G\* (see {{Section 2.1.6 of I-D.ietf-core-oscore-groupcomm}}).
+  * Aud is the target audience indicated by the 'aud' claim of the access token.
 
-The RS MUST keep this association up-to-date over time, as the quartet (GID, SaltInput, AuthCred, AuthCredGM) associated with the access token might change. In particular:
+  * AuthCred is the authentication credential that the client uses in G\*, i.e., AUTH_CRED_C\*.
 
-* If the OSCORE group is rekeyed (see {{Section 12.2 of I-D.ietf-core-oscore-groupcomm}}), the Group Identifier also changes in the group and the new one replaces the current 'GID' value in the quartet (Gid, SaltInput, AuthCred, AuthCredGM).
-
-* If the client requests and obtains a new OSCORE Sender ID from the Group Manager (see {{Section 2.6.3.1 of I-D.ietf-core-oscore-groupcomm}}), the new Sender ID replaces the current 'SaltInput' value in the quartet (GID, SaltInput, AuthCred, AuthCredGM).
-
-  Among the quartets corresponding to access tokens that are associated with a given Group OSCORE Security Context, the RS can always identify the correct quartet to update. For example, the RS can leverage the triple (GID, AuthCred, AuthCredGM) that played a role in the successful decryption and verification of a request protected with Group OSCORE and sent by the client with the newly obtained Sender ID.
-
-* If the Group Manager of the OSCORE group changes its authentication credential, the new authentication credential of the Group Manager replaces the current 'AuthCredGM' value in the quartet (Gid, SaltInput, AuthCred, AuthCredGM).
-
-  In order to retrieve the latest authentication credential of the Group Manager, the RS can send a dedicated request to the Group Manager, e.g., as specified in {{Section 9.5 of I-D.ietf-ace-key-groupcomm-oscore}}. Alternatively, if the Group Manager provides its own authentication credential during the joining process, the RS can re-join the group, e.g., as specified in {{Section 6 of I-D.ietf-ace-key-groupcomm-oscore}}.
+Finally, the RS MUST send a 2.01 (Created) response to the client, as defined in {{Section 5.10.1 of RFC9200}}.
 
 As defined in {{sec-client-public-key-change}}, a possible change of the client's authentication credential requires the client to upload to the RS a new access token bound to the new authentication credential.
 
-Finally, the RS MUST send a 2.01 (Created) response to the client, as defined in {{Section 5.10.1 of RFC9200}}.
+Given a Recipient Context within the Group OSCORE Security Context, the RS MUST delete every access token associated with that Recipient Context if any of the following occurs:
+
+* The RS deletes that Recipient Context.
+
+* The RS updates the client's authentication credential in that Recipient Context, i.e., in the case that the client has changed its authentication credential in the OSCORE group.
 
 ## Client-RS Secure Communication ## {#sec-client-rs-secure-communication}
 
 As members of the OSCORE group, both the client and the RS have established the related Group OSCORE Security Context to securely communicate in the group. Therefore, they can simply start to securely communicate using Group OSCORE, without deriving any additional keying material or security association.
 
-If the client or the RS deletes an access token (e.g., when the access token has expired or has been revoked), it MUST NOT delete the related Group OSCORE Security Context. If the client deletes an access token, the client MAY request a new access token from the AS, to be uploaded to the RS for re-enabling access to protected resources for the client.
+It can happen that the client or the RS deletes an access token, e.g., when the access token has expired or has been revoked.
+
+If the RS deletes an access token, this MUST NOT result in the RS deleting the associated Recipient Context pertaining to the client from the Group OSCORE Security Context used in the OSCORE group.
+
+If the client deletes an access token, this MUST NOT result in the client deleting the associated Group OSCORE Security Context used in the OSCORE group. The client MAY request a new access token from the AS, to be uploaded to the RS for re-enabling access to protected resources.
 
 ### Client Side
 
 After having received the 2.01 (Created) response from the RS, following the POST request to the authz-info endpoint, the client can start communicating with the RS, by sending a request protected with Group OSCORE {{I-D.ietf-core-oscore-groupcomm}}.
 
-When communicating with the RS to access the resources as specified by the authorization information in the access token, the client MUST use the Group OSCORE Security Context of the OSCORE group pertaining to the access token, i.e., the group that the client referred to when requesting the access token to the AS (see {{sec-c-as-token-endpoint}}).
+When communicating with the RS to access the resources as specified by the authorization information in the access token, the client MUST use the Group OSCORE Security Context used in the OSCORE group pertaining to the access token, i.e., the group that the client referred to when requesting the access token to the AS (see {{sec-c-as-token-endpoint}}).
 
 ### Resource Server Side
 
 After successful validation of the access token as defined in {{sec-rs-c-created}} and after having sent the 2.01 (Created) response, the RS can start to communicate with the client using Group OSCORE {{I-D.ietf-core-oscore-groupcomm}}.
 
-When processing an incoming request protected with Group OSCORE, the RS MUST consider as the client's valid authentication credential only the one associated with the stored access token. As defined in {{sec-client-public-key-change}}, a possible change of the client's authentication credential requires the client to upload to the RS a new access token bound to the new authentication credential.
-
 For every incoming request, if Group OSCORE verification succeeds, the verification of access rights is performed as described in {{sec-c-rs-access-rights}}.
 
-If the RS receives a request protected with a Group OSCORE Security Context CTX, the target resource requires authorization, and the RS does not store a valid access token related to CTX, then the RS MUST reply with a 4.01 (Unauthorized) error response protected with CTX.
+In the case that the RS receives a request protected with a Group OSCORE Security Context CTX, it successfully verifies the request, and the target resource requires authorization, then the RS checks whether it stores a valid access token associated with the Recipient Context pertaining to the client that is included within CTX and was used to verify the request. If the RS does not store such an access token, the RS MUST reply with a 4.01 (Unauthorized) error response protected with CTX.
 
 ## Update of Access Rights # {#sec-rs-update-access-rights}
 
@@ -900,19 +898,9 @@ TODO: Specify the processing on the RS when receiving an access token that dynam
 
 ## Access Rights Verification ## {#sec-c-rs-access-rights}
 
-The RS MUST follow the procedures defined in {{Section 5.10.2 of RFC9200}}. If an RS receives a request protected with Group OSCORE from a client, the RS processes the request according to {{I-D.ietf-core-oscore-groupcomm}}.
+The RS MUST follow the procedures defined in {{Section 5.10.2 of RFC9200}}. If an RS receives a request protected with Group OSCORE from a client, the RS processes the request according to {{I-D.ietf-core-oscore-groupcomm}}, using the Recipient Context pertaining to the client that is included within the Group OSCORE Security Context used in the group.
 
-If the Group OSCORE verification succeeds and the target resource requires authorization, the RS retrieves the authorization information from the access token associated with the Group OSCORE Security Context.
-
-In particular, the RS retrieves the access token associated with the quartet (Gid, SaltInput, AuthCred, AuthCredGM), where:
-
-* Gid is the Group Identifier of the OSCORE group, which is specified in the 'kid context' parameter of the CoAP OSCORE Option in the received request. The RS maintains Gid in the Common Context within the Group OSCORE Security Context associated with the OSCORE group (see {{Section 2 of I-D.ietf-core-oscore-groupcomm}}).
-
-* SaltInput is the Sender ID that the client has in the OSCORE group, which is specified in the 'kid' parameter of the CoAP OSCORE Option in the received request. The RS maintains SaltInput in its Recipient Context associated with the client, within the Group OSCORE Security Context associated with the OSCORE group (see {{Section 2 of I-D.ietf-core-oscore-groupcomm}}).
-
-* AuthCred is the authentication credential that the client uses in the OSCORE group. The RS maintains AuthCred in its Recipient Context associated with the client, within the Group OSCORE Security Context associated with the OSCORE group (see {{Section 2 of I-D.ietf-core-oscore-groupcomm}}).
-
-* AuthCredGM is the authentication credential of the Group Manager responsible for the OSCORE group. The RS maintains AuthCredGM in the Common Context within the Group OSCORE Security Context associated with the OSCORE group (see {{Section 2 of I-D.ietf-core-oscore-groupcomm}}).
+If the Group OSCORE verification succeeds and the target resource requires authorization, the RS retrieves the authorization information from the access token associated with the Recipient Context used to verify the request.
 
 Then, the RS MUST verify that the action requested on the resource is authorized.
 
@@ -1017,13 +1005,23 @@ If OSCORE is used, the requesting entity and the AS are expected to have a pre-e
 
 # Discarding the Security Context # {#sec-discard-context}
 
-As members of an OSCORE group, the client and the RS may independently leave the group or be forced to, e.g., if compromised or suspected to be so. Upon leaving the OSCORE group, the client or RS also discards the Group OSCORE Security Context, which may anyway be renewed by the Group Manager through a group rekeying process (see {{Section 12.2 of I-D.ietf-core-oscore-groupcomm}}).
+As members of an OSCORE group, the client and the RS may independently leave the group or be forced to, e.g., if compromised or suspected to be so. Upon leaving the OSCORE group, the client or RS also discards the Group OSCORE Security Context. Consequently:
 
-The client or RS can obtain a new Group OSCORE Security Context by re-joining the OSCORE group. In such a case, the client SHOULD request a new access token to be uploaded to the RS.
+* The RS MUST delete every access token that is associated with a Recipient Context in the Group OSCORE Security Context.
+
+* The client MUST delete every access token that is associated with the Group OSCORE Security Context.
+
+The client or RS can obtain a new Group OSCORE Security Context by re-joining the OSCORE group. In such a case, the client requests a new access token to be uploaded to the RS.
+
+Note that a Group OSCORE Security Context CTX_OLD can be renewed by the Group Manager through a group rekeying process (see {{Section 12.2 of I-D.ietf-core-oscore-groupcomm}}), establishing a Group OSCORE Security Context CTX_NEW that supersedes CTX_OLD. In such case:
+
+* The RS considers the associations that stored access tokens have with Recipient Contexts within CTX_OLD, and it updates those associations to be with the corresponding, renewed Recipient Contexts in CTX_NEW.
+
+* The client considers the associations that stored access tokens have with CTX_OLD, and it updates those associations to be with CTX_NEW.
 
 # Guidelines on Using Multiple Profiles # {#sec-multiple-profiles}
 
-When using the profile defined in this document, access tokens are to be bound to a Group OSCORE Security Context, which is used to protect communications between the client and the RS(s) in the targeted audience by using the security protocol Group OSCORE.
+When using the profile defined in this document, access tokens are to be bound to a Recipient Context within a Group OSCORE Security Context, which is used to protect communications between the client and the RS(s) in the targeted audience by using the security protocol Group OSCORE.
 
 After having obtained an access token T1 for this profile and uploaded it to the RS (RSs) pertaining to the targeted audience, the client might want to establish a separate, pairwise OSCORE association with that RS (with one RS among those RSs). In order to do that, the client can ask the AS for a different access token T2 intended for that RS (for one RS among those RSs), as per the OSCORE profile defined in {{RFC9203}}.
 
@@ -1282,7 +1280,11 @@ kccs = 11
 
 * It is RECOMMENDED to use the OSCORE Group Manager defined in draft-ietf-ace-key-groupcomm-oscore.
 
+* Major simplification in associating the access token with other information.
+
 * Clarifications:
+
+  * The RS binds the access token to a specific Recipient Context.
 
   * Achieving proof of possession.
 
