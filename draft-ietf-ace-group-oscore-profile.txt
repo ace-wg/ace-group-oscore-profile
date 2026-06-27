@@ -96,9 +96,10 @@ Table of Contents
        3.2.4.  'client_cred_verify_mac' Parameter
      3.3.  Token Series
      3.4.  AS-to-C: Response
-       3.4.1.  Update of Access Rights
-       3.4.2.  'context_id' Claim
-       3.4.3.  'salt_input' Claim
+       3.4.1.  Access Token
+       3.4.2.  Update of Access Rights
+       3.4.3.  'context_id' Claim
+       3.4.4.  'salt_input' Claim
    4.  Client-RS Communication
      4.1.  C-to-RS POST to authz-info Endpoint
      4.2.  RS-to-C: 2.01 (Created)
@@ -935,7 +936,7 @@ Table of Contents
    Content-Format: 19 (application/ace+cbor)
    Payload:
    {
-     / audience /        5 : "tempSensor4711",
+     / audience /        5 : "tempSensorInLivingRoom",
      / scope /           9 : "read",
        e'context_id_param' : h'abcd0000',
        e'salt_input_param' : h'00',
@@ -1024,6 +1025,12 @@ Table of Contents
       'context_id', 'salt_input', 'client_cred_verify',
       'client_cred_verify_mac', and 'req_cnf'.
 
+   If the access token request specifies the 'token_series_id' parameter
+   together with any of the parameters 'context_id', 'salt_input',
+   'client_cred_verify', 'client_cred_verify_mac', and 'req_cnf', the
+   Client-to-AS request MUST be declined with the error code
+   "invalid_request" as defined in Section 5.8.3 of [RFC9200].
+
    The AS MUST verify that the received 'token_series_id' identifies a
    token series to which a still valid access token belongs, such that
    the access token is issued to the client, is bound to AUTH_CRED_C,
@@ -1039,9 +1046,9 @@ Table of Contents
    Content-Format: 19 (application/ace+cbor)
    Payload:
    {
-     / audience /             5 : "tempSensor4711",
+     / audience /             5 : "tempSensorInLivingRoom",
      / scope /                9 : "write",
-       e'token_series_id_param' : h'42'
+       e'token_series_id_param' : h'3a'
    }
 
      Figure 4: Example C-to-AS POST /token Request for Updating Access
@@ -1080,7 +1087,47 @@ Table of Contents
 
 3.3.  Token Series
 
-   TBD
+   This document refers to "token series" as a series of access tokens
+   that are sorted in chronological order of release and are
+   characterized by the following properties:
+
+   *  Issued by the same AS.
+
+   *  Issued to the same client C and associated with the same
+      authentication credential of C, namely AUTH_CRED_C.
+
+   *  Issued for the same target audience.
+
+   Upon a successful update of access rights (see Section 3.4.2), the
+   new issued access token becomes the latest in its token series.  When
+   the latest access token of a token series becomes invalid (e.g., due
+   to its expiration or revocation), the token series it belongs to
+   ends.
+
+   In this profile, a token series comprises access tokens that are used
+   between a given client C and target audience, are bound to the same
+   authentication credential AUTH_CRED_C of C, and specify the same
+   value in their 'tokens_series_id' claim (see Section 3.4.1).
+
+   The AS assigns the value of 'tokens_series_id' when issuing the first
+   access token of a new series.  That 'tokens_series_id' value remains
+   fixed throughout the series lifetime.
+
+   When assigning the 'tokens_series_id' value, the AS MUST ensure that,
+   irrespective of the profile of ACE used, such value was not used in a
+   previous series whose access tokens share both the following
+   properties with the access tokens of the new series:
+
+   *  Issued to the same client C, irrespective of the specific
+      AUTH_CRED_C bound to the access token; and
+
+   *  Issued for the same RS as identified by the targeted audience.
+
+   If the access token is issued for a group-audience (see Section 6.9
+   of [RFC9200]), the token series is associated with all the resource
+   servers in the group-audience.  In such case, what is defined above
+   applies, with the difference that the resource servers as identified
+   by the targeted group-audience are collectively considered.
 
 3.4.  AS-to-C: Response
 
@@ -1094,9 +1141,9 @@ Table of Contents
    credential and such proof still holds.  Otherwise, an authentication
    credential is denoted as "non confirmed".
 
-   If the access token request specifies neither the
-   'client_cred_verify' parameter nor the 'client_cred_verify_mac'
-   parameter, then the AS performs the following steps.
+   If the access token request specifies none of the parameters
+   'token_series_id', 'client_cred_verify', and
+   'client_cred_verify_mac', then the AS performs the following steps.
 
    *  The AS considers the authentication credential AUTH_CRED_C
       specified in the 'req_cnf' parameter of the access token request.
@@ -1200,83 +1247,129 @@ Table of Contents
    client with an access token response as defined in Section 5.8.2 of
    [RFC9200].  In particular:
 
-   *  The AS can signal that the use of Group OSCORE is REQUIRED for the
-      issued access token, by including the 'ace_profile' parameter with
-      the value "coap_group_oscore" in the access token response.  The
-      client MUST use Group OSCORE towards all the resource servers for
-      which this access token is valid.  Usually, it is assumed that
-      constrained devices will be pre-configured with the necessary
-      profile, so that this kind of profile signaling can be omitted.
+   *  The AS can signal that the use of Group OSCORE as per this profile
+      is REQUIRED for the issued access token, by including the
+      'ace_profile' parameter with the value "coap_group_oscore" in the
+      access token response.  The client MUST use Group OSCORE towards
+      all the resource servers for which this access token is valid,
+      when accessing protected resources at those resource servers
+      according to the authorization information indicated in the access
+      token.  Usually, it is assumed that constrained devices will be
+      pre-configured with the necessary profile, so that this kind of
+      profile signaling can be omitted.
+
+   *  The AS MUST NOT include the 'cnf' parameter in the access token
+      response.
 
    *  The AS MUST NOT include the 'rs_cnf' parameter defined in
-      [RFC9201].  In general, the AS is not aware of the authentication
-      credentials (and public keys included thereof) that the RSs use in
-      the OSCORE group.  Instead, the client is able to retrieve the
-      authentication credentials of other group members from the
-      responsible Group Manager, both upon joining the group or later on
-      as a group member, e.g., as specified in Sections 6 and 9.3 of
+      [RFC9201] in the access token response.  In general, the AS is not
+      aware of the authentication credentials (and public keys included
+      thereof) that the RSs use in the OSCORE group.  Instead, the
+      client is able to retrieve the authentication credentials of other
+      group members from the responsible Group Manager, both upon
+      joining the group or later on as a group member, e.g., as
+      specified in Sections 6 and 9.3 of
       [I-D.ietf-ace-key-groupcomm-oscore].
 
-   *  According to this document, the AS includes the 'access_token'
-      parameter specifying the issued access token in the access token
-      response.  The alternative Short Distribution Chain (SDC) workflow
-      where the access token is uploaded by the AS directly to the RS is
-      described in [I-D.ietf-ace-workflow-and-params].
+   *  If the issued access token is the first one of a token series, the
+      AS MUST include the 'token_series_id' parameter defined in
+      [I-D.ietf-ace-workflow-and-params] in the access token response,
+      specifying the identifier of the token series which the access
+      token belongs to.
 
-   The AS MUST include the following information as metadata of the
-   issued access token.  The use of CBOR web tokens (CWTs) as specified
-   in [RFC8392] is RECOMMENDED.
+   *  If the issued access token is not the first one of a token series,
+      the AS MUST NOT include the 'token_series_id' parameter in the
+      access token response.
+
+   According to this document, the AS includes the 'access_token'
+   parameter in the access token response, specifying the issued access
+   token.  The alternative Short Distribution Chain (SDC) workflow where
+   the access token is uploaded by the AS directly to the RS is
+   described in [I-D.ietf-ace-workflow-and-params].
+
+   Figure 5 shows an example of access token response, where the access
+   token has been truncated for readability.
+
+   Header: Created (Code=2.01)
+   Content-Format: 19 (application/ace+cbor)
+   Payload:
+   {
+     / access_token /         1 : h'8343a1010aa2044c...00'
+                                  / elided for brevity /,
+     / ace_profile /         38 : e'coap_group_oscore',
+     / expires_in /           2 : 3600,
+       e'token_series_id_param' : h'3a'
+   }
+
+       Figure 5: Example AS-to-C Access Token Response with the Group
+                               OSCORE Profile
+
+3.4.1.  Access Token
+
+   The use of CBOR web tokens (CWTs) as specified in [RFC8392] is
+   RECOMMENDED.
+
+   When issuing any access token of a token series, the AS MUST include
+   the following information as metadata of the issued access token.
 
    *  The profile "coap_group_oscore".  If the access token is a CWT,
       this is specified in the 'ace_profile' claim of the access token,
       as per Section 5.10 of [RFC9200].
 
-   *  The Context ID input specified in the 'context_id' parameter of
-      the access token request.  If the access token is a CWT, the
-      content of the 'context_id' parameter MUST be specified in the
-      'context_id' claim of the access token, which is defined in
-      Section 3.4.2 of this document.
+   *  The audience targeted by the access token.  If the access token is
+      a CWT, this is specified in the 'aud' claim of the access token.
 
-   *  The salt input specified in the 'salt_input' parameter of the
-      access token request.  If the access token is a CWT, the content
-      of the 'salt_input' parameter MUST be specified in the
-      'salt_input' claim of the access token, which is defined in
-      Section 3.4.3 of this document.
+   *  The identifier of the token series which the access token belongs
+      to.  If the access token is a CWT, this is specified in the
+      'token_series_id' claim of the access token, as per
+      [I-D.ietf-ace-workflow-and-params].
 
-   *  The authentication credential that the client uses in the OSCORE
-      group, as specified in the 'req_cnf' parameter of the access token
-      request (see Section 3.2).
+   *  The client's authentication credential AUTH_CRED_C that the client
+      uses in the OSCORE group, which was specified in the 'req_cnf'
+      parameter of the initial access token request that the client sent
+      to ask for the first access token of the token series (see
+      Section 3.2).
+
+      If the issued access token is the first one of a token series,
+      AUTH_CRED_C MUST be specified as transported by value, like it was
+      specifies in the initial access token request mentioned above.
+      Otherwise, AUTH_CRED_C can be specified as transported by value or
+      identified by reference.
 
       If the access token is a CWT, the client's authentication
       credential MUST be specified in the 'cnf' claim, which follows the
       syntax from Section 3.1 of [RFC8747].
 
-   Figure 5 shows an example of access token response, where the access
-   token has been truncated for readability.
+   If the issued access token is the first one of a token series, the AS
+   MUST include the following information as metadata within the access
+   token.  Otherwise, the following information MUST NOT be included
+   within the access token.
 
- Header: Created (Code=2.01)
- Content-Format: 19 (application/ace+cbor)
- Payload:
- {
-   / access_token / 1 : h'8343a1010aa2044c...00', / elided for brevity /
-   / ace_profile / 38 : e'coap_group_oscore',
-   / expires_in /   2 : 3600
- }
+   *  The Context ID input specified in the 'context_id' parameter of
+      the access token request.  If the access token is a CWT, the
+      content of the 'context_id' parameter MUST be specified in the
+      'context_id' claim of the access token, which is defined in
+      Section 3.4.3 of this document.
 
-     Figure 5: Example AS-to-C Access Token Response with the Group
-                             OSCORE Profile
+   *  The salt input specified in the 'salt_input' parameter of the
+      access token request.  If the access token is a CWT, the content
+      of the 'salt_input' parameter MUST be specified in the
+      'salt_input' claim of the access token, which is defined in
+      Section 3.4.4 of this document.
 
    Figure 6 shows an example CWT Claims Set, containing the client's
    public key in the group (as PoP key), as specified by the inner
    confirmation value in the 'cnf' claim.
 
    {
-     / aud /           3 : "tempSensorInLivingRoom",
-     / iat /           6 : 1719820800,
-     / exp /           4 : 2035353600,
-     / scope /         9 : "temperature_g firmware_p",
-     e'context_id_claim' : h'abcd0000',
-     e'salt_input_claim' : h'00',
+     / aud /                3 : "tempSensorInLivingRoom",
+     / iat /                6 : 1719820800,
+     / exp /                4 : 2035353600,
+     / scope /              9 : "temperature_g firmware_p",
+     / ace_profile /       38 : e'coap_group_oscore',
+     e'token_series_id_claim' : h'3a'
+          e'context_id_claim' : h'abcd0000',
+          e'salt_input_claim' : h'00',
      / cnf /           8 : {
        e'kccs' : {
          / sub / 2 : "42-50-31-FF-EF-37-32-39",
@@ -1306,7 +1399,7 @@ Table of Contents
    values used below (which are not yet registered) are the final values
    registered by IANA.
 
-   A7                                      # map(7)
+   A9                                      # map(9)
       03                                   # unsigned(3)
       76                                   # text(22)
          74656D7053656E736F72496E4C6976696E67526F6F6D
@@ -1319,6 +1412,11 @@ Table of Contents
       78 18                                # text(24)
          74656D70657261747572655F67206669726D776172655F70
          # "temperature_g firmware_p"
+      18 26                                # unsigned(38)
+      05                                   # unsigned(5)
+      18 2A                                # unsigned(42)
+      41                                   # bytes(1)
+         3A
       18 33                                # unsigned(51)
       44                                   # bytes(4)
          ABCD0000
@@ -1327,7 +1425,7 @@ Table of Contents
          00
       08                                   # unsigned(8)
       A1                                   # map(1)
-         0E                                # unsigned(14)
+         0B                                # unsigned(11)
          A2                                # map(2)
             02                             # unsigned(2)
             77                             # text(23)
@@ -1352,75 +1450,24 @@ Table of Contents
 
             Figure 7: Example CWT Claims Set Using CBOR Encoding
 
-3.4.1.  Update of Access Rights
+3.4.2.  Update of Access Rights
 
-   [
+   As long as the client is a member of the OSCORE group and the access
+   token previously uploaded at the RS is still valid, the client can
+   contact the AS to ask for updating its access rights, through a
+   process more efficient that that used for the first access token.
 
-   TODO: Specify how the AS issues an access token that dynamically
-   updates the access rights of C.  The following text outlines pre-
-   requirements and a high-level direction.
+   If the request is granted, then the AS generates a new access token
+   as the latest one of an existing token series.  The access token
+   specifies the identifier of the series to it belongs to.
 
-   (This should be specified with content in the present section, as
-   well as in Section 3.2 and Section 4.4).
+   The access token is uploaded at the RS(s) in the target audience
+   either by the client as specified in this document, or directly as
+   described in [I-D.ietf-ace-workflow-and-params].  In either case, the
+   access token response from the AS to the client MUST NOT include any
+   of the parameters 'token_series_id', 'cnf', and 'rs_cnf'.
 
-   At the moment, this profile does not support the dynamic update of
-   access rights for the client like other transport profiles of ACE do.
-
-   This can be enabled by building on concepts defined in
-   [I-D.ietf-ace-workflow-and-params]:
-
-   *  "Token series" - In this profile, it would be specialized as a set
-      of consecutive access tokens issued by the AS for the pair (C,
-      AUD), where C is the client whose public authentication credential
-      is bound to those access tokens, while AUD is the audience for
-      which C requests those access tokens.
-
-   *  "token_series_id" - This new parameter is defined in
-      [I-D.ietf-ace-workflow-and-params], as intended to be used in the
-      access token request/response exchange between C and the AS.
-
-      This parameter is meant to specify the unique identifier of a
-      token series.  A new, corresponding claim to include in access
-      tokens is also defined in [I-D.ietf-ace-workflow-and-params].
-
-   At a high-level, the above can enable the dynamic update of access
-   rights as follows:
-
-   *  Each access token in a token series includes the claim
-      "token_series_id", with value the identifier of the token series
-      that the access token belongs to.
-
-   *  When issuing the first access token in a token series, the AS
-      includes the parameter "token_series_id" in the access token
-      response to the client, with value the identifier of the token
-      series that the access token belongs to.
-
-   *  When C requests from the AS an access token that dynamically
-      updates its current access rights to access protected resources at
-      the same audience, C sends to the AS an access token request such
-      that:
-
-      -  It includes the parameter "token_series_id", with value the
-         identifier of the token series for which the new access token
-         is requested.
-
-      -  It does _not_ include the parameters "context_id",
-         "salt_input", and "client_cred_verify" or
-         "client_cred_verify_mac".
-
-   *  If the AS issues the new access token that dynamically updates the
-      access rights of C, then the access token includes the claim
-      "token_series_id", with value the identifier of the same token
-      series for which the access token has been issued.
-
-   When receiving the new access token, the RS uses the value of the
-   claim "token_series_id", and identifies the stored old access token
-   that has to be superseded by the new one, as both belonging to the
-   same token series.
-
-   ]
-
-3.4.2.  'context_id' Claim
+3.4.3.  'context_id' Claim
 
    The 'context_id' claim provides a value that the client requesting
    the access token wishes to use with the RS, as a hint for a security
@@ -1429,7 +1476,7 @@ Table of Contents
    This claim specifies the value of the Context ID input, encoded as a
    CBOR byte string.
 
-3.4.3.  'salt_input' Claim
+3.4.4.  'salt_input' Claim
 
    The 'salt_input' claim provides a value that the client requesting
    the access token wishes to use as a part of a salt with the RS, e.g.,
@@ -1500,15 +1547,37 @@ Table of Contents
 
 4.2.  RS-to-C: 2.01 (Created)
 
-   The RS MUST verify the validity of the access token as defined in
-   Section 5.10.1 of [RFC9200], with the following additions.
+   The RS MUST verify the validity of the uploaded access token T_NEW as
+   defined in Section 5.10.1 of [RFC9200], with the following additions.
+
+   The RS retrieves from T_NEW the pieces of information (SeriesId_NEW,
+   Aud_NEW, AuthCred_NEW), where: SeriesId_NEW is the identifier of the
+   token series which the access token belongs to; Aud_NEW is the
+   audience targeted by the access token; and AuthCred_NEW is the
+   client's authentication credential AUTH_CRED_C, specified by value or
+   by reference.
+
+   The RS checks whether it is storing an access token T_OLD that is
+   associated with the analogous pieces of information (SeriesId_OLD,
+   Aud_OLD, AuthCred_OLD) such that: SeriesId_NEW is equal to
+   SeriesId_OLD; Aud_NEW is equal to Aud_OLD; and AuthCred_NEW is equal
+   to or is a valid reference to AuthCred_OLD as AUTH_CRED_C specified
+   by value.
+
+   If the RS finds such an access token T_OLD, the RS performs the
+   actions specified in Section 4.4.
+
+   Otherwise, the RS performs the steps specified below.  The following
+   refers to the access token T_NEW and assumes it to be a CWT.
 
    *  The RS checks that the claims 'context_id', 'salt_input', and
-      'cnf' are included in the access token.
+      'cnf' are included in the access token.  In particular, the RS
+      checks that the 'cnf' claim specifies the client's authentication
+      credential as transported by value.
 
-      If any of these claims are missing or malformed, the RS MUST
-      consider the access token invalid and MUST reply to the client
-      with a 4.00 (Bad Request) error response.
+      If any of these claims are missing, malformed, or non-conformant,
+      the RS MUST consider the access token invalid and MUST reply to
+      the client with a 4.00 (Bad Request) error response.
 
       Otherwise, the RS retrieves from the access token:
 
@@ -1539,6 +1608,10 @@ Table of Contents
       has to be aligned and consistent with the set of groups that the
       RS intends to be a member of and is authorized to join at the
       responsible Group Manager.
+
+      If the RS attempts and fails to join the OSCORE group identified
+      by GID*, the RS MUST reply to the client with a 5.00 (Internal
+      Server Error) error response.
 
    *  The RS builds GROUPS as the set of OSCORE groups such that all the
       following conditions hold, for each group G in the set.
@@ -1609,10 +1682,14 @@ Table of Contents
       used in the OSCORE group G*.
 
       In particular, the RS associates the access token with the tuple
-      (Aud, AuthCred), where:
+      (SeriesId, Aud, AuthCred), where:
 
-      -  Aud is the target audience indicated by the 'aud' claim of the
-         access token.
+      -  SeriesId is the identifier of the token series which the access
+         token belongs to, as indicated by the 'token_series_id' claim
+         of the access token.
+
+      -  Aud is the target audience, as indicated by the 'aud' claim of
+         the access token.
 
       -  AuthCred is the authentication credential that the client uses
          in G*, i.e., AUTH_CRED_C*.
@@ -1623,16 +1700,6 @@ Table of Contents
    As defined in Section 5, a possible change of the client's
    authentication credential requires the client to upload to the RS a
    new access token bound to the new authentication credential.
-
-   Given a Recipient Context within a Group OSCORE Security Context, the
-   RS MUST delete every access token associated with that Recipient
-   Context if any of the following occurs:
-
-   *  The RS deletes that Recipient Context.
-
-   *  The RS updates the client's authentication credential in that
-      Recipient Context, i.e., in the case that the client has changed
-      its authentication credential in the OSCORE group.
 
 4.3.  Client-RS Secure Communication
 
@@ -1658,9 +1725,9 @@ Table of Contents
 4.3.1.  Client Side
 
    After having received the 2.01 (Created) response from the RS,
-   following the POST request to the authz-info endpoint, the client can
-   start communicating with the RS, by sending a request protected with
-   Group OSCORE [I-D.ietf-core-oscore-groupcomm].
+   following the POST request to the authz-info endpoint, the client
+   communicates with the RS, e.g., by sending to the RS a request
+   protected with Group OSCORE [I-D.ietf-core-oscore-groupcomm].
 
    When communicating with the RS to access the resources as specified
    by the authorization information in the access token, the client MUST
@@ -1673,7 +1740,7 @@ Table of Contents
 
    After successful validation of the access token as defined in
    Section 4.2 and after having sent the 2.01 (Created) response, the RS
-   can start to communicate with the client using Group OSCORE
+   communicates with the client using Group OSCORE
    [I-D.ietf-core-oscore-groupcomm].
 
    For every incoming request, if Group OSCORE verification succeeds,
@@ -1689,15 +1756,34 @@ Table of Contents
    token, the RS MUST reply with a 4.01 (Unauthorized) error response
    protected with CTX.
 
+   Given a Recipient Context within a Group OSCORE Security Context, the
+   RS MUST delete every access token associated with that Recipient
+   Context if any of the following occurs:
+
+   *  The RS deletes that Recipient Context.
+
+   *  The RS updates the client's authentication credential in that
+      Recipient Context, i.e., in the case that the client has changed
+      its authentication credential in the OSCORE group.
+
 4.4.  Update of Access Rights
 
-   [
+   With reference to the access the stored access token T_OLD and the
+   latest uploaded access token T_NEW considered in Section 4.2, the RS
+   proceeds as follows.
 
-   TODO: Specify the processing on the RS when receiving an access token
-   that dynamically updates the access rights of C.  (See Section 3.4.1
-   for pre-requirements and a high-level direction)
+   *  The AS associates T_NEW with the same tuple (SeriesId, Aud,
+      AuthCred) with which T_OLD was associated.
 
-   ]
+   *  The AS associates T_NEW with the Recipient Context pertaining to
+      the client that is included within the Group OSCORE Security
+      Context used in the OSCORE group pertaining to T_NEW, i.e., the
+      same Recipient Context with which T_OLD was associated.
+
+   *  The AS replaces T_OLD with T_NEW.
+
+   Finally, the RS MUST send a 2.01 (Created) response to the client, as
+   defined in Section 5.10.1 of [RFC9200].
 
 4.5.  Access Rights Verification
 
@@ -2309,7 +2395,7 @@ Table of Contents
 
    *  Change Controller: IETF
 
-   *  Reference: [RFC-XXXX, Section 3.4.2]
+   *  Reference: [RFC-XXXX, Section 3.4.3]
 
 
 
@@ -2325,7 +2411,7 @@ Table of Contents
 
    *  Change Controller: IETF
 
-   *  Reference: [RFC-XXXX, Section 3.4.3]
+   *  Reference: [RFC-XXXX, Section 3.4.4]
 
 12.6.  TLS Exporter Label Registry
 
@@ -2650,6 +2736,7 @@ Appendix B.  CDDL Model
    client_cred_verify_mac = 74
 
    ; CBOR Web Token (CWT) Claims
+   token_series_id_claim = 42
    context_id_claim = 51
    salt_input_claim = 52
 
@@ -2669,6 +2756,8 @@ C.1.  Version -06 to -07
 
    *  Major simplification in associating the access token with other
       information.
+
+   *  Defined dynamic update of access rights through token series.
 
    *  Clarifications:
 
