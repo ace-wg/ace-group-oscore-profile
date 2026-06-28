@@ -1050,7 +1050,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Tiloca, et al.</td>
-<td class="center">Expires 29 December 2026</td>
+<td class="center">Expires 30 December 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1063,12 +1063,12 @@ svg {
 <dd class="internet-draft">draft-ietf-ace-group-oscore-profile-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-06-27" class="published">27 June 2026</time>
+<time datetime="2026-06-28" class="published">28 June 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-12-29">29 December 2026</time></dd>
+<dd class="expires"><time datetime="2026-12-30">30 December 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1121,7 +1121,7 @@ svg {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 29 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 30 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1423,9 +1423,9 @@ Members of an OSCORE group have an associated authentication credential in the f
 <p id="section-2-1">This section provides an overview of this profile, i.e., of how to use the ACE framework for authentication and authorization <span>[<a href="#RFC9200" class="cite xref">RFC9200</a>]</span> when communications between a client and one or more resource servers are secured using Group OSCORE <span>[<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <p id="section-2-2">In this profile, access control is enforced for a client that has joined an OSCORE group, to access resources hosted by resource servers that are also members in the same group.<a href="#section-2-2" class="pilcrow">¶</a></p>
 <p id="section-2-3">After the client has joined the OSCORE group and as long as it is a member of that group, the client can send to the authorization server (AS) an access token request for issuing an access token that indicates the client's authorization and access rights related to such resources in the group.<a href="#section-2-3" class="pilcrow">¶</a></p>
-<p id="section-2-4">If the request is granted, the AS replies to C with a successful response. Also, the AS can provide the access token to the client by including it in the response, or instead upload the access token directly to the RS as per the alternative workflow defined in <span>[<a href="#I-D.ietf-ace-workflow-and-params" class="cite xref">I-D.ietf-ace-workflow-and-params</a>]</span>. The latter option is not detailed further in this document.<a href="#section-2-4" class="pilcrow">¶</a></p>
+<p id="section-2-4">If the request is granted, the AS replies to the client with a successful response. Also, the AS can provide the access token to the client by including it in the response, or instead upload the access token directly to the RS as per the alternative workflow defined in <span>[<a href="#I-D.ietf-ace-workflow-and-params" class="cite xref">I-D.ietf-ace-workflow-and-params</a>]</span>. The latter option is not detailed further in this document.<a href="#section-2-4" class="pilcrow">¶</a></p>
 <p id="section-2-5">In the case that the client has obtained an access token from the AS, the client uploads the access token to the RS, using the authz-info endpoint and mechanisms specified in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10" class="relref">Section 5.10</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>. When using this profile, the communication with the authz-info endpoint is not protected.<a href="#section-2-5" class="pilcrow">¶</a></p>
-<p id="section-2-6">If the access token is valid, the RS relies on information in the access token and on the assistance of the Group Manager to verify the client's group membership in the OSCORE group. If all verifications succeed, the RS replies to the client with a 2.01 (Created) response. Then, the RS associates the access token with the Recipient Context pertaining to the client, within the Group OSCORE Security Context used in the group.<a href="#section-2-6" class="pilcrow">¶</a></p>
+<p id="section-2-6">If the access token is valid, the RS relies on information in the access token and on the assistance of the Group Manager responsible for the group to verify the client's group membership in the group. If all verifications succeed, the RS replies to the client with a 2.01 (Created) response. Then, the RS associates the access token with the Recipient Context pertaining to the client, within the Group OSCORE Security Context used in the group.<a href="#section-2-6" class="pilcrow">¶</a></p>
 <p id="section-2-7">After that, when the RS receives and successfully verifies a request from the client protected with Group OSCORE, the RS performs access rights verification per the access token associated with the Recipient Context pertaining to the client, which was used to verify the request and is included in the Group OSCORE Security Context used in the group.<a href="#section-2-7" class="pilcrow">¶</a></p>
 <p id="section-2-8">The process for joining the OSCORE group through the respective Group Manager takes place separately from the process described in this document, and it is out of the scope of this profile. For applications that intend to use this profile, it is <span class="bcp14">RECOMMENDED</span> that the realization of Group Manager used is the one based on the ACE framework and defined in <span>[<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>.<a href="#section-2-8" class="pilcrow">¶</a></p>
 <p id="section-2-9">An overview of the protocol flow for this profile is shown by the example in <a href="#fig-protocol-overview" class="auto internal xref">Figure 1</a>, where it is assumed that both the resource servers RS1 and RS2 are associated with the same AS. It is also assumed that the client C as well as RS1 and RS2 have previously joined an OSCORE group with Group Identifier (Gid) 0xabcd0000, and that they got assigned Sender ID (Sid) 0x00, 0x01, and 0x02 in the group, respectively. The names of messages coincide with those of <span>[<a href="#RFC9200" class="cite xref">RFC9200</a>]</span> when applicable. Messages in square brackets are optional.<a href="#section-2-9" class="pilcrow">¶</a></p>
@@ -1601,7 +1601,7 @@ Members of an OSCORE group have an associated authentication credential in the f
 <a href="#name-protocol-overview-2" class="selfRef">Protocol Overview</a>
         </figcaption></figure>
 </div>
-<p id="section-2-11">As long as the client is a member of the OSCORE group and the access token previously uploaded at the RS is still valid, the client can contact the AS to ask for updating its access rights, through a process more efficient that that used for the first access token. To this end, the client can send to the AS an access token request similar to the initial one mentioned above that was sent when asking for the first access token.<a href="#section-2-11" class="pilcrow">¶</a></p>
+<p id="section-2-11">As long as the client is a member of the OSCORE group and the access token previously uploaded at the RS is still valid, the client can contact the AS to ask for updating its access rights, through a process more efficient than that used for the first access token. To this end, the client can send to the AS an access token request similar to the initial one mentioned above that was sent when asking for the first access token.<a href="#section-2-11" class="pilcrow">¶</a></p>
 <p id="section-2-12">This latest access token request also includes a "token series identifier" provided by the AS in the response to the initial access token request, which allows the AS to retrieve the data that it previously shared with the client. The token series identifier is assigned by the AS and used to identify a series of access tokens, called a "token series" (see <a href="#sec-token-series" class="auto internal xref">Section 3.3</a>).<a href="#section-2-12" class="pilcrow">¶</a></p>
 <p id="section-2-13">After the new issued access token is successfully uploaded at the RS and thus the client's access rights are updated accordingly, the new issued access token effectively becomes the latest in its token series also for the RS, but the token series identifier remains the same. When the latest access token of a token series becomes invalid (e.g., when it expires or gets revoked), that token series ends.<a href="#section-2-13" class="pilcrow">¶</a></p>
 <div id="sec-protocol-overview-pre-conditions">
@@ -1621,8 +1621,8 @@ Members of an OSCORE group have an associated authentication credential in the f
         </h3>
 <p id="section-2.2-1">This profile requires that the client requests an access token from the AS for the resource(s) that it wants to access at the RS(s), by using the token endpoint as specified in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.8" class="relref">Section 5.8</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
 <p id="section-2.2-2">In general, different RSs can be associated with different authorization servers, even if the RSs are members of the same OSCORE group. However, assuming proper configurations and trust relationships, it is possible for multiple RSs associated with the same AS to be part of a single audience (i.e., a group-audience, see <span><a href="https://rfc-editor.org/rfc/rfc9200#section-6.9" class="relref">Section 6.9</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>). In such a case, the client can request a single access token intended for the group-audience, hence to all the RSs included therein. A particular group-audience might be defined as including all the RSs in the OSCORE group.<a href="#section-2.2-2" class="pilcrow">¶</a></p>
-<p id="section-2.2-3">In the access token request to the AS, the client <span class="bcp14">MUST</span> include the Group Identifier of the OSCORE group, together with its own Sender ID and authentication credential used in that group. The AS <span class="bcp14">MUST</span> include these pieces of information in the access token issued for the client.<a href="#section-2.2-3" class="pilcrow">¶</a></p>
-<p id="section-2.2-4">In the access token request, the client can also include a proof-of-possession (PoP) evidence to prove possession of the private key corresponding to its own authentication credential to the AS. The PoP evidence is computed over a PoP input uniquely related to the secure communication association between the client and the AS. Including the PoP evidence is <span class="bcp14">OPTIONAL</span> under particular circumstances and is <span class="bcp14">REQUIRED</span> otherwise (see <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>).<a href="#section-2.2-4" class="pilcrow">¶</a></p>
+<p id="section-2.2-3">When requesting the first access token of a token series, the client <span class="bcp14">MUST</span> include in the access token request to the AS the Group Identifier of the OSCORE group, together with its own Sender ID and authentication credential used in that group. The AS <span class="bcp14">MUST</span> include these pieces of information in the access token issued for the client.<a href="#section-2.2-3" class="pilcrow">¶</a></p>
+<p id="section-2.2-4">In such an access token request, the client can also include a proof-of-possession (PoP) evidence to prove possession of the private key corresponding to its own authentication credential to the AS. The PoP evidence is computed over a PoP input uniquely related to the secure communication association between the client and the AS. Including the PoP evidence is <span class="bcp14">OPTIONAL</span> under particular circumstances and is <span class="bcp14">REQUIRED</span> otherwise (see <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>).<a href="#section-2.2-4" class="pilcrow">¶</a></p>
 <p id="section-2.2-5">If the request from the client is granted, then the AS can include the issued access token in the access token response to the client, or instead upload the access token directly to the RS as per the Short Distribution Chain (SDC) workflow defined in <span>[<a href="#I-D.ietf-ace-workflow-and-params" class="cite xref">I-D.ietf-ace-workflow-and-params</a>]</span>. This document focuses on the former option (also shown in the example in <a href="#fig-protocol-overview" class="auto internal xref">Figure 1</a>), while the latter option is not detailed further here.<a href="#section-2.2-5" class="pilcrow">¶</a></p>
 <p id="section-2.2-6">The access token request and response exchanged between the client and the AS <span class="bcp14">MUST</span> be confidentiality-protected and <span class="bcp14">MUST</span> ensure authenticity. In this profile, it is <span class="bcp14">RECOMMENDED</span> to use OSCORE <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> between the client and the AS, to reduce the number of libraries that the client has to support. Other protocols fulfilling the security requirements defined in Sections <a href="https://rfc-editor.org/rfc/rfc9200#section-5" class="relref">5</a> and <a href="https://rfc-editor.org/rfc/rfc9200#section-6" class="relref">6</a> of <span>[<a href="#RFC9200" class="cite xref">RFC9200</a>]</span> <span class="bcp14">MAY</span> alternatively be used, such as TLS <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> or DTLS <span>[<a href="#RFC9147" class="cite xref">RFC9147</a>]</span>.<a href="#section-2.2-6" class="pilcrow">¶</a></p>
 </section>
@@ -1633,9 +1633,9 @@ Members of an OSCORE group have an associated authentication credential in the f
 <a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-access-token-uploading" class="section-name selfRef">Access Token Uploading</a>
         </h3>
 <p id="section-2.3-1">After having obtained the access token from the AS, the client uploads the access token to the RS, by sending a POST request to the authz-info endpoint and using the mechanisms specified in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10" class="relref">Section 5.10</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>. When using this profile, the communication that C has with the authz-info endpoint is not protected.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
-<p id="section-2.3-2">When verifying the access token (see <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10.1.1" class="relref">Section 5.10.1.1</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>), the RS joins the pertaining OSCORE group if it has not already (see <a href="#sec-rs-c-created" class="auto internal xref">Section 4.2</a> for further details).<a href="#section-2.3-2" class="pilcrow">¶</a></p>
-<p id="section-2.3-3">If the access token is valid, the RS replies to the POST request with a 2.01 (Created) response. Also, the RS associates the access token with the Recipient Context pertaining to the client, within the Group OSCORE Security Context identified by the Group Identifier that is specified in the access token. In practice, the RS maintains a collection of Security Contexts with associated authorization information, for all the clients that it is currently communicating with. The authorization information is a policy that is used as input when processing requests from those clients to access resources at the RS.<a href="#section-2.3-3" class="pilcrow">¶</a></p>
-<p id="section-2.3-4">After that, the RS associates the access token with the following pieces of information: i) the target audience for which the access token is issued; and ii) the authentication credential of the client in the OSCORE group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-2" class="relref">Section 2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>). Such pieces of information are specified by corresponding claims of the access token (see <a href="#sec-as-c-token" class="auto internal xref">Section 3.4</a>).<a href="#section-2.3-4" class="pilcrow">¶</a></p>
+<p id="section-2.3-2">When verifying the first access token of a token series (see <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10.1.1" class="relref">Section 5.10.1.1</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>), the RS joins the pertaining OSCORE group if it has not already (see <a href="#sec-rs-c-created" class="auto internal xref">Section 4.2</a> for further details).<a href="#section-2.3-2" class="pilcrow">¶</a></p>
+<p id="section-2.3-3">If the access token is valid, the RS replies to the POST request with a 2.01 (Created) response. Also, the RS associates the access token with the Recipient Context pertaining to the client, within the Group OSCORE Security Context used in the OSCORE group. In practice, the RS maintains a collection of Security Contexts with associated authorization information, for all the clients that it is currently communicating with. The authorization information is a policy that is used as input when processing requests from those clients to access resources at the RS.<a href="#section-2.3-3" class="pilcrow">¶</a></p>
+<p id="section-2.3-4">After that, the RS associates the access token with the following pieces of information: i) the identifier of the token series which the access token belongs to; ii) the target audience for which the access token is issued; and iii) the authentication credential of the client in the OSCORE group (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-2" class="relref">Section 2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>). Such pieces of information are specified by corresponding elements of the access token (see <a href="#sec-as-c-token" class="auto internal xref">Section 3.4</a>).<a href="#section-2.3-4" class="pilcrow">¶</a></p>
 <p id="section-2.3-5">The above has considered an access token intended for a single RS. However, as discussed in <a href="#sec-protocol-overview-token-retrieval" class="auto internal xref">Section 2.2</a>, an access token can be intended for a group-audience including multiple RSs in the OSCORE group. In such a case, the client could efficiently upload the access token to many or all of those RSs at once (e.g., over IP multicast), after which each RS individually performs the same steps described above.<a href="#section-2.3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1658,7 +1658,7 @@ Members of an OSCORE group have an associated authentication credential in the f
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-client-as-communication" class="section-name selfRef">Client-AS Communication</a>
       </h2>
 <p id="section-3-1">This section details the access token request that the client sends to the token endpoint of the AS, as well as the related access token response.<a href="#section-3-1" class="pilcrow">¶</a></p>
-<p id="section-3-2">The access token <span class="bcp14">MUST</span> be bound to the public key of the client as proof-of-possession (PoP) key, which is included in the client's authentication credential specified in the 'cnf' claim of the access token.<a href="#section-3-2" class="pilcrow">¶</a></p>
+<p id="section-3-2">The access token <span class="bcp14">MUST</span> be bound to the public key of the client as proof-of-possession (PoP) key, which is included in the client's authentication credential specified in the access token.<a href="#section-3-2" class="pilcrow">¶</a></p>
 <div id="sec-c-as-comm-preliminary-ops">
 <section id="section-3.1">
         <h3 id="name-preliminary-operations">
@@ -1708,7 +1708,7 @@ Finally, the client moves to Step 1.<a href="#section-3.1-3.3.4" class="pilcrow"
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-c-to-as-post-to-token-endpo" class="section-name selfRef">C-to-AS: POST to Token Endpoint</a>
         </h3>
 <p id="section-3.2-1">The Client-to-AS request is specified in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.8.1" class="relref">Section 5.8.1</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>. The client <span class="bcp14">MUST</span> send this POST request to the token endpoint over a secure channel that guarantees authentication, message integrity, and confidentiality (see <a href="#sec-comm-as" class="auto internal xref">Section 6</a>).<a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.2-2">The POST request is formatted as the analogous Client-to-AS request in the OSCORE profile of ACE (see <span><a href="https://rfc-editor.org/rfc/rfc9203#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC9203" class="cite xref">RFC9203</a>]</span>), with the following additional parameters that <span class="bcp14">MUST</span> be included in the payload.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">When requesting the first access token of a token series, the POST request is formatted as the analogous Client-to-AS request in the OSCORE profile of ACE (see <span><a href="https://rfc-editor.org/rfc/rfc9203#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC9203" class="cite xref">RFC9203</a>]</span>), with the following additional parameters that <span class="bcp14">MUST</span> be included in the payload.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.2-3.1">
             <p id="section-3.2-3.1.1">'context_id', defined in <a href="#context_id" class="auto internal xref">Section 3.2.1</a> of this document. This parameter specifies the Gid (i.e., the ID Context) of an OSCORE group whose intended members are both the client and the RS(s) in the audience for which the access token is asked to be issued. In particular, the client wishes to communicate with the RS(s) in that audience using the Group OSCORE Security Context associated with that OSCORE group.<a href="#section-3.2-3.1.1" class="pilcrow">¶</a></p>
@@ -1932,8 +1932,8 @@ Payload:
           </figcaption></figure>
 </div>
 <p id="section-3.2-18">Later on, the client might want to update its access rights with respect to the same target audience for which the first access token was issued.<a href="#section-3.2-18" class="pilcrow">¶</a></p>
-<p id="section-3.2-19">As long as the client is a member of the OSCORE group and the access token previously uploaded at the RS is still valid, the client can contact the AS to ask for updating its access rights, through a process more efficient that that used for the first access token.<a href="#section-3.2-19" class="pilcrow">¶</a></p>
-<p id="section-3.2-20">When doing so, the POST request sent the token endpoint is like the one defined above, with the differences compiled below. An example of such a request is shown in <a href="#fig-example-C-to-AS-symm-update" class="auto internal xref">Figure 4</a>.<a href="#section-3.2-20" class="pilcrow">¶</a></p>
+<p id="section-3.2-19">As long as the client is a member of the OSCORE group and the latest access token of a token series is still valid, the client can contact the AS to ask for updating its access rights, through a process more efficient than that used for the first access token of the token series.<a href="#section-3.2-19" class="pilcrow">¶</a></p>
+<p id="section-3.2-20">When doing so, the POST request sent to the token endpoint is like the one defined above, with the differences compiled below. An example of such a request is shown in <a href="#fig-example-C-to-AS-symm-update" class="auto internal xref">Figure 4</a>.<a href="#section-3.2-20" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.2-21.1">
             <p id="section-3.2-21.1.1">The request <span class="bcp14">MUST</span> include the 'token_series_id' parameter defined in <span>[<a href="#I-D.ietf-ace-workflow-and-params" class="cite xref">I-D.ietf-ace-workflow-and-params</a>]</span>.<a href="#section-3.2-21.1.1" class="pilcrow">¶</a></p>
@@ -1950,7 +1950,7 @@ Note that the same 'token_series_id' value might identify multiple ongoing token
 </li>
         </ul>
 <p id="section-3.2-22">If the access token request specifies the 'token_series_id' parameter together with any of the parameters 'context_id', 'salt_input', 'client_cred_verify', 'client_cred_verify_mac', and 'req_cnf', the Client-to-AS request <span class="bcp14">MUST</span> be declined with the error code "invalid_request" as defined in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.8.3" class="relref">Section 5.8.3</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>.<a href="#section-3.2-22" class="pilcrow">¶</a></p>
-<p id="section-3.2-23">The AS <span class="bcp14">MUST</span> verify that the received 'token_series_id' identifies a token series to which a still valid access token belongs, such that the access token is issued to the client, is bound to AUTH_CRED_C, and is intended for the audience specified by the 'audience' parameter of the POST request, if present therein, or for the default audience associated with the client otherwise. If that is not the case, the Client-to-AS request <span class="bcp14">MUST</span> be declined with the error code "invalid_request" as defined in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.8.3" class="relref">Section 5.8.3</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>.<a href="#section-3.2-23" class="pilcrow">¶</a></p>
+<p id="section-3.2-23">The AS <span class="bcp14">MUST</span> verify that the received 'token_series_id' identifies a token series to which a still valid access token belongs, such that the access token is issued to the client and is intended for the audience specified by the 'audience' parameter of the POST request, if present therein, or for the default audience associated with the client otherwise. If that is not the case, the Client-to-AS request <span class="bcp14">MUST</span> be declined with the error code "invalid_request" as defined in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.8.3" class="relref">Section 5.8.3</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>.<a href="#section-3.2-23" class="pilcrow">¶</a></p>
 <span id="name-example-c-to-as-post-token-r"></span><div id="fig-example-C-to-AS-symm-update">
 <figure id="figure-4">
           <div class="alignLeft art-text artwork" id="section-3.2-24.1">
@@ -2023,9 +2023,9 @@ Payload:
 </li>
         </ul>
 <p id="section-3.3-3">Upon a successful update of access rights (see <a href="#sec-as-update-access-rights" class="auto internal xref">Section 3.4.2</a>), the new issued access token becomes the latest in its token series. When the latest access token of a token series becomes invalid (e.g., due to its expiration or revocation), the token series it belongs to ends.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
-<p id="section-3.3-4">In this profile, a token series comprises access tokens that are used between a given client C and target audience, are bound to the same authentication credential AUTH_CRED_C of C, and specify the same value in their 'tokens_series_id' claim (see <a href="#access-token" class="auto internal xref">Section 3.4.1</a>).<a href="#section-3.3-4" class="pilcrow">¶</a></p>
-<p id="section-3.3-5">The AS assigns the value of 'tokens_series_id' when issuing the first access token of a new series. That 'tokens_series_id' value remains fixed throughout the series lifetime.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
-<p id="section-3.3-6">When assigning the 'tokens_series_id' value, the AS <span class="bcp14">MUST</span> ensure that, irrespective of the profile of ACE used, such value was not used in a previous series whose access tokens share both the following properties with the access tokens of the new series:<a href="#section-3.3-6" class="pilcrow">¶</a></p>
+<p id="section-3.3-4">In this profile, a token series comprises access tokens that are used between a given client C and target audience, are bound to the same authentication credential AUTH_CRED_C of C, and specify the same token series identifier, e.g., as value of the 'tokens_series_id' claim (see <a href="#access-token" class="auto internal xref">Section 3.4.1</a>).<a href="#section-3.3-4" class="pilcrow">¶</a></p>
+<p id="section-3.3-5">The AS assigns the token series identifier when issuing the first access token of a new series. That token series identifier remains fixed throughout the series lifetime.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
+<p id="section-3.3-6">When assigning the token series identifier, the AS <span class="bcp14">MUST</span> ensure that, irrespective of the profile of ACE used, such value was not used in a previous series whose access tokens share both the following properties with the access tokens of the new series:<a href="#section-3.3-6" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.3-7.1">
             <p id="section-3.3-7.1.1">Issued to the same client C, irrespective of the specific AUTH_CRED_C bound to the access token; and<a href="#section-3.3-7.1.1" class="pilcrow">¶</a></p>
@@ -2153,18 +2153,18 @@ Payload:
             <li class="normal" id="section-3.4.1-3.4">
               <p id="section-3.4.1-3.4.1">The client's authentication credential AUTH_CRED_C that the client uses in the OSCORE group, which was specified in the 'req_cnf' parameter of the initial access token request that the client sent to ask for the first access token of the token series (see <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>).<a href="#section-3.4.1-3.4.1" class="pilcrow">¶</a></p>
 <p id="section-3.4.1-3.4.2">
-If the issued access token is the first one of a token series, AUTH_CRED_C <span class="bcp14">MUST</span> be specified as transported by value, like it was specifies in the initial access token request mentioned above. Otherwise, AUTH_CRED_C can be specified as transported by value or identified by reference.<a href="#section-3.4.1-3.4.2" class="pilcrow">¶</a></p>
+If the issued access token is the first one of a token series, AUTH_CRED_C <span class="bcp14">MUST</span> be specified as transported by value, like it was specified in the initial access token request mentioned above. Otherwise, AUTH_CRED_C can be specified as transported by value or identified by reference.<a href="#section-3.4.1-3.4.2" class="pilcrow">¶</a></p>
 <p id="section-3.4.1-3.4.3">
 If the access token is a CWT, the client's authentication credential <span class="bcp14">MUST</span> be specified in the 'cnf' claim, which follows the syntax from <span><a href="https://rfc-editor.org/rfc/rfc8747#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8747" class="cite xref">RFC8747</a>]</span>.<a href="#section-3.4.1-3.4.3" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-3.4.1-4">If the issued access token is the first one of a token series, the AS <span class="bcp14">MUST</span> include the following information as metadata within the access token. Otherwise, the following information <span class="bcp14">MUST NOT</span> be included within the access token.<a href="#section-3.4.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.4.1-4">If the issued access token is the first one of a token series, the AS <span class="bcp14">MUST</span> include the following information as metadata of the access token. Otherwise, the following information <span class="bcp14">MUST NOT</span> be included within the access token.<a href="#section-3.4.1-4" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.4.1-5.1">
-              <p id="section-3.4.1-5.1.1">The Context ID input specified in the 'context_id' parameter of the access token request. If the access token is a CWT, the content of the 'context_id' parameter <span class="bcp14">MUST</span> be specified in the 'context_id' claim of the access token, which is defined in <a href="#context_id_claim" class="auto internal xref">Section 3.4.3</a> of this document.<a href="#section-3.4.1-5.1.1" class="pilcrow">¶</a></p>
+              <p id="section-3.4.1-5.1.1">The Context ID input specified in the 'context_id' parameter of the access token request. If the access token is a CWT, the content of the 'context_id' parameter is specified in the 'context_id' claim of the access token, which is defined in <a href="#context_id_claim" class="auto internal xref">Section 3.4.3</a> of this document.<a href="#section-3.4.1-5.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.4.1-5.2">
-              <p id="section-3.4.1-5.2.1">The salt input specified in the 'salt_input' parameter of the access token request. If the access token is a CWT, the content of the 'salt_input' parameter <span class="bcp14">MUST</span> be specified in the 'salt_input' claim of the access token, which is defined in <a href="#salt_input_claim" class="auto internal xref">Section 3.4.4</a> of this document.<a href="#section-3.4.1-5.2.1" class="pilcrow">¶</a></p>
+              <p id="section-3.4.1-5.2.1">The salt input specified in the 'salt_input' parameter of the access token request. If the access token is a CWT, the content of the 'salt_input' parameter is specified in the 'salt_input' claim of the access token, which is defined in <a href="#salt_input_claim" class="auto internal xref">Section 3.4.4</a> of this document.<a href="#section-3.4.1-5.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-3.4.1-6"><a href="#fig-example-AS-to-C-CWT" class="auto internal xref">Figure 6</a> shows an example CWT Claims Set, containing the client's public key in the group (as PoP key), as specified by the inner confirmation value in the 'cnf' claim.<a href="#section-3.4.1-6" class="pilcrow">¶</a></p>
@@ -2271,8 +2271,8 @@ A9                                      # map(9)
           <h4 id="name-update-of-access-rights">
 <a href="#section-3.4.2" class="section-number selfRef">3.4.2. </a><a href="#name-update-of-access-rights" class="section-name selfRef">Update of Access Rights</a>
           </h4>
-<p id="section-3.4.2-1">As long as the client is a member of the OSCORE group and the access token previously uploaded at the RS is still valid, the client can contact the AS to ask for updating its access rights, through a process more efficient that that used for the first access token.<a href="#section-3.4.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.4.2-2">If the request is granted, then the AS generates a new access token as the latest one of an existing token series. The access token specifies the identifier of the series to it belongs to.<a href="#section-3.4.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.4.2-1">As long as the client is a member of the OSCORE group and the latest access token of a token series is still valid, the client can contact the AS to ask for updating its access rights, through a process more efficient than that used for the first access token of the token series.<a href="#section-3.4.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.4.2-2">If the request is granted, then the AS generates a new access token as the latest one of the token series. The access token specifies the identifier of the token series which it belongs to.<a href="#section-3.4.2-2" class="pilcrow">¶</a></p>
 <p id="section-3.4.2-3">The access token is uploaded at the RS(s) in the target audience either by the client as specified in this document, or directly as described in <span>[<a href="#I-D.ietf-ace-workflow-and-params" class="cite xref">I-D.ietf-ace-workflow-and-params</a>]</span>. In either case, the access token response from the AS to the client <span class="bcp14">MUST NOT</span> include any of the parameters 'token_series_id', 'cnf', and 'rs_cnf'.<a href="#section-3.4.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2306,7 +2306,7 @@ A9                                      # map(9)
 <p id="section-4-1">This section details the POST request and response to the authz-info endpoint between the client and the RS.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <p id="section-4-2">The proof of possession required to bind the access token to the client is explicitly performed when the RS receives and verifies a request from the client protected with Group OSCORE, either with the group mode (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-7" class="relref">Section 7</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>) or with the pairwise mode (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-8" class="relref">Section 8</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>).<a href="#section-4-2" class="pilcrow">¶</a></p>
 <p id="section-4-3">In particular, the RS uses the client's public key bound to the access token, either when verifying the signature of the request (if protected with the group mode), or when verifying the request as integrity-protected with pairwise keying material derived from the two peers' authentication credentials and asymmetric keys (if protected with the pairwise mode). In either case, the RS also authenticates the client.<a href="#section-4-3" class="pilcrow">¶</a></p>
-<p id="section-4-4">Similarly, when receiving a protected response from the RS, the client uses the RS's public key either when verifying the signature of the response (if protected with the group mode), or when verifying the response as integrity-protected with pairwise keying material derived from the two peers' authentication credentials and asymmetric keys (if protected with the pairwise mode). In either case, the client also authenticates the RS. Mutual authentication is only achieved after the client has successfully verified the protected response from the RS.<a href="#section-4-4" class="pilcrow">¶</a></p>
+<p id="section-4-4">Similarly, when receiving a protected response from the RS, the client uses the RS' public key either when verifying the signature of the response (if protected with the group mode), or when verifying the response as integrity-protected with pairwise keying material derived from the two peers' authentication credentials and asymmetric keys (if protected with the pairwise mode). In either case, the client also authenticates the RS. Mutual authentication is only achieved after the client has successfully verified the protected response from the RS.<a href="#section-4-4" class="pilcrow">¶</a></p>
 <p id="section-4-5">Therefore, an attacker using a stolen access token cannot generate a valid Group OSCORE message as protected through the client's private key, and thus cannot prove possession of the PoP key bound to the access token. Also, if a client legitimately owns an access token but has not joined the OSCORE group, it cannot generate a valid Group OSCORE message, as it does not store the necessary keying material shared among the group members.<a href="#section-4-5" class="pilcrow">¶</a></p>
 <p id="section-4-6">Furthermore, a client C1 is supposed to obtain a valid access token from the AS, as specifying the client's authentication credential (and the public key included thereof) associated with the client's private key used in the OSCORE group, together with the client's Sender ID in that OSCORE group (see <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>). This allows the RS receiving the access token to verify with the Group Manager of that OSCORE group whether such a client indeed has that Sender ID and uses that authentication credential in the OSCORE group.<a href="#section-4-6" class="pilcrow">¶</a></p>
 <p id="section-4-7">As a consequence, a different client C2, also member of the same OSCORE group, is not able to impersonate C1 by: i) getting a valid access token, specifying the Sender ID of C1 and a different (made-up) authentication credential; ii) successfully uploading the access token to the RS; and then iii) attempting to communicate using Group OSCORE and impersonating C1, while also blaming C1 for the consequences of the interaction with the RS.<a href="#section-4-7" class="pilcrow">¶</a></p>
@@ -2332,7 +2332,7 @@ A9                                      # map(9)
 <li class="normal" id="section-4.2-6.1">
             <p id="section-4.2-6.1.1">The RS checks that the claims 'context_id', 'salt_input', and 'cnf' are included in the access token. In particular, the RS checks that the 'cnf' claim specifies the client's authentication credential as transported by value.<a href="#section-4.2-6.1.1" class="pilcrow">¶</a></p>
 <p id="section-4.2-6.1.2">
-If any of these claims are missing, malformed, or non-conformant, the RS <span class="bcp14">MUST</span> consider the access token invalid and <span class="bcp14">MUST</span> reply to the client with a 4.00 (Bad Request) error response.<a href="#section-4.2-6.1.2" class="pilcrow">¶</a></p>
+If any of these claims are missing, malformed, or non-conformant, the RS <span class="bcp14">MUST</span> consider the access token invalid and <span class="bcp14">MUST</span> reply with a 4.00 (Bad Request) error response.<a href="#section-4.2-6.1.2" class="pilcrow">¶</a></p>
 <p id="section-4.2-6.1.3">
 Otherwise, the RS retrieves from the access token:<a href="#section-4.2-6.1.3" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -2352,25 +2352,38 @@ Otherwise, the RS retrieves from the access token:<a href="#section-4.2-6.1.3" c
 <p id="section-4.2-6.2.2">
 By performing the operation specified in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-9.10" class="relref">Section 9.10</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span> for the realization of Group Manager defined in that document, the RS can rely on GID* to retrieve from the Group Manager the group name and the URI of the group-membership resource at the Group Manager for joining the group.<a href="#section-4.2-6.2.2" class="pilcrow">¶</a></p>
 <p id="section-4.2-6.2.3">
-Irrespective of what is indicated by the access token, the above has to be aligned and consistent with the set of groups that the RS intends to be a member of and is authorized to join at the responsible Group Manager.<a href="#section-4.2-6.2.3" class="pilcrow">¶</a></p>
+Note that, due to the RS joining the group, the Group Manager performs a group rekeying if required by the application (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28#section-12.2" class="relref">Section 12.2</a> of [<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>). This results in changing the Gid used in the group, which is handled as defined later below.<a href="#section-4.2-6.2.3" class="pilcrow">¶</a></p>
 <p id="section-4.2-6.2.4">
-If the RS attempts and fails to join the OSCORE group identified by GID*, the RS <span class="bcp14">MUST</span> reply to the client with a 5.00 (Internal Server Error) error response.<a href="#section-4.2-6.2.4" class="pilcrow">¶</a></p>
+Irrespective of what is indicated by the access token, the process by which the RS joins OSCORE groups has to be aligned and consistent with the set of groups that the RS intends to be a member of and is authorized to join at the responsible Group Manager.<a href="#section-4.2-6.2.4" class="pilcrow">¶</a></p>
+<p id="section-4.2-6.2.5">
+If the RS attempts and fails to join the OSCORE group identified by GID*, the RS <span class="bcp14">MUST</span> reply with a 5.00 (Internal Server Error) error response.<a href="#section-4.2-6.2.5" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.2-6.3">
-            <p id="section-4.2-6.3.1">The RS builds GROUPS as the set of OSCORE groups such that all the following conditions hold, for each group G in the set.<a href="#section-4.2-6.3.1" class="pilcrow">¶</a></p>
+            <p id="section-4.2-6.3.1">Based on the OSCORE Security Contexts that it stores, the RS builds GROUPS as the set of OSCORE groups such that all the following conditions hold, for each group G in the set.<a href="#section-4.2-6.3.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.2-6.3.2.1">
                 <p id="section-4.2-6.3.2.1.1">The RS is a member of the group G.<a href="#section-4.2-6.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-4.2-6.3.2.2">
-                <p id="section-4.2-6.3.2.2.1">The group G has GID* as current Gid.<a href="#section-4.2-6.3.2.2.1" class="pilcrow">¶</a></p>
+                <p id="section-4.2-6.3.2.2.1">The audience targeted by the access token is consistent with using the group G for accessing protected resources hosted by the RS.<a href="#section-4.2-6.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-4.2-6.3.2.3">
-                <p id="section-4.2-6.3.2.3.1">The audience targeted by the access token is consistent with using the group G for accessing protected resources hosted by the RS.<a href="#section-4.2-6.3.2.3.1" class="pilcrow">¶</a></p>
+                <p id="section-4.2-6.3.2.3.1">The group G has GID' as current Gid. In particular, GID' is determined as below.<a href="#section-4.2-6.3.2.3.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.2-6.3.2.3.2.1">
+                    <p id="section-4.2-6.3.2.3.2.1.1">If, following the early verification of the access token, the RS has joined the group G as identified by GID* (see above), GID' is the Gid that the Group Manager has provided to the RS as a result of the group joining. In this case, GID' might be different from GID*, if the Group Manager has performed a group rekeying due to the RS joining the group.<a href="#section-4.2-6.3.2.3.2.1.1" class="pilcrow">¶</a></p>
+</li>
+                  <li class="normal" id="section-4.2-6.3.2.3.2.2">
+                    <p id="section-4.2-6.3.2.3.2.2.1">If, following the early verification of the access token, the RS has retrieved from the Group Manager updated keying material associated with the group G as identified by GID* (e.g., as specified in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-9.1" class="relref">Section 9.1</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>), GID' is the Gid that the Group Manager has provided to the RS. In this case, GID' might be different from GID*, if the Group Manager previously performed a group rekeying process that the RS had missed.<a href="#section-4.2-6.3.2.3.2.2.1" class="pilcrow">¶</a></p>
+</li>
+                  <li class="normal" id="section-4.2-6.3.2.3.2.3">
+                    <p id="section-4.2-6.3.2.3.2.3.1">If none of the above applies, GID' is equal to GID*<a href="#section-4.2-6.3.2.3.2.3.1" class="pilcrow">¶</a></p>
+</li>
+                </ul>
 </li>
             </ul>
 <p id="section-4.2-6.3.3">
-If no such group is found, the RS <span class="bcp14">MUST</span> consider the access token invalid and <span class="bcp14">MUST</span> reply to the client with a 4.00 (Bad Request) error response.<a href="#section-4.2-6.3.3" class="pilcrow">¶</a></p>
+If no such group is found, the RS <span class="bcp14">MUST</span> consider the access token invalid and <span class="bcp14">MUST</span> reply with a 4.00 (Bad Request) error response.<a href="#section-4.2-6.3.3" class="pilcrow">¶</a></p>
 <p id="section-4.2-6.3.4">
 Otherwise, for each of the N &gt;= 1 groups G in the set GROUPS, the RS <span class="bcp14">MUST</span> request to the corresponding Group Manager the authentication credential that the client uses in G, specifying SID* in the request sent to the Group Manager, e.g., as specified in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-21#section-9.3" class="relref">Section 9.3</a> of [<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>.<a href="#section-4.2-6.3.4" class="pilcrow">¶</a></p>
 <p id="section-4.2-6.3.5">
@@ -2386,30 +2399,31 @@ If any of the following conditions holds, the RS <span class="bcp14">MUST</span>
 </li>
             </ul>
 <p id="section-4.2-6.3.8">
-The process above is successful if and only if the RS receives a successful response from all the N Group Managers, and exactly one of such responses conveys AUTH_CRED_C equal to AUTH_CRED_C*. This ensures that there is only one OSCORE group G* such that: the client and the RS are both its members; it has GID* as current Gid; and the client uses SID* as Sender ID in the group. In turn, this will ensure that the RS can bound the access token to such single OSCORE group G*.<a href="#section-4.2-6.3.8" class="pilcrow">¶</a></p>
+The process above is successful if and only if the RS receives a successful response from all the N Group Managers, and exactly one of such responses conveys AUTH_CRED_C equal to AUTH_CRED_C*. This ensures that there is only one OSCORE group G* such that: the client and the RS are both its members; it has GID' as current Gid; and the client uses SID* as Sender ID in the group. In turn, this will ensure that the RS can bound the access token to such single OSCORE group G*.<a href="#section-4.2-6.3.8" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-4.2-7">If the operations above are successful, the access token is valid, and further checks on its content are successful, then the RS proceeds as follows.<a href="#section-4.2-7" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.2-8.1">
-            <p id="section-4.2-8.1.1">The RS considers the Group OSCORE Security Context identified by GID* and used in the OSCORE group G* determined above.<a href="#section-4.2-8.1.1" class="pilcrow">¶</a></p>
+            <p id="section-4.2-8.1.1">The RS considers the Group OSCORE Security Context identified by GID' and used in the OSCORE group G* determined above.<a href="#section-4.2-8.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.2-8.2">
             <p id="section-4.2-8.2.1">If the Group OSCORE Security Context is not including a Recipient Context pertaining to the client (i.e., with Recipient ID equal to SID* and authentication credential equal to AUTH_CRED_C*), then the RS derives such Recipient Context and adds it to the Group OSCORE Security Context.<a href="#section-4.2-8.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.2-8.3">
             <p id="section-4.2-8.3.1">The RS associates the access token with the Recipient Context pertaining to the client, within the Group OSCORE Security Context used in the OSCORE group G*.<a href="#section-4.2-8.3.1" class="pilcrow">¶</a></p>
-<p id="section-4.2-8.3.2">
-In particular, the RS associates the access token with the tuple (SeriesId, Aud, AuthCred), where:<a href="#section-4.2-8.3.2" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-8.4">
+            <p id="section-4.2-8.4.1">The RS associates the access token with the tuple (SeriesId, Aud, AuthCred), where:<a href="#section-4.2-8.4.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.2-8.3.3.1">
-                <p id="section-4.2-8.3.3.1.1">SeriesId is the identifier of the token series which the access token belongs to, as indicated by the 'token_series_id' claim of the access token.<a href="#section-4.2-8.3.3.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.2-8.4.2.1">
+                <p id="section-4.2-8.4.2.1.1">SeriesId is the identifier of the token series which the access token belongs to, as indicated by the 'token_series_id' claim of the access token.<a href="#section-4.2-8.4.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-4.2-8.3.3.2">
-                <p id="section-4.2-8.3.3.2.1">Aud is the target audience, as indicated by the 'aud' claim of the access token.<a href="#section-4.2-8.3.3.2.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-4.2-8.4.2.2">
+                <p id="section-4.2-8.4.2.2.1">Aud is the target audience, as indicated by the 'aud' claim of the access token.<a href="#section-4.2-8.4.2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-4.2-8.3.3.3">
-                <p id="section-4.2-8.3.3.3.1">AuthCred is the authentication credential that the client uses in G*, i.e., AUTH_CRED_C*.<a href="#section-4.2-8.3.3.3.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-4.2-8.4.2.3">
+                <p id="section-4.2-8.4.2.3.1">AuthCred is the authentication credential that the client uses in G*, i.e., AUTH_CRED_C*.<a href="#section-4.2-8.4.2.3.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -2462,19 +2476,19 @@ In particular, the RS associates the access token with the tuple (SeriesId, Aud,
         <h3 id="name-update-of-access-rights-2">
 <a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-update-of-access-rights-2" class="section-name selfRef">Update of Access Rights</a>
         </h3>
-<p id="section-4.4-1">With reference to the access the stored access token T_OLD and the latest uploaded access token T_NEW considered in <a href="#sec-rs-c-created" class="auto internal xref">Section 4.2</a>, the RS proceeds as follows.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
+<p id="section-4.4-1">With reference to the stored access token T_OLD and the latest uploaded access token T_NEW considered in <a href="#sec-rs-c-created" class="auto internal xref">Section 4.2</a>, the RS proceeds as follows.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.4-2.1">
-            <p id="section-4.4-2.1.1">The AS associates T_NEW with the same tuple (SeriesId, Aud, AuthCred) with which T_OLD was associated.<a href="#section-4.4-2.1.1" class="pilcrow">¶</a></p>
+            <p id="section-4.4-2.1.1">The RS associates T_NEW with the same tuple (SeriesId, Aud, AuthCred) with which T_OLD was associated.<a href="#section-4.4-2.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.4-2.2">
-            <p id="section-4.4-2.2.1">The AS associates T_NEW with the Recipient Context pertaining to the client that is included within the Group OSCORE Security Context used in the OSCORE group pertaining to T_NEW, i.e., the same Recipient Context with which T_OLD was associated.<a href="#section-4.4-2.2.1" class="pilcrow">¶</a></p>
+            <p id="section-4.4-2.2.1">The RS associates T_NEW with the Recipient Context pertaining to the client that is included within the Group OSCORE Security Context used in the OSCORE group pertaining to T_NEW, i.e., the same Recipient Context with which T_OLD was associated.<a href="#section-4.4-2.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.4-2.3">
-            <p id="section-4.4-2.3.1">The AS replaces T_OLD with T_NEW.<a href="#section-4.4-2.3.1" class="pilcrow">¶</a></p>
+            <p id="section-4.4-2.3.1">The RS supersedes T_OLD with T_NEW.<a href="#section-4.4-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-4.4-3">Finally, the RS <span class="bcp14">MUST</span> send a 2.01 (Created) response to the client, as defined in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10.1" class="relref">Section 5.10.1</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
+<p id="section-4.4-3">Finally, the RS <span class="bcp14">MUST</span> reply with a 2.01 (Created) response, as defined in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-5.10.1" class="relref">Section 5.10.1</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-c-rs-access-rights">
@@ -2600,7 +2614,7 @@ When using multiple transport profiles of ACE that rely on asymmetric PoP keys, 
 <p id="section-5-2">After that, in order to continue communicating with the RS, the client <span class="bcp14">MUST</span> perform the following actions.<a href="#section-5-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-5-3">
 <li id="section-5-3.1">
-          <p id="section-5-3.1.1">The client requests a new access token T_NEW to the AS, as defined in <a href="#sec-c-as-comm" class="auto internal xref">Section 3</a>. In particular, when sending the access token request as defined in <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>, the client specifies:<a href="#section-5-3.1.1" class="pilcrow">¶</a></p>
+          <p id="section-5-3.1.1">The client requests a new access token T_NEW from the AS, as defined in <a href="#sec-c-as-comm" class="auto internal xref">Section 3</a>. In particular, when sending the access token request as defined in <a href="#sec-c-as-token-endpoint" class="auto internal xref">Section 3.2</a>, the client specifies:<a href="#section-5-3.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5-3.1.2.1">
               <p id="section-5-3.1.2.1.1">The current Group Identifier of the OSCORE group, as the value of the 'context_id' parameter.<a href="#section-5-3.1.2.1.1" class="pilcrow">¶</a></p>
@@ -2622,12 +2636,7 @@ The possible omission of the PoP evidence is based on the same criteria that are
           <p id="section-5-3.2.1">After receiving the access token response from the AS (see <a href="#sec-as-c-token" class="auto internal xref">Section 3.4</a>), the client performs with the RS the same exchanges that are defined in <a href="#sec-c-rs-comm" class="auto internal xref">Section 4</a>.<a href="#section-5-3.2.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
-<p id="section-5-4">When receiving the new access token T_NEW, the RS performs the same steps defined in <a href="#sec-rs-c-created" class="auto internal xref">Section 4.2</a>, with the following addition in the case that the new access token is successfully verified and stored:<a href="#section-5-4" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-5-5.1">
-          <p id="section-5-5.1.1">The RS deletes any stored access token T_OLD such that the associated quartet (Gid, SaltInput, AuthCred, AuthCredGM) differs from the same quartet associated with T_NEW only as to the value of AuthCred.<a href="#section-5-5.1.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
+<p id="section-5-4">When receiving the new access token T_NEW, the RS performs the same steps defined in <a href="#sec-rs-c-created" class="auto internal xref">Section 4.2</a>.<a href="#section-5-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-comm-as">
@@ -2683,14 +2692,14 @@ The possible omission of the PoP evidence is based on the same criteria that are
           <p id="section-8-6.2.1">"rs1_osc", which the client can use to request an access token for the OSCORE profile and targeting only that RS. That is, the client specifies this audience when requesting the access token T2.<a href="#section-8-6.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-8-7">Alternatively, the client could provide the AS with an explicit indication of the profile to use, according to which the AS is requested to issue an access token. For example, the client can rely on the 'ace_profile' parameter of the access token request, aligned with its revised semantics as specified in <span>[<a href="#I-D.ietf-ace-workflow-and-params" class="cite xref">I-D.ietf-ace-workflow-and-params</a>]</span>.<a href="#section-8-7" class="pilcrow">¶</a></p>
+<p id="section-8-7">Alternatively, the client could provide the AS with an explicit indication of the profile to use, according to which the AS is requested to issue an access token. For example, the client can rely on the 'ace_profile' parameter of the access token request, according to its revised semantics as specified in <span>[<a href="#I-D.ietf-ace-workflow-and-params" class="cite xref">I-D.ietf-ace-workflow-and-params</a>]</span>.<a href="#section-8-7" class="pilcrow">¶</a></p>
 <p id="section-8-8">Note that an RS has to be able to store at least one access token per PoP key. When specifically considering the Group OSCORE profile and the OSCORE profile, the RS can always store both corresponding access tokens T1 and T2, since they are always bound to different PoP keys. That is:<a href="#section-8-8" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-8-9.1">
-          <p id="section-8-9.1.1">In the Group OSCORE profile, the PoP key is the client's public key, which is included in the client's authentication credential specified in the 'cnf' claim of the access token.<a href="#section-8-9.1.1" class="pilcrow">¶</a></p>
+          <p id="section-8-9.1.1">In the Group OSCORE profile, the PoP key is the client's public key, which is included in the client's authentication credential specified in the 'cnf' claim of the access token (when CWTs are used).<a href="#section-8-9.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-8-9.2">
-          <p id="section-8-9.2.1">In the OSCORE profile, the PoP key is fundamentally an OSCORE Master Secret, which is specified within the OSCORE_Input_Material object of the 'cnf' claim of the access token.<a href="#section-8-9.2.1" class="pilcrow">¶</a></p>
+          <p id="section-8-9.2.1">In the OSCORE profile, the PoP key is fundamentally an OSCORE Master Secret, which is specified within the OSCORE_Input_Material object of the 'cnf' claim of the access token (when CWTs are used).<a href="#section-8-9.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-8-10">The same approaches discussed above can be used in the case that the profile used for the access token T2 is instead the EDHOC and OSCORE profile defined in <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>. In such a case, the same PoP key might be bound to both T1 and T2, i.e., if the client's public key is included both in the authentication credential that the client uses in the OSCORE group and in the authentication credential that the client uses as CRED_I (CRED_R) when running the EDHOC protocol in the forward (reverse) message flow (see <span><a href="https://rfc-editor.org/rfc/rfc9528#appendix-A.2" class="relref">Appendix A.2</a> of [<a href="#RFC9528" class="cite xref">RFC9528</a>]</span>).<a href="#section-8-10" class="pilcrow">¶</a></p>
@@ -2776,7 +2785,7 @@ The possible omission of the PoP evidence is based on the same criteria that are
 <a href="#section-10" class="section-number selfRef">10. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
 <p id="section-10-1">This document specifies a profile for the Authentication and Authorization for Constrained Environments (ACE) framework <span>[<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>. Thus, the general security considerations from the ACE framework also apply to this profile.<a href="#section-10-1" class="pilcrow">¶</a></p>
-<p id="section-10-2">The proof-of-possession (PoP) key bound to an access token is always an asymmetric key, i.e., the public key included in the authentication credential that the client uses in the OSCORE group. This means that the same shared secret is never used as PoP key with possible multiple RSs. Therefore, it is possible and safe for the AS to issue an access token for an audience that includes multiple RSs (i.e., a group-audience, see <span><a href="https://rfc-editor.org/rfc/rfc9200#section-6.9" class="relref">Section 6.9</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>).<a href="#section-10-2" class="pilcrow">¶</a></p>
+<p id="section-10-2">The proof-of-possession (PoP) key bound to an access token is always an asymmetric key, i.e., the public key included in the authentication credential that the client uses in the OSCORE group. This means that the same shared secret is never used as a PoP key with possible multiple RSs. Therefore, it is possible and safe for the AS to issue an access token for an audience that includes multiple RSs (i.e., a group-audience, see <span><a href="https://rfc-editor.org/rfc/rfc9200#section-6.9" class="relref">Section 6.9</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>).<a href="#section-10-2" class="pilcrow">¶</a></p>
 <p id="section-10-3">In such a case, as per <span><a href="https://rfc-editor.org/rfc/rfc9200#section-6.1" class="relref">Section 6.1</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>, the AS has to ensure the integrity protection of the access token by protecting it through an asymmetric signature. In addition, the used group-audience has to correctly identify all the RSs that are intended recipients of the access token and for which the single scope specified in the access token applies. As a particular case, the audience can refer to the OSCORE group as a whole, if the access token is intended for all the RSs in that group.<a href="#section-10-3" class="pilcrow">¶</a></p>
 <p id="section-10-4">Furthermore, this document inherits the general security considerations about Group OSCORE <span>[<a href="#I-D.ietf-core-oscore-groupcomm" class="cite xref">I-D.ietf-core-oscore-groupcomm</a>]</span>, as to the specific use of Group OSCORE according to this profile.<a href="#section-10-4" class="pilcrow">¶</a></p>
 <p id="section-10-5">Group OSCORE is designed to secure point-to-point as well as point-to-multipoint communications, providing a secure binding between a single request and multiple corresponding responses. In particular, Group OSCORE fulfills the same security requirements of OSCORE.<a href="#section-10-5" class="pilcrow">¶</a></p>
@@ -2809,7 +2818,7 @@ The possible omission of the PoP evidence is based on the same criteria that are
         <h3 id="name-ace-profiles-registry">
 <a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-ace-profiles-registry" class="section-name selfRef">ACE Profiles Registry</a>
         </h3>
-<p id="section-12.1-1">IANA is asked to add the following entry to the "ACE Profiles" registry within the "Authentication and Authorization for Constrained Environments (ACE)" registry group, following the procedure specified in <span><a href="https://rfc-editor.org/rfc/rfc9200#section-8.8" class="relref">Section 8.8</a> of [<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>.<a href="#section-12.1-1" class="pilcrow">¶</a></p>
+<p id="section-12.1-1">IANA is asked to add the following entry to the "ACE Profiles" registry <span>[<a href="#IANA.ACE.Profiles" class="cite xref">IANA.ACE.Profiles</a>]</span> within the "Authentication and Authorization for Constrained Environments (ACE)" registry group.<a href="#section-12.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-12.1-2.1">
             <p id="section-12.1-2.1.1">Name: coap_group_oscore<a href="#section-12.1-2.1.1" class="pilcrow">¶</a></p>
@@ -3115,6 +3124,10 @@ The possible omission of the PoP evidence is based on the same criteria that are
         <dd>
 <span class="refAuthor">Tiloca, M.</span>, <span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Palombini, F.</span>, <span class="refAuthor">Mattsson, J. P.</span>, and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"Group Object Security for Constrained RESTful Environments (Group OSCORE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-oscore-groupcomm-28</span>, <time datetime="2025-12-23" class="refDate">23 December 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28">https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-28</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="IANA.ACE.Profiles">[IANA.ACE.Profiles]</dt>
+        <dd>
+<span class="refAuthor">IANA</span>, <span class="refTitle">"ACE Profiles"</span>, <span>&lt;<a href="https://www.iana.org/assignments/ace/ace.xhtml#ace-profiles">https://www.iana.org/assignments/ace/ace.xhtml#ace-profiles</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="IANA.CWT.Claims">[IANA.CWT.Claims]</dt>
         <dd>
 <span class="refAuthor">IANA</span>, <span class="refTitle">"CBOR Web Token (CWT) Claims"</span>, <span>&lt;<a href="https://www.iana.org/assignments/cwt/cwt.xhtml#claims-registry">https://www.iana.org/assignments/cwt/cwt.xhtml#claims-registry</a>&gt;</span>. </dd>
@@ -3383,19 +3396,22 @@ kccs = 11
             <p id="appendix-C.1-1.4.1">Clarifications:<a href="#appendix-C.1-1.4.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="appendix-C.1-1.4.2.1">
-                <p id="appendix-C.1-1.4.2.1.1">The RS binds the access token to a specific Recipient Context.<a href="#appendix-C.1-1.4.2.1.1" class="pilcrow">¶</a></p>
+                <p id="appendix-C.1-1.4.2.1.1">Processing of the access token at the RS.<a href="#appendix-C.1-1.4.2.1.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="appendix-C.1-1.4.2.2">
-                <p id="appendix-C.1-1.4.2.2.1">Achieving proof of possession.<a href="#appendix-C.1-1.4.2.2.1" class="pilcrow">¶</a></p>
+                <p id="appendix-C.1-1.4.2.2.1">The RS binds the access token to a specific Recipient Context.<a href="#appendix-C.1-1.4.2.2.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="appendix-C.1-1.4.2.3">
-                <p id="appendix-C.1-1.4.2.3.1">Details on proof of group membership.<a href="#appendix-C.1-1.4.2.3.1" class="pilcrow">¶</a></p>
+                <p id="appendix-C.1-1.4.2.3.1">Achieving proof of possession.<a href="#appendix-C.1-1.4.2.3.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="appendix-C.1-1.4.2.4">
-                <p id="appendix-C.1-1.4.2.4.1">Timing and consistency of group joining.<a href="#appendix-C.1-1.4.2.4.1" class="pilcrow">¶</a></p>
+                <p id="appendix-C.1-1.4.2.4.1">Details on proof of group membership.<a href="#appendix-C.1-1.4.2.4.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="appendix-C.1-1.4.2.5">
-                <p id="appendix-C.1-1.4.2.5.1">Latest group joining for the RS.<a href="#appendix-C.1-1.4.2.5.1" class="pilcrow">¶</a></p>
+                <p id="appendix-C.1-1.4.2.5.1">Timing and consistency of group joining.<a href="#appendix-C.1-1.4.2.5.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="appendix-C.1-1.4.2.6">
+                <p id="appendix-C.1-1.4.2.6.1">Latest group joining for the RS.<a href="#appendix-C.1-1.4.2.6.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
